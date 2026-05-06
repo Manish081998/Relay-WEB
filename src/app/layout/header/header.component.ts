@@ -1,5 +1,5 @@
-import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
-import { NavigationEnd, Router } from '@angular/router';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { NavigationEnd, Router, RouterLink } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { filter, map, startWith } from 'rxjs';
 import { AuthStore } from '../../core/auth/auth.store';
@@ -10,7 +10,7 @@ import { ENVIRONMENT } from '../../core/tokens/environment.token';
   selector: 'app-header',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [InitialsPipe],
+  imports: [InitialsPipe, RouterLink],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss',
 })
@@ -38,7 +38,10 @@ export class HeaderComponent {
     webtool:    'WebTool',
     reports:    'Reports',
     admin:      'Administration',
+    profile:    'Profile',
   };
+
+  readonly dropdownOpen = signal(false);
 
   readonly sectionTitle = computed(() => {
     const segment = (this.currentUrl() ?? '').split('/').filter(Boolean)[0] ?? '';

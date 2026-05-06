@@ -43,6 +43,13 @@ export const routes: Routes = [
       },
 
 
+      // Profile Settings — all authenticated users
+      {
+        path: 'profile',
+        loadComponent: () =>
+          import('./features/profile/profile.component').then(m => m.ProfileComponent),
+      },
+
       // Admin panel — SuperAdmin only
       {
         path: 'admin',

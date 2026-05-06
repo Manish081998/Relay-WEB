@@ -167,17 +167,43 @@
   }
 }
 
-// ── User pill ─────────────────────────────────────────────────────────────────
+// ── User menu (pill + dropdown) ───────────────────────────────────────────────
+
+.user-menu {
+  position: relative;
+  margin: 0 t.$space-2;
+
+  &.is-open .user-dropdown {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    transition:
+      opacity 0.18s ease,
+      visibility 0s linear,
+      transform 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  &.is-open .user-chevron {
+    transform: rotate(180deg);
+    color: rgba(255, 255, 255, 0.9);
+  }
+}
 
 .user-pill {
   display: flex;
   align-items: center;
   gap: t.$space-3;
-  padding: t.$space-1 t.$space-3 t.$space-1 t.$space-1;
+  padding: t.$space-1 t.$space-2 t.$space-1 t.$space-1;
   border: 1px solid rgba(255, 255, 255, 0.14);
   border-radius: t.$radius-lg;
   background: rgba(255, 255, 255, 0.08);
-  margin: 0 t.$space-2;
+  cursor: pointer;
+  transition: background t.$transition-fast, border-color t.$transition-fast;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.13);
+    border-color: rgba(255, 255, 255, 0.24);
+  }
 }
 
 .user-avatar {
@@ -215,4 +241,131 @@
   text-transform: uppercase;
   letter-spacing: 0.05em;
   line-height: 1.2;
+}
+
+.user-chevron {
+  color: rgba(255, 255, 255, 0.42);
+  transition: transform t.$transition-base, color t.$transition-fast;
+  flex-shrink: 0;
+  margin-left: 2px;
+}
+
+// ── Account dropdown ──────────────────────────────────────────────────────────
+
+.user-dropdown {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  min-width: 236px;
+  background: #0d1f3a;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: t.$radius-xl;
+  box-shadow:
+    0 4px 6px rgba(0, 0, 0, 0.25),
+    0 16px 48px rgba(0, 0, 0, 0.55),
+    0 1px 0 rgba(255, 255, 255, 0.05) inset;
+  z-index: 1;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-8px);
+  transition:
+    opacity 0.15s ease,
+    visibility 0s linear 0.15s,
+    transform 0.15s ease;
+  overflow: hidden;
+
+  // upward-pointing caret
+  &::before {
+    content: '';
+    position: absolute;
+    top: -5px;
+    right: 20px;
+    width: 9px;
+    height: 9px;
+    background: #0d1f3a;
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+    border-left: 1px solid rgba(255, 255, 255, 0.12);
+    transform: rotate(45deg);
+  }
+}
+
+.user-dropdown__header {
+  display: flex;
+  align-items: center;
+  gap: t.$space-3;
+  padding: t.$space-4;
+}
+
+.user-dropdown__avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: t.$radius-full;
+  background: #1a5fb4;
+  color: #fff;
+  font-size: t.$font-size-sm;
+  font-weight: t.$font-weight-semibold;
+  letter-spacing: 0.03em;
+  flex-shrink: 0;
+}
+
+.user-dropdown__meta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  overflow: hidden;
+}
+
+.user-dropdown__name {
+  font-family: t.$font-sans;
+  font-size: t.$font-size-sm;
+  font-weight: t.$font-weight-semibold;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.user-dropdown__email {
+  font-family: t.$font-sans;
+  font-size: t.$font-size-xs;
+  color: rgba(207, 224, 245, 0.48);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.user-dropdown__sep {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.07);
+}
+
+.user-dropdown__item {
+  display: flex;
+  align-items: center;
+  gap: t.$space-3;
+  padding: t.$space-3 t.$space-4;
+  font-family: t.$font-sans;
+  font-size: t.$font-size-sm;
+  font-weight: t.$font-weight-medium;
+  color: rgba(255, 255, 255, 0.78);
+  text-decoration: none;
+  transition: background t.$transition-fast, color t.$transition-fast;
+
+  svg {
+    flex-shrink: 0;
+    color: rgba(255, 255, 255, 0.42);
+    transition: color t.$transition-fast;
+  }
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.07);
+    color: #fff;
+
+    svg { color: #6ea0db; }
+  }
+
+  &:last-child { border-radius: 0 0 t.$radius-xl t.$radius-xl; }
 }

@@ -41,13 +41,44 @@
       </div>
     }
     <div class="header-right">
-      <!-- User identity pill -->
+      <!-- User identity pill with account dropdown -->
       @if (user(); as u) {
-        <div class="user-pill">
-          <div class="user-avatar">{{ u.displayName | initials }}</div>
-          <div class="user-info">
-            <span class="user-name">{{ u.displayName }}</span>
-            <span class="user-role">{{ u.roles[0] }}</span>
+        <div class="user-menu"
+             [class.is-open]="dropdownOpen()"
+             role="navigation"
+             aria-label="User account"
+             (mouseenter)="dropdownOpen.set(true)"
+             (mouseleave)="dropdownOpen.set(false)">
+          <div class="user-pill" tabindex="0" role="button" aria-haspopup="true" aria-label="Account menu">
+            <div class="user-avatar">{{ u.displayName | initials }}</div>
+            <div class="user-info">
+              <span class="user-name">{{ u.displayName }}</span>
+              <span class="user-role">{{ u.roles[0] }}</span>
+            </div>
+            <svg class="user-chevron" width="11" height="11" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polyline points="6 9 12 15 18 9"/>
+            </svg>
+          </div>
+
+          <div class="user-dropdown" role="menu">
+            <div class="user-dropdown__header">
+              <div class="user-dropdown__avatar">{{ u.displayName | initials }}</div>
+              <div class="user-dropdown__meta">
+                <span class="user-dropdown__name">{{ u.displayName }}</span>
+                <span class="user-dropdown__email">{{ u.email }}</span>
+              </div>
+            </div>
+            <div class="user-dropdown__sep" role="separator"></div>
+            <a class="user-dropdown__item" routerLink="/profile" role="menuitem"
+               (click)="dropdownOpen.set(false)">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                   stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/>
+                <circle cx="12" cy="7" r="4"/>
+              </svg>
+              Profile Settings
+            </a>
           </div>
         </div>
       }
