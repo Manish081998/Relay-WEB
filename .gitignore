@@ -44,3 +44,4 @@ Thumbs.db
 .code-review-graph/
 
 .vs/
+/package-lock.json
