@@ -1,0 +1,240 @@
+@use 'theme' as t;
+@use 'sass:color';
+
+// ── Design tokens (from design system) ───────────────────────────────────────
+$blue:        #1a5fb4;
+$blue-hover:  #154d93;
+$blue-50:     #e7f0fa;
+$neutral-25:  #f7f9fb;   // zebra alt row
+$neutral-100: #eef2f6;   // thead background
+$neutral-200: #dde3ea;   // outer border
+$neutral-300: #c4ccd6;   // thead border
+$neutral-400: #eef2f6;   // td divider (very light)
+$fg-1:        #1a2029;   // headings
+$fg-2:        #2a323d;   // body text
+$fg-3:        #5c6773;   // muted
+$po-bg:       #cfe0f5;   // highlighted primary-key column
+
+// ── Page ─────────────────────────────────────────────────────────────────────
+:host { display: block; font-family: t.$font-sans; }
+
+.qs-page { display: flex; flex-direction: column; gap: 0; }
+
+// ── Title row ─────────────────────────────────────────────────────────────────
+.qs-title-row {
+  margin-bottom: 8px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid #f3f4f6;
+}
+.qs-title {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+  color: $fg-1;
+  letter-spacing: -0.01em;
+}
+
+// ── Summary line ──────────────────────────────────────────────────────────────
+.qs-summary {
+  margin: 8px 0 6px;
+  font-size: 12px;
+  color: $fg-3;
+
+  strong { color: $fg-1; font-weight: 700; }
+}
+
+// ── Grid wrapper ──────────────────────────────────────────────────────────────
+.qs-grid-wrap {
+  background: #fff;
+  border: 1px solid $neutral-200;
+  position: relative;
+}
+
+// ── Loading overlay ───────────────────────────────────────────────────────────
+.qs-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 32px;
+  font-size: 13px;
+  color: $fg-3;
+
+  i { font-size: 1.1rem; color: $blue; }
+}
+
+// ── Scrollable table container ────────────────────────────────────────────────
+.qs-tbl-scroll { overflow-x: auto; }
+
+// ── Dense enterprise table ────────────────────────────────────────────────────
+.qs-tbl {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+
+  // ── Header ─────────────────────────────────────────────────────────────────
+  thead th {
+    font-size: 11px;
+    font-weight: 700;
+    color: $fg-1;
+    background: $neutral-100;
+    padding: 6px 8px;
+    border-top: 1px solid $neutral-300;
+    border-bottom: 2px solid $neutral-300;
+    text-align: left;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+
+    &.col-r { text-align: right; }
+  }
+
+  // ── Body rows ──────────────────────────────────────────────────────────────
+  tbody tr {
+    background: #fff;
+    transition: background 80ms;
+
+    &.row-alt { background: $neutral-25; }
+
+    &:hover { background: $blue-50; }
+  }
+
+  // ── Body cells ─────────────────────────────────────────────────────────────
+  tbody td {
+    font-size: 11px;
+    color: $fg-2;
+    padding: 6px 8px;
+    border-bottom: 1px solid $neutral-400;
+    vertical-align: top;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    &.col-r { text-align: right; }
+  }
+
+  // ── Highlighted PO column (primary key) ────────────────────────────────────
+  td.cell-po {
+    background: $po-bg;
+    font-weight: 600;
+  }
+  tr:hover td.cell-po { background: color.scale($po-bg, $lightness: -4%); }
+
+  // ── Link-styled clickable cells ────────────────────────────────────────────
+  td.cell-link {
+    color: $blue;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+
+    &:hover { color: $blue-hover; }
+  }
+
+  // ── Sales Order sequence — subtle mono ─────────────────────────────────────
+  td.cell-seq {
+    font-family: ui-monospace, 'Cascadia Mono', 'Segoe UI Mono', Consolas, monospace;
+    font-size: 11px;
+    color: $fg-3;
+  }
+
+  // ── Truncated long-text cells ──────────────────────────────────────────────
+  td.cell-trunc {
+    max-width: 0; // forces table cell to respect parent col width for ellipsis
+  }
+
+  // ── Empty / placeholder row ────────────────────────────────────────────────
+  td.cell-empty {
+    text-align: center;
+    padding: 28px 16px;
+    color: $fg-3;
+    font-size: 12px;
+    font-style: italic;
+    white-space: normal;
+
+    i { margin-right: 6px; font-size: 0.85rem; }
+  }
+}
+
+// ── Status chip ───────────────────────────────────────────────────────────────
+.status-chip {
+  display: inline-block;
+  padding: 1px 7px;
+  border-radius: 2px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  background: #e2e6eb;
+  color: #3f4956;
+
+  &[data-status*="active"],
+  &[data-status*="progress"] {
+    background: #d6e6f6;
+    color: #0c4a8a;
+  }
+  &[data-status*="hold"],
+  &[data-status*="pending"],
+  &[data-status*="wait"] {
+    background: #fff3cd;
+    color: #7a4e00;
+  }
+  &[data-status*="complet"],
+  &[data-status*="done"],
+  &[data-status*="ready"],
+  &[data-status*="production"] {
+    background: #d4edda;
+    color: #0f5132;
+  }
+  &[data-status*="error"],
+  &[data-status*="fail"],
+  &[data-status*="cancel"] {
+    background: #f8d7da;
+    color: #842029;
+  }
+}
+
+// ── Pagination bar ────────────────────────────────────────────────────────────
+.qs-pager {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px;
+  border-top: 1px solid $neutral-200;
+  background: #fafbfc;
+  justify-content: flex-end;
+}
+
+.pg-btn {
+  height: 26px;
+  padding: 0 12px;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: t.$font-sans;
+  border: 1px solid $neutral-300;
+  border-radius: 2px;
+  background: #fff;
+  color: $fg-2;
+  cursor: pointer;
+  transition: background 100ms, border-color 100ms;
+
+  &:hover:not(:disabled) {
+    background: $neutral-100;
+    border-color: $blue;
+    color: $blue;
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: default;
+  }
+}
+
+.pg-info {
+  font-size: 11px;
+  color: $fg-3;
+  white-space: nowrap;
+}

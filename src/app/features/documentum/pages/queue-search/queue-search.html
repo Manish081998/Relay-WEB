@@ -1,1 +1,98 @@
-<p>queue-search works!</p>
+<div class="qs-page">
+
+  <!-- Page Title -->
+  <div class="qs-title-row">
+    <h1 class="qs-title">Queue Search</h1>
+  </div>
+
+  <!-- Shared Search Panel -->
+  <app-order-search-panel
+    (search)="onSearch($event)"
+    (cleared)="onCleared()"
+  />
+
+  <!-- Record Summary -->
+  @if (searched() && !loading()) {
+    <div class="qs-summary">
+      Total Records: <strong>{{ totalCount() }}</strong>
+    </div>
+  }
+
+  <!-- Results Grid -->
+  <div class="qs-grid-wrap">
+
+    @if (loading()) {
+      <div class="qs-loading">
+        <i class="pi pi-spin pi-spinner"></i>
+        <span>Loading…</span>
+      </div>
+    }
+
+    <div class="qs-tbl-scroll">
+      <table class="qs-tbl">
+        <colgroup>
+          <col style="width:110px" />  <!-- Rep PO          -->
+          <col style="width:90px"  />  <!-- Order Seq       -->
+          <col style="width:100px" />  <!-- Account #       -->
+          <col style="width:80px"  />  <!-- Brand           -->
+          <col style="width:140px" />  <!-- Rep Name        -->
+          <col style="width:90px"  />  <!-- Job #           -->
+          <col style="width:95px"  />  <!-- Total Net       -->
+          <col style="width:115px" />  <!-- Created Date    -->
+        </colgroup>
+        <thead>
+          <tr>
+            <th>Purchase Order</th>
+            <th>Sales Order</th>
+            <th>Account Number</th>
+            <th>Brand</th>
+            <th>Rep Name</th>
+            <th>Job #</th>
+            <th class="col-r">Total Net</th>
+            <th>Created Date</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (order of orders(); track order.orderGuid; let i = $index) {
+            <tr [class.row-alt]="i % 2 !== 0">
+              <td class="cell-link cell-po">{{ order.repPO }}</td>
+              <td class="cell-seq">{{ order.orderSeq }}</td>
+              <td>{{ order.accountNumber }}</td>
+              <td>{{ order.brand }}</td>
+              <td class="cell-trunc">{{ order.repUserName }}</td>
+              <td>{{ order.jobNumber }}</td>
+              <td class="col-r">{{ order.totalNet }}</td>
+              <td>{{ order.orderDate | date:'MM/dd/yy hh:mm a' }}</td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="8" class="cell-empty">
+                @if (searched()) {
+                  <i class="pi pi-inbox"></i> No records found matching your criteria.
+                } @else {
+                  <i class="pi pi-search"></i> Enter search criteria above and click Search.
+                }
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination -->
+    @if (searched() && totalCount() > 0) {
+      <div class="qs-pager">
+        <button class="pg-btn" [disabled]="currentPage() === 1" (click)="goToPage(currentPage() - 1)">
+          &#8249; Prev
+        </button>
+        <span class="pg-info">
+          Page {{ currentPage() }} of {{ totalPages() }}
+        </span>
+        <button class="pg-btn" [disabled]="currentPage() >= totalPages()" (click)="goToPage(currentPage() + 1)">
+          Next &#8250;
+        </button>
+      </div>
+    }
+
+  </div>
+</div>

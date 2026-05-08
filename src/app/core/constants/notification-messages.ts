@@ -52,6 +52,9 @@ export const NOTIFICATION_MESSAGES = {
       LOAD_FAILED: 'Failed to load annotation.',
       NOT_FOUND: 'Annotation not found.',
     },
+    ORDER: {
+      SEARCH_FAILED: 'Failed to search orders.',
+    },
   },
 
   // ── INTRANET module ───────────────────────────────────────────────────────

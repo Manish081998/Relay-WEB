@@ -22,7 +22,6 @@ export class LoginComponent {
   private readonly router = inject(Router);
   private readonly notify = inject(NotificationService);
 
-  readonly envText = inject(ENVIRONMENT).serverModeText;
   readonly envappVersion = inject(ENVIRONMENT).appVersion;
   readonly username = signal('');
   readonly password = signal('');

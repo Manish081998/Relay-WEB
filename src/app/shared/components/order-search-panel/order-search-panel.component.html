@@ -1,0 +1,117 @@
+<div class="panel">
+  <div class="panel-header">
+    <i class="pi pi-sliders-h"></i>
+    <span>Search Criteria</span>
+  </div>
+
+  <form class="form" [formGroup]="form" (ngSubmit)="onSearch()">
+    <div class="grid">
+      <div class="field">
+        <label for="repPO">Purchase Order Number</label>
+        <input
+          id="repPO"
+          pInputText
+          type="text"
+          formControlName="repPO"
+          placeholder="Purchase Order #"
+          autocomplete="off"
+        />
+      </div>
+
+      <div class="field">
+        <label for="accountNumber">Account Number</label>
+        <input
+          id="accountNumber"
+          pInputText
+          type="text"
+          formControlName="accountNumber"
+          placeholder="Account #"
+          autocomplete="off"
+        />
+      </div>
+
+      <div class="field">
+        <label for="brand">Brand</label>
+        <input
+          id="brand"
+          pInputText
+          type="text"
+          formControlName="brand"
+          placeholder="Brand name"
+          autocomplete="off"
+        />
+      </div>
+
+      <div class="field">
+        <label for="repSalesPerson">Rep Sales Person</label>
+        <input
+          id="repSalesPerson"
+          pInputText
+          type="text"
+          formControlName="repSalesPerson"
+          placeholder="Sales person"
+          autocomplete="off"
+        />
+      </div>
+
+      <div class="field">
+        <label for="jobNumber">Job Number</label>
+        <input
+          id="jobNumber"
+          pInputText
+          type="text"
+          formControlName="jobNumber"
+          placeholder="Job #"
+          autocomplete="off"
+        />
+      </div>
+
+      <div class="field">
+        <label for="orderDateFrom">Order Date From</label>
+        <input
+          id="orderDateFrom"
+          pInputText
+          type="text"
+          formControlName="orderDateFrom"
+          placeholder="MM/DD/YYYY"
+          autocomplete="off"
+        />
+      </div>
+
+      <div class="field">
+        <label for="orderDateTo">Order Date To</label>
+        <input
+          id="orderDateTo"
+          pInputText
+          type="text"
+          formControlName="orderDateTo"
+          placeholder="MM/DD/YYYY"
+          autocomplete="off"
+        />
+      </div>
+    </div>
+
+    <div class="actions">
+      <div class="records-field">
+        <label for="pageSize">No. Records</label>
+        <input
+          id="pageSize"
+          pInputText
+          type="text"
+          inputmode="numeric"
+          formControlName="pageSize"
+          placeholder="100"
+          autocomplete="off"
+        />
+      </div>
+      <button type="button" class="btn-clear" (click)="onClear()">
+        <i class="pi pi-refresh"></i>
+        Clear
+      </button>
+      <button type="submit" class="btn-search">
+        <i class="pi pi-search"></i>
+        Search
+      </button>
+    </div>
+  </form>
+</div>

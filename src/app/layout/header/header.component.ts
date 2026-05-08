@@ -17,7 +17,6 @@ import { ENVIRONMENT } from '../../core/tokens/environment.token';
 export class HeaderComponent {
   readonly auth    = inject(AuthStore);
   readonly user    = this.auth.currentUser;
-  readonly envText = inject(ENVIRONMENT).serverModeText;
   readonly envappVersion = inject(ENVIRONMENT).appVersion;
   readonly envappVersionDate = inject(ENVIRONMENT).appVersionDate;
 

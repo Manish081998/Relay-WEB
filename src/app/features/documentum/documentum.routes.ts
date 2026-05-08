@@ -2,11 +2,12 @@ import { Routes } from '@angular/router';
 import { DocumentsService } from './services/documents.service';
 import { AnnotationsService } from './services/annotations.service';
 import { DocumentsStore } from './store/documents.store';
+import { OrdersService } from './services/orders.service';
 
 export const documentumRoutes: Routes = [
   {
     path: '',
-    providers: [DocumentsService, AnnotationsService, DocumentsStore],
+    providers: [DocumentsService, AnnotationsService, DocumentsStore, OrdersService],
     children: [
       { path: '', redirectTo: 'documents', pathMatch: 'full' },
 
