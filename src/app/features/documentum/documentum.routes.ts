@@ -3,11 +3,12 @@ import { DocumentsService } from './services/documents.service';
 import { AnnotationsService } from './services/annotations.service';
 import { DocumentsStore } from './store/documents.store';
 import { OrdersService } from './services/orders.service';
+import { DocumentumUsersService } from './services/documentum-users.service';
 
 export const documentumRoutes: Routes = [
   {
     path: '',
-    providers: [DocumentsService, AnnotationsService, DocumentsStore, OrdersService],
+    providers: [DocumentsService, AnnotationsService, DocumentsStore, OrdersService, DocumentumUsersService],
     children: [
       { path: '', redirectTo: 'documents', pathMatch: 'full' },
 
@@ -26,6 +27,11 @@ export const documentumRoutes: Routes = [
         path: 'test-annotation',
         loadComponent: () =>
           import('./pages/test.annotation.component/test.annotation.component').then(m => m.TestAnnotationComponent),
+      },
+      {
+        path: 'users',
+        loadComponent: () =>
+          import('./pages/users/users.component').then(m => m.DocumentumUsersComponent),
       },
 
     ],

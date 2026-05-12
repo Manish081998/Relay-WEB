@@ -51,7 +51,7 @@ export const NAV_GROUPS: NavGroup[] = [
     roles: 'all',
     children: [
       { label: 'Manage Queue', route: '/admin/manage-queue', icon: NAV_ICONS.manageQueue },
-      { label: 'Manage Users', route: '/admin/manage-users', icon: NAV_ICONS.manageUsers },
+      { label: 'Manage Users', route: '/documentum/users', icon: NAV_ICONS.manageUsers },
     ],
   },
 ];

@@ -74,7 +74,7 @@ $po-bg:       #cfe0f5;   // highlighted primary-key column
 
   // ── Header ─────────────────────────────────────────────────────────────────
   thead th {
-    font-size: 11px;
+    font-size: 13px;
     font-weight: 700;
     color: $fg-1;
     background: $neutral-100;
@@ -104,7 +104,7 @@ $po-bg:       #cfe0f5;   // highlighted primary-key column
 
   // ── Body cells ─────────────────────────────────────────────────────────────
   tbody td {
-    font-size: 11px;
+    font-size: 13px;
     color: $fg-2;
     padding: 6px 8px;
     border-bottom: 1px solid $neutral-400;
@@ -137,7 +137,7 @@ $po-bg:       #cfe0f5;   // highlighted primary-key column
   // ── Sales Order sequence — subtle mono ─────────────────────────────────────
   td.cell-seq {
     font-family: ui-monospace, 'Cascadia Mono', 'Segoe UI Mono', Consolas, monospace;
-    font-size: 11px;
+    font-size: 13px;
     color: $fg-3;
   }
 

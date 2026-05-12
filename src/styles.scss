@@ -15,6 +15,159 @@ html, body {
   overflow-x: hidden;
 }
 
+// ── Edit User dialog — light theme override (PrimeNG dark mode is always on) ──
+.eu-modal.p-dialog,
+.p-dialog.eu-modal {
+  background: #ffffff !important;
+  color: #1a2029 !important;
+  border: 1px solid #e5e7eb !important;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.18) !important;
+  border-radius: 8px !important;
+  overflow: hidden !important;
+
+  .p-dialog-header {
+    background: #ffffff !important;
+    color: #111827 !important;
+    border-bottom: 1px solid #e5e7eb !important;
+    padding: 16px 20px !important;
+
+    .p-dialog-title {
+      font-size: 15px !important;
+      font-weight: 700 !important;
+      color: #111827 !important;
+    }
+
+    .p-dialog-header-icon,
+    .p-dialog-close-button {
+      color: #6b7280 !important;
+      width: 28px !important;
+      height: 28px !important;
+      border-radius: 4px !important;
+
+      &:hover {
+        background: #f3f4f6 !important;
+        color: #111827 !important;
+      }
+
+      svg, .p-icon { color: inherit !important; }
+    }
+  }
+
+  .p-dialog-content {
+    background: #ffffff !important;
+    color: #1a2029 !important;
+    padding: 0 !important;
+  }
+
+  // Input fields
+  .p-inputtext {
+    background: #ffffff !important;
+    color: #111827 !important;
+    border: 1px solid #d1d5db !important;
+    border-radius: 6px !important;
+    font-size: 13px !important;
+    height: 36px !important;
+    padding: 0 10px !important;
+    width: 100% !important;
+    box-shadow: none !important;
+    transition: border-color 0.15s, box-shadow 0.15s !important;
+
+    &::placeholder { color: #9ca3af !important; }
+
+    &:enabled:focus {
+      border-color: #1a5fb4 !important;
+      box-shadow: 0 0 0 2px rgba(26, 95, 180, 0.15) !important;
+      outline: none !important;
+    }
+
+    &.eu-invalid {
+      border-color: #ef4444 !important;
+      box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.12) !important;
+    }
+
+    &:disabled {
+      background: #f3f4f6 !important;
+      color: #6b7280 !important;
+      border-color: #e5e7eb !important;
+      cursor: default !important;
+      box-shadow: none !important;
+    }
+  }
+
+  // Brand select trigger
+  .eu-brand-select.p-select {
+    background: #ffffff !important;
+    border: 1px solid #d1d5db !important;
+    border-radius: 6px !important;
+    height: 36px !important;
+    box-shadow: none !important;
+    transition: border-color 0.15s, box-shadow 0.15s !important;
+
+    &:hover { border-color: #9ca3af !important; }
+
+    &.p-focus {
+      border-color: #1a5fb4 !important;
+      box-shadow: 0 0 0 2px rgba(26, 95, 180, 0.15) !important;
+    }
+
+    .p-select-label {
+      color: #111827 !important;
+      font-size: 13px !important;
+      padding: 0 10px !important;
+      line-height: 34px !important;
+
+      &.p-placeholder { color: #9ca3af !important; }
+    }
+
+    .p-select-dropdown {
+      color: #6b7280 !important;
+      width: 2rem !important;
+    }
+  }
+
+}
+
+// Brand select dropdown panel (teleported outside dialog — must be global)
+.eu-brand-panel.p-select-overlay {
+  background: #ffffff !important;
+  border: 1px solid #d1d5db !important;
+  border-radius: 6px !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12) !important;
+  color: #111827 !important;
+
+  .p-select-filter-container {
+    padding: 8px !important;
+
+    .p-inputtext {
+      font-size: 13px !important;
+      height: 32px !important;
+      border-color: #d1d5db !important;
+      color: #111827 !important;
+      background: #ffffff !important;
+    }
+  }
+
+  .p-select-list {
+    padding: 4px !important;
+  }
+
+  .p-select-option {
+    font-size: 13px !important;
+    color: #111827 !important;
+    border-radius: 4px !important;
+    padding: 7px 10px !important;
+
+    &:hover,
+    &.p-focus { background: #eff6ff !important; color: #1a5fb4 !important; }
+
+    &.p-select-option-selected {
+      background: #dbeafe !important;
+      color: #1a5fb4 !important;
+      font-weight: 600 !important;
+    }
+  }
+}
+
 // ── PrimeNG Toast overrides ───────────────────────────────────────────────────
 .p-toast {
   .p-toast-message {
