@@ -1,0 +1,62 @@
+<p-table
+  [value]="rows()"
+  [dataKey]="dataKey()"
+  [rowHover]="true"
+  [loading]="loading()"
+  [paginator]="paginator()"
+  [rows]="pageSize()"
+  [rowsPerPageOptions]="pageSizeOpts()"
+  [showCurrentPageReport]="true"
+  [currentPageReportTemplate]="pageReport()"
+>
+  <ng-template #header>
+    <tr>
+      @for (col of columns(); track col.field) {
+        @if (col.sortable !== false) {
+          <th
+            [pSortableColumn]="col.field"
+            [style.width]="col.width"
+            [style.text-align]="col.headerAlign ?? 'left'"
+          >
+            {{ col.header }} <p-sortIcon [field]="col.field" />
+          </th>
+        } @else {
+          <th
+            [style.width]="col.width"
+            [style.text-align]="col.headerAlign ?? 'left'"
+          >
+            {{ col.header }}
+          </th>
+        }
+      }
+    </tr>
+  </ng-template>
+
+  <ng-template #body let-row>
+    <tr>
+      @for (col of columns(); track col.field) {
+        <td
+          [class]="col.cellClass"
+          [style.text-align]="col.cellAlign"
+        >
+          @if (cellTemplate(col.field); as tpl) {
+            <ng-container
+              [ngTemplateOutlet]="tpl"
+              [ngTemplateOutletContext]="{ $implicit: row }"
+            />
+          } @else {
+            {{ cellValue(row, col.field) }}
+          }
+        </td>
+      }
+    </tr>
+  </ng-template>
+
+  <ng-template #emptymessage>
+    <tr>
+      <td [attr.colspan]="columns().length" class="pt-empty">
+        {{ emptyMessage() }}
+      </td>
+    </tr>
+  </ng-template>
+</p-table>

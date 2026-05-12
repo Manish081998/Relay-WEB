@@ -13,71 +13,33 @@
 
   <!-- Results Grid -->
   <div class="mu-grid-wrap">
+    <app-prime-table
+      [columns]="columns"
+      [rows]="users()"
+      dataKey="userId"
+      [loading]="loading()"
+      pageReport="Showing {first} to {last} of {totalRecords} users"
+    >
+      <ng-template ptCellDef="firstName" let-user>
+        <span class="cell-name">{{ $any(user).firstName }} {{ $any(user).lastName }}</span>
+      </ng-template>
 
-    @if (loading()) {
-      <div class="mu-loading">
-        <i class="pi pi-spin pi-spinner"></i>
-        <span>Loading users…</span>
-      </div>
-    }
+      <ng-template ptCellDef="isActive" let-user>
+        <span class="status-chip" [attr.data-status]="$any(user).isActive ? 'active' : 'inactive'">
+          {{ $any(user).isActive ? 'Active' : 'Inactive' }}
+        </span>
+      </ng-template>
 
-    <div class="mu-tbl-scroll">
-      <table class="mu-tbl">
-        <colgroup>
-          <col style="width:155px" />  <!-- Full Name    -->
-          <col style="width:180px" />  <!-- Email        -->
-          <col style="width:110px" />  <!-- Brand        -->
-          <col style="width:120px" />  <!-- Global ID    -->
-          <col style="width:85px"  />  <!-- Status       -->
-          <col style="width:130px" />  <!-- Created By   -->
-          <col style="width:110px" />  <!-- Created Date -->
-          <col style="width:72px"  />  <!-- Actions      -->
-        </colgroup>
-        <thead>
-          <tr>
-            <th>Full Name</th>
-            <th>Email</th>
-            <th>Brand</th>
-            <th>Global ID</th>
-            <th>Status</th>
-            <th>Created By</th>
-            <th>Created Date</th>
-            <th class="col-actions">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (user of users(); track user.userId; let i = $index) {
-            <tr [class.row-alt]="i % 2 !== 0">
-              <td class="cell-name">{{ user.firstName }} {{ user.lastName }}</td>
-              <td class="cell-trunc">{{ user.emailId }}</td>
-              <td>{{ user.brandName }}</td>
-              <td class="cell-id">{{ user.globalId }}</td>
-              <td>
-                <span class="status-chip" [attr.data-status]="user.isActive ? 'active' : 'inactive'">
-                  {{ user.isActive ? 'Active' : 'Inactive' }}
-                </span>
-              </td>
-              <td class="cell-trunc">{{ user.createdBy }}</td>
-              <td>{{ user.createdDate | date:'MM/dd/yy hh:mm a' }}</td>
-              <td class="col-actions">
-                <button class="action-btn" title="Edit user" (click)="openEdit(user)">
-                  <i class="pi pi-pencil"></i>
-                </button>
-              </td>
-            </tr>
-          } @empty {
-            <tr>
-              <td colspan="8" class="cell-empty">
-                @if (!loading()) {
-                  <i class="pi pi-users"></i> No users found.
-                }
-              </td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
+      <ng-template ptCellDef="createdDate" let-user>
+        {{ $any(user).createdDate | date:'MM/dd/yy hh:mm a' }}
+      </ng-template>
 
+      <ng-template ptCellDef="actions" let-user>
+        <button class="action-btn" title="Edit user" (click)="openEdit($any(user))">
+          <i class="pi pi-pencil"></i>
+        </button>
+      </ng-template>
+    </app-prime-table>
   </div>
 
 </div>

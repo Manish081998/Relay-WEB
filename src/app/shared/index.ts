@@ -1,4 +1,6 @@
 export * from './components/data-table/data-table.component';
+export * from './components/prime-table/prime-table.component';
+export * from './components/prime-table/prime-cell-def.directive';
 export * from './components/order-search-panel/order-search-panel.component';
 export * from './components/empty-state/empty-state.component';
 export * from './components/forbidden/forbidden.component';
