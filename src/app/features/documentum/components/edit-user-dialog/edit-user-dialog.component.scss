@@ -1,11 +1,19 @@
-// Internal form layout — dialog chrome is overridden globally via .eu-modal in styles.scss
+// Dialog uses blue (#1a5fb4) as its primary accent — configure fc tokens here so
+// input focus rings, save button, and checkbox all inherit the same blue without
+// any hardcoded hex values in the rules below.
+@use 'form-controls' as fc with (
+  $fc-primary:       #1a5fb4,
+  $fc-primary-hover: #154d93,
+  $fc-primary-glow:  rgba(26, 95, 180, 0.22)
+);
 
+// ── Dialog body wrapper ───────────────────────────────────────────────────────
 .eu-body {
   display: flex;
   flex-direction: column;
 }
 
-// ── Form ──────────────────────────────────────────────────────────────────────
+// ── Form area ─────────────────────────────────────────────────────────────────
 .eu-form {
   display: flex;
   flex-direction: column;
@@ -13,57 +21,52 @@
   padding: 20px 20px 16px;
 }
 
-// form tag is a direct child of eu-form — must also be a flex column so eu-form's gap reaches the rows inside it
 .eu-form > form {
   display: flex;
   flex-direction: column;
   gap: 16px;
 }
 
+// ── Row / column layout ───────────────────────────────────────────────────────
 .eu-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 16px;
 
-  &.eu-row-full {
-    grid-template-columns: 1fr;
-  }
+  &.eu-row-full { grid-template-columns: 1fr; }
 }
 
+// ── Field (label + input) — dialog uses readable 13px labels, not micro-caps ─
 .eu-field {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
+  @include fc.dialog-field;
 }
 
-// ── Labels ────────────────────────────────────────────────────────────────────
-.eu-label {
-  font-size: 13px;
-  font-weight: 600;
-  color: #374151;
-  line-height: 1;
+// pInputText inputs — full shared styling with blue focus ring via fc config
+.eu-field input[pInputText] {
+  @include fc.input;
 }
 
+// PrimeNG p-select — styleClass="eu-brand-select" adds this class to .p-select
+:host ::ng-deep .eu-brand-select {
+  @include fc.primeng-select;
+}
+
+// ── Validation decorators ─────────────────────────────────────────────────────
 .eu-req {
-  color: #ef4444;
+  color: fc.$fc-danger;
   margin-left: 2px;
 }
 
-// ── Inputs ────────────────────────────────────────────────────────────────────
-// eu-invalid applied via [class.eu-invalid] on the native input
+// Angular [class.eu-invalid] applied directly to the native input element
 .eu-invalid {
-  border-color: #ef4444 !important;
-  box-shadow: 0 0 0 1px #ef4444 !important;
+  border-color: fc.$fc-input-error-border !important;
+  background:   fc.$fc-input-error-bg     !important;
+  box-shadow:   0 0 0 3px fc.$fc-input-error-glow !important;
 }
 
-// ── Validation errors ────────────────────────────────────────────────────────
-.eu-err {
-  font-size: 11px;
-  color: #ef4444;
-  line-height: 1.3;
-}
+.eu-err { @include fc.field-error; }
 
-// ── Status row ────────────────────────────────────────────────────────────────
+// ── Status checkbox row ───────────────────────────────────────────────────────
 .eu-status-row {
   display: flex;
   align-items: center;
@@ -71,13 +74,7 @@
   padding-top: 6px;
 }
 
-.eu-checkbox {
-  width: 16px;
-  height: 16px;
-  cursor: pointer;
-  flex-shrink: 0;
-  accent-color: #1a5fb4;
-}
+.eu-checkbox { @include fc.checkbox; }
 
 .eu-status-lbl {
   font-size: 14px;
@@ -93,16 +90,8 @@
   }
 }
 
-// ── Info bar (edit mode only) ─────────────────────────────────────────────────
-.eu-info-bar {
-  margin-top: 4px;
-  background: #f3f4f6;
-  border-top: 1px solid #e5e7eb;
-  padding: 10px 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-}
+// ── Audit info bar (shown when editing an existing user) ──────────────────────
+.eu-info-bar { @include fc.info-bar; }
 
 .eu-info-row {
   display: flex;
@@ -126,53 +115,14 @@
 }
 
 // ── Footer ────────────────────────────────────────────────────────────────────
-.eu-footer {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  gap: 10px;
-  padding: 12px 20px;
-  border-top: 1px solid #e5e7eb;
-  background: #ffffff;
-}
-
-.eu-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  height: 36px;
-  padding: 0 18px;
-  border-radius: 6px;
-  font-size: 13px;
-  font-weight: 600;
-  font-family: inherit;
-  cursor: pointer;
-  border: 1px solid transparent;
-  transition: background 0.15s, border-color 0.15s;
-
-  i { font-size: 0.8rem; }
-
-  &:disabled { opacity: 0.5; cursor: default; }
-}
+.eu-footer { @include fc.dialog-footer; }
 
 .eu-btn-cancel {
-  background: #fff;
-  border-color: #d1d5db;
-  color: #374151;
-
-  &:hover:not(:disabled) {
-    background: #f9fafb;
-    border-color: #9ca3af;
-  }
+  @include fc.btn-secondary;
+  padding: 0 18px; // dialog buttons slightly wider than default 16px
 }
 
 .eu-btn-save {
-  background: #1a5fb4;
-  color: #fff;
-  border-color: #1a5fb4;
-
-  &:hover:not(:disabled) {
-    background: #154d93;
-    border-color: #154d93;
-  }
+  @include fc.btn-primary;
+  padding: 0 18px;
 }

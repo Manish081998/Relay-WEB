@@ -1,0 +1,214 @@
+<div class="mu-page">
+  <!-- ── Page Header ──────────────────────────────────────────────────────── -->
+  <div class="mu-title-row">
+    <div class="mu-title-left">
+      <h1 class="mu-title">Manage Users</h1>
+      <p class="mu-subtitle">View and manage all registered system users</p>
+    </div>
+    @if (!loading() && users().length > 0) {
+      <span class="mu-count-badge">{{ users().length }} users</span>
+    }
+  </div>
+
+  <!-- ── Compact Unified Card ──────────────────────────────────────────────── -->
+  <div class="mu-card">
+
+    <!-- Row 1: Search (always visible) -->
+    <div class="mu-search-row">
+      <span class="mu-inline-label">Global ID</span>
+      <input
+        id="globalId"
+        pInputText
+        type="text"
+        class="mu-search-input"
+        [ngModel]="globalIdValue()"
+        (ngModelChange)="onGlobalIdChange($event)"
+        (keyup.enter)="globalIdValue().trim() && onSearch()"
+        autocomplete="off"
+        placeholder="Enter Global ID"
+      />
+      <button
+        type="button"
+        class="mu-btn-search"
+        [disabled]="!globalIdValue().trim() || searching()"
+        (click)="onSearch()"
+      >
+        @if (searching()) {
+          <i class="pi pi-spin pi-spinner"></i>
+        } @else {
+          <i class="pi pi-search"></i>
+        }
+        Search
+      </button>
+    </div>
+
+    @if (searchedUser(); as user) {
+      <div class="mu-row-divider"></div>
+
+      <!-- Row 2: Compact profile strip -->
+      <div class="mu-profile-row">
+        <span class="mu-avatar-chip">{{ (user.firstName + ' ' + user.lastName) | initials }}</span>
+        <span class="mu-profile-name">{{ user.firstName }} {{ user.lastName }}</span>
+        @if (user.title) {
+          <span class="mu-dot">·</span>
+          <span class="mu-profile-meta">{{ user.title }}</span>
+        }
+        @if (user.companyName) {
+          <span class="mu-dot">·</span>
+          <span class="mu-profile-meta">{{ user.companyName }}</span>
+        }
+        <span class="mu-dot">·</span>
+        <span class="mu-profile-meta">{{ user.emailId }}</span>
+      </div>
+
+      <div class="mu-row-divider"></div>
+
+      <!-- Row 3: Dropdowns + Save (same row) -->
+      <div class="mu-form-row">
+
+        <div class="mu-field" [class.mu-field--err]="saveAttempted() && !selectedBrandId()">
+          <label for="brand" class="mu-field-label">Brand <span class="mu-req">*</span></label>
+          <p-select
+            inputId="brand"
+            styleClass="mu-brand-select"
+            [ngModel]="selectedBrandId()"
+            (ngModelChange)="onBrandChange($event)"
+            [options]="brands()"
+            optionLabel="brandName"
+            optionValue="brandId"
+            placeholder="Select brand"
+            [showClear]="true"
+          />
+          @if (saveAttempted() && !selectedBrandId()) {
+            <span class="mu-err-text">Required</span>
+          }
+        </div>
+
+        <div class="mu-field" [class.mu-field--err]="saveAttempted() && !selectedQueueId()">
+          <label for="queue" class="mu-field-label">Queue <span class="mu-req">*</span></label>
+          <p-select
+            inputId="queue"
+            styleClass="mu-brand-select"
+            [ngModel]="selectedQueueId()"
+            (ngModelChange)="onQueueChange($event)"
+            [options]="filteredQueues()"
+            optionLabel="queueName"
+            optionValue="queueId"
+            placeholder="Select queue"
+            [showClear]="true"
+            [disabled]="!selectedBrandId()"
+          />
+          @if (saveAttempted() && !selectedQueueId()) {
+            <span class="mu-err-text">Required</span>
+          }
+        </div>
+
+        <div class="mu-field" [class.mu-field--err]="saveAttempted() && !selectedRoleId()">
+          <label for="role" class="mu-field-label">Role <span class="mu-req">*</span></label>
+          <p-select
+            inputId="role"
+            styleClass="mu-brand-select"
+            [ngModel]="selectedRoleId()"
+            (ngModelChange)="onRoleChange($event)"
+            [options]="roles()"
+            optionLabel="roleName"
+            optionValue="roleMasterId"
+            placeholder="Select role"
+            [showClear]="true"
+          />
+          @if (saveAttempted() && !selectedRoleId()) {
+            <span class="mu-err-text">Required</span>
+          }
+        </div>
+
+        <button
+          type="button"
+          class="mu-btn-save"
+          [class.mu-btn-save--ready]="canSave()"
+          [disabled]="saving()"
+          (click)="onSaveUser()"
+        >
+          @if (saving()) {
+            <i class="pi pi-spin pi-spinner"></i>
+          } @else {
+            <i class="pi pi-save"></i>
+          }
+          Save
+        </button>
+
+      </div>
+    }
+
+  </div>
+
+  <!-- ── Results Table ────────────────────────────────────────────────────── -->
+  <div class="results-card">
+    <div class="results-header">
+      <div class="results-title">
+        <i class="pi pi-users"></i>
+        <span>User Queue Mappings</span>
+        <span class="results-badge">{{ userQueueMappings().length }}</span>
+      </div>
+    </div>
+
+    <p-table
+      [value]="userQueueMappings()"
+      [rowHover]="true"
+      [loading]="loading()"
+      [paginator]="true"
+      [rows]="10"
+      [rowsPerPageOptions]="[10, 25, 50]"
+      [showCurrentPageReport]="true"
+      currentPageReportTemplate="Showing {first} to {last} of {totalRecords} records"
+      scrollHeight="480px"
+      [tableStyle]="{ 'min-width': '60rem' }"
+    >
+      <ng-template #header>
+        <tr>
+          <th pSortableColumn="fullName" style="width: 160px">
+            Full Name <p-sortIcon field="fullName" />
+          </th>
+          <th pSortableColumn="globalId" style="width: 120px">
+            Global ID <p-sortIcon field="globalId" />
+          </th>
+          <th pSortableColumn="emailId" style="width: 200px">
+            Email <p-sortIcon field="emailId" />
+          </th>
+          <th pSortableColumn="brandName" style="width: 130px">
+            Brand <p-sortIcon field="brandName" />
+          </th>
+          <th pSortableColumn="queueName" style="width: 140px">
+            Queue <p-sortIcon field="queueName" />
+          </th>
+          <th pSortableColumn="Role" style="width: 140px">
+            Role <p-sortIcon field="roleName" />
+          </th>
+          <th pSortableColumn="actionByFullName" style="width: 150px">
+            Action By <p-sortIcon field="actionByFullName" />
+          </th>
+        </tr>
+      </ng-template>
+
+      <ng-template #body let-row>
+        <tr>
+          <td><span class="cell-name">{{ row.fullName ?? '—' }}</span></td>
+          <td class="cell-mono">{{ row.globalId ?? '—' }}</td>
+          <td class="cell-trunc">{{ row.emailId ?? '—' }}</td>
+          <td>{{ row.brandName ?? '—' }}</td>
+          <td>{{ row.queueName ?? '—' }}</td>
+          <td>{{ row.roleName ?? '—' }}</td>
+          <td class="cell-trunc">{{ row.actionByFullName ?? '—' }}</td>
+        </tr>
+      </ng-template>
+
+      <ng-template #emptymessage>
+        <tr>
+          <td colspan="7" class="cell-empty">
+            <i class="pi pi-inbox"></i>
+            No records found.
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+</div>

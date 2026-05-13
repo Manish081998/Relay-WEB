@@ -1,0 +1,61 @@
+@use 'form-controls' as fc;
+@use 'theme' as t;
+
+// This page's search form is rendered by <app-order-search-panel> which owns
+// its own SCSS. Only page-level layout lives here.
+
+:host {
+  display: block;
+  font-family: t.$font-sans;
+}
+
+// ── Results card ──────────────────────────────────────────────────────────────
+.results-card {
+  @include fc.results-card;
+}
+
+.results-header {
+  @include fc.results-header;
+}
+
+.results-title {
+  display: flex;
+  align-items: center;
+  gap: t.$space-2;
+
+  > i {
+    font-size: 0.78rem;
+    color: #4b5563;
+  }
+
+  > span:first-of-type {
+    font-size: t.$font-size-xs;
+    font-weight: t.$font-weight-semibold;
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+    color: #4b5563;
+  }
+}
+
+.results-badge { @include fc.count-badge; }
+
+// ── Table link buttons ────────────────────────────────────────────────────────
+.xml-btn     { @include fc.link-btn; font-weight: 500; }
+.release-btn { @include fc.link-btn; font-weight: 600; }
+
+// ── Empty state ───────────────────────────────────────────────────────────────
+.cell-empty {
+  padding: 36px 16px;
+  color: #9ca3af;
+  font-size: 0.8125rem;
+  text-align: center;
+  white-space: normal;
+  font-style: italic;
+
+  i {
+    display: block;
+    font-size: 1.5rem;
+    opacity: 0.35;
+    margin-bottom: 6px;
+  }
+}

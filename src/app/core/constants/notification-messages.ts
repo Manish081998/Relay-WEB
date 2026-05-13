@@ -67,6 +67,8 @@ export const NOTIFICATION_MESSAGES = {
     USER: {
       LOAD_FAILED: 'Failed to load user.',
       NOT_FOUND: 'User not found.',
+      CREATE_SUCCESS: 'User created successfully.',
+      CREATE_FAILED: 'Failed to create user.',
       UPDATE_SUCCESS: 'User updated successfully.',
       UPDATE_FAILED: 'Failed to update user.',
     },

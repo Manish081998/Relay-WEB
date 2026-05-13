@@ -28,11 +28,7 @@ export const documentumRoutes: Routes = [
         loadComponent: () =>
           import('./pages/test.annotation.component/test.annotation.component').then(m => m.TestAnnotationComponent),
       },
-      {
-        path: 'users',
-        loadComponent: () =>
-          import('./pages/users/users.component').then(m => m.DocumentumUsersComponent),
-      },
+      
 
     ],
   },

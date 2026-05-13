@@ -27,8 +27,12 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
           router.navigate(['/forbidden']);
           break;
         default: {
-          const serverMessage = err.error?.message ?? err.message;
-          notification.error(httpMessage(err.status, serverMessage));
+          const silent = req.headers.get('X-Silent-Errors')
+            ?.split(',').map(s => parseInt(s.trim(), 10)) ?? [];
+          if (!silent.includes(err.status)) {
+            const serverMessage = err.error?.message ?? err.message;
+            notification.error(httpMessage(err.status, serverMessage));
+          }
         }
       }
       return throwError(() => err);

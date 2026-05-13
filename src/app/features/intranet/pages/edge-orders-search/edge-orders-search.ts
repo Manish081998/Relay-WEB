@@ -99,11 +99,13 @@ export class EdgeOrdersSearch implements OnInit {
   openXml(row: EdgeOrderDto): void {
     if (!row.xmlMacPacOrder) return;
     const key = this.storePayload('xml-viewer', {
-      xml:   row.xmlMacPacOrder,
+      xml: row.xmlMacPacOrder,
       title: row.releaseName || row.releaseNumber || 'XML Document',
     });
     window.open(
-      this.router.serializeUrl(this.router.createUrlTree(['/intranet/xml-viewer'], { queryParams: { key } })),
+      this.router.serializeUrl(
+        this.router.createUrlTree(['/intranet/xml-viewer'], { queryParams: { key } }),
+      ),
       '_blank',
     );
   }
@@ -111,11 +113,13 @@ export class EdgeOrdersSearch implements OnInit {
   openOrderTransmittal(row: EdgeOrderDto): void {
     if (!row.xmlMacPacOrder) return;
     const key = this.storePayload('order-transmittal', {
-      xml:           row.xmlMacPacOrder,
+      xml: row.xmlMacPacOrder,
       releaseNumber: row.releaseNumber,
     });
     window.open(
-      this.router.serializeUrl(this.router.createUrlTree(['/intranet/order-transmittal'], { queryParams: { key } })),
+      this.router.serializeUrl(
+        this.router.createUrlTree(['/intranet/order-transmittal'], { queryParams: { key } }),
+      ),
       '_blank',
     );
   }
@@ -127,8 +131,8 @@ export class EdgeOrdersSearch implements OnInit {
     localStorage.setItem(key, JSON.stringify(data));
     const cutoff = Date.now() - 2 * 60 * 60 * 1000;
     Object.keys(localStorage)
-      .filter(k => k.startsWith(`${prefix}-`) && Number(k.replace(`${prefix}-`, '')) < cutoff)
-      .forEach(k => localStorage.removeItem(k));
+      .filter((k) => k.startsWith(`${prefix}-`) && Number(k.replace(`${prefix}-`, '')) < cutoff)
+      .forEach((k) => localStorage.removeItem(k));
     return key;
   }
 
@@ -141,7 +145,6 @@ export class EdgeOrdersSearch implements OnInit {
     } catch {
       this.notify.error(NM.INTRANET.EDGE_ORDER.LOAD_FAILED, 'Intranet');
     } finally {
-      
     }
   }
 }
