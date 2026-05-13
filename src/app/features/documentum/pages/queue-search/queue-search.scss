@@ -1,36 +1,36 @@
 @use 'theme' as t;
 @use 'sass:color';
-
+ 
 // ── Tokens from project theme ────────────────────────────────────────────────
 $primary:     t.$color-primary;
 $primary-dk:  t.$color-primary-dark;
 $brand-5:     rgba(t.$color-primary, 0.04);
 $brand-8:     rgba(t.$color-primary, 0.07);
 $po-bg:       rgba(t.$color-primary, 0.12);
-
+ 
 $surface:     t.$color-bg-surface;
 $surface-alt: t.$color-bg-subtle;
-
+ 
 $border:      t.$color-border;
 $border-str:  t.$color-border-strong;
-
+ 
 $text:        t.$color-text-base;
 $text-muted:  t.$color-text-muted;
 $text-faint:  t.$color-text-subtle;
-
+ 
 // ── Page ─────────────────────────────────────────────────────────────────────
 :host {
   display: block;
   font-family: t.$font-sans;
   -webkit-font-smoothing: antialiased;
 }
-
+ 
 .qs-page {
   display: flex;
   flex-direction: column;
   gap: 0;
 }
-
+ 
 // ── Title row ────────────────────────────────────────────────────────────────
 .qs-title-row {
   margin-bottom: 6px;
@@ -44,7 +44,7 @@ $text-faint:  t.$color-text-subtle;
   display: flex;
   align-items: center;
   gap: 8px;
-
+ 
   &::before {
     content: '';
     display: inline-block;
@@ -55,7 +55,7 @@ $text-faint:  t.$color-text-subtle;
     flex-shrink: 0;
   }
 }
-
+ 
 // ── Summary line ─────────────────────────────────────────────────────────────
 .qs-summary {
   display: inline-flex;
@@ -68,13 +68,13 @@ $text-faint:  t.$color-text-subtle;
   background: $brand-5;
   border: 1px solid rgba($primary, 0.12);
   border-radius: t.$radius-full;
-
+ 
   strong {
     color: $primary;
     font-weight: t.$font-weight-bold;
   }
 }
-
+ 
 // ── Grid wrapper ─────────────────────────────────────────────────────────────
 .qs-grid-wrap {
   background: $surface;
@@ -84,7 +84,7 @@ $text-faint:  t.$color-text-subtle;
   box-shadow: t.$shadow-card;
   position: relative;
 }
-
+ 
 // ── Loading overlay ──────────────────────────────────────────────────────────
 .qs-loading {
   display: flex;
@@ -94,19 +94,19 @@ $text-faint:  t.$color-text-subtle;
   padding: 28px;
   font-size: t.$font-size-sm;
   color: $text-muted;
-
+ 
   i { font-size: 1.1rem; color: $primary; }
 }
-
+ 
 // ── Scrollable table container ───────────────────────────────────────────────
 .qs-tbl-scroll { overflow-x: auto; }
-
+ 
 // ── Dense enterprise table ───────────────────────────────────────────────────
 .qs-tbl {
   width: 100%;
   border-collapse: collapse;
   table-layout: fixed;
-
+ 
   // ── Header ─────────────────────────────────────────────────────────────────
   thead th {
     font-size: t.$font-size-xs;
@@ -124,20 +124,20 @@ $text-faint:  t.$color-text-subtle;
     position: sticky;
     top: 0;
     z-index: 1;
-
+ 
     &.col-r { text-align: right; }
   }
-
+ 
   // ── Body rows ──────────────────────────────────────────────────────────────
   tbody tr {
     background: $surface;
     transition: background 80ms;
-
+ 
     &.row-alt { background: $brand-5; }
-
+ 
     &:hover { background: $brand-8; }
   }
-
+ 
   // ── Body cells ─────────────────────────────────────────────────────────────
   tbody td {
     font-size: t.$font-size-xs;
@@ -148,17 +148,17 @@ $text-faint:  t.$color-text-subtle;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-
+ 
     &.col-r { text-align: right; font-variant-numeric: tabular-nums; }
   }
-
+ 
   // ── Highlighted PO column (primary key) ────────────────────────────────────
   td.cell-po {
     background: $po-bg;
     font-weight: t.$font-weight-semibold;
   }
   tr:hover td.cell-po { background: color.scale($po-bg, $lightness: -6%); }
-
+ 
   // ── Link-styled clickable cells ────────────────────────────────────────────
   td.cell-link {
     color: $primary;
@@ -168,13 +168,13 @@ $text-faint:  t.$color-text-subtle;
     text-underline-offset: 2px;
     text-decoration-color: rgba($primary, 0.3);
     transition: color t.$transition-fast, text-decoration-color t.$transition-fast;
-
+ 
     &:hover {
       color: $primary-dk;
       text-decoration-color: $primary-dk;
     }
   }
-
+ 
   // ── Sales Order sequence — subtle mono ─────────────────────────────────────
   td.cell-seq {
     font-family: ui-monospace, 'Cascadia Mono', 'Segoe UI Mono', Consolas, monospace;
@@ -182,12 +182,12 @@ $text-faint:  t.$color-text-subtle;
     color: $text-muted;
     letter-spacing: 0.01em;
   }
-
+ 
   // ── Truncated long-text cells ──────────────────────────────────────────────
   td.cell-trunc {
     max-width: 0;
   }
-
+ 
   // ── Empty / placeholder row ────────────────────────────────────────────────
   td.cell-empty {
     text-align: center;
@@ -197,7 +197,7 @@ $text-faint:  t.$color-text-subtle;
     font-style: italic;
     white-space: normal;
     background: $surface-alt;
-
+ 
     i {
       margin-right: 6px;
       font-size: 0.9rem;
@@ -205,7 +205,7 @@ $text-faint:  t.$color-text-subtle;
     }
   }
 }
-
+ 
 // ── Status chip ──────────────────────────────────────────────────────────────
 .status-chip {
   display: inline-block;
@@ -217,7 +217,7 @@ $text-faint:  t.$color-text-subtle;
   letter-spacing: 0.04em;
   background: rgba($border, 0.3);
   color: $text-muted;
-
+ 
   &[data-status*="active"],
   &[data-status*="progress"] {
     background: rgba(t.$color-info, 0.1);
@@ -247,7 +247,7 @@ $text-faint:  t.$color-text-subtle;
     border: 1px solid t.$color-error-border;
   }
 }
-
+ 
 // ── Pagination bar ───────────────────────────────────────────────────────────
 .qs-pager {
   display: flex;
@@ -258,7 +258,7 @@ $text-faint:  t.$color-text-subtle;
   background: $surface-alt;
   justify-content: flex-end;
 }
-
+ 
 .pg-btn {
   height: 26px;
   padding: 0 14px;
@@ -271,19 +271,19 @@ $text-faint:  t.$color-text-subtle;
   color: $text-muted;
   cursor: pointer;
   transition: all t.$transition-fast;
-
+ 
   &:hover:not(:disabled) {
     background: $brand-5;
     border-color: $primary;
     color: $primary;
   }
-
+ 
   &:disabled {
     opacity: 0.35;
     cursor: default;
   }
 }
-
+ 
 .pg-info {
   font-size: t.$font-size-xs;
   color: $text-muted;

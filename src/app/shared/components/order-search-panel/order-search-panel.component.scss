@@ -1,196 +1,258 @@
-@use 'form-controls' as fc with (
-  $fc-input-height:  30px,   // compact search panel — tighter than standard 38px
-  $fc-panel-radius:  12px    // slightly tighter card corners
-);
 @use 'theme' as t;
-
+ 
 // ── Tokens from project theme ────────────────────────────────────────────────
 $primary:     t.$color-primary;
 $primary-dk:  t.$color-primary-dark;
 $primary-glow: t.$color-primary-glow;
-
+ 
 $text-body:   t.$color-text-base;
 $text-mid:    t.$color-text-muted;
 $text-muted:  t.$color-text-muted;
 $text-label:  t.$color-text-base;
 $text-ph:     t.$color-text-subtle;
-
+ 
 $border:      t.$color-border;
 $border-str:  t.$color-border-strong;
 $input-bg:    t.$color-bg-input;
 $surface:     t.$color-bg-surface;
 $surface-alt: t.$color-bg-subtle;
 $divider:     rgba(t.$color-border, 0.4);
-
+ 
 :host { display: block; }
-
+ 
+// ── Panel container ──────────────────────────────────────────────────────────
 .panel {
-  margin-bottom: 0.5rem;
-  background: #fff;
-  border: 1px solid $panel-border;
-  border-radius: 12px;
+  margin-bottom: 12px;
+  background: $surface;
+  border: 1px solid $border;
+  border-radius: t.$radius-lg;
   overflow: hidden;
-  box-shadow: $panel-shadow;
+  box-shadow: t.$shadow-card;
 }
-
+ 
 .panel-header {
   display: flex;
   align-items: center;
   gap: t.$space-2;
-  padding: 11px t.$space-5;
+  padding: 8px t.$space-5;
   border-bottom: 1px solid $divider;
-  background: #fafafa;
-
+  background: linear-gradient(135deg, $primary 0%, $primary-dk 100%);
+ 
   i {
-    font-size: 0.78rem;
-    color: $text-mid;
+    font-size: 0.72rem;
+    color: rgba(255, 255, 255, 0.7);
   }
-
+ 
   span {
     font-size: t.$font-size-xs;
-    font-weight: t.$font-weight-semibold;
+    font-weight: t.$font-weight-bold;
     text-transform: uppercase;
-    letter-spacing: 0.09em;
-    color: $text-mid;
+    letter-spacing: 0.1em;
+    color: #fff;
   }
 }
-
+ 
+// ── Form ─────────────────────────────────────────────────────────────────────
 .form {
-  padding: t.$space-3 t.$space-4 t.$space-3;
+  padding: 10px 16px 10px;
 }
-
+ 
+// ── 4-column grid ────────────────────────────────────────────────────────────
 .grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 6px 14px;
 }
-
+ 
 .field {
   display: flex;
   flex-direction: column;
-  gap: 3px;
-
+  gap: 2px;
+ 
   label {
     display: block;
-    font-size: 0.68rem;
-    font-weight: t.$font-weight-semibold;
+    font-size: 0.625rem;
+    font-weight: t.$font-weight-bold;
     text-transform: uppercase;
-    letter-spacing: 0.07em;
-    color: $text-label;
+    letter-spacing: 0.08em;
+    color: $text-mid;
     transition: color t.$transition-fast;
   }
-
-  &:focus-within label { color: $navy; }
-
+ 
+  &:focus-within label { color: $primary; }
+ 
   input.p-inputtext,
   input[pInputText] {
     width: 100%;
-    height: 30px;
-    padding: 0 t.$space-3;
+    height: 28px;
+    padding: 0 10px;
     background: $input-bg !important;
-    border: 1px solid $input-border !important;
-    border-radius: t.$radius-md !important;
-    color: #111827 !important;
-    font-size: t.$font-size-sm;
+    border: 1px solid $border !important;
+    border-radius: t.$radius-sm !important;
+    color: $text-body !important;
+    font-size: t.$font-size-xs;
     font-family: t.$font-sans;
     transition: border-color t.$transition-base, background t.$transition-base, box-shadow t.$transition-base;
-
-    &::placeholder { color: $text-placeholder; font-size: t.$font-size-xs; }
-    &:hover { border-color: #9ca3af !important; background: #fff !important; }
+ 
+    &::placeholder { color: $text-ph; font-size: 0.625rem; }
+    &:hover { border-color: $border-str !important; background: $surface !important; }
     &:focus {
-      border-color: $navy !important;
-      background: #fff !important;
-      box-shadow: 0 0 0 3px $navy-glow !important;
+      border-color: $primary !important;
+      background: $surface !important;
+      box-shadow: 0 0 0 2px $primary-glow !important;
       outline: none !important;
     }
   }
 }
-
+ 
+// ── PrimeNG p-select overrides ───────────────────────────────────────────────
+:host ::ng-deep {
+  p-select.p-select {
+    display: inline-flex;
+    align-items: center;
+    width: 100%;
+    height: 28px;
+    background: $input-bg;
+    border: 1px solid $border;
+    border-radius: t.$radius-sm;
+    font-size: t.$font-size-xs;
+    font-family: t.$font-sans;
+    cursor: pointer;
+    box-shadow: none;
+    transition: border-color t.$transition-base, background t.$transition-base, box-shadow t.$transition-base;
+ 
+    &:hover { border-color: $border-str; background: $surface; }
+ 
+    &.p-focus {
+      border-color: $primary;
+      background: $surface;
+      box-shadow: 0 0 0 2px $primary-glow;
+      outline: none;
+    }
+ 
+    .p-select-label {
+      flex: 1 1 auto;
+      padding: 0 10px;
+      color: $text-body;
+      font-size: t.$font-size-xs;
+      line-height: 26px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+ 
+      &.p-placeholder { color: $text-ph; font-size: 0.625rem; }
+    }
+ 
+    .p-select-clear-icon {
+      flex: 0 0 auto;
+      color: $text-muted;
+      font-size: 0.65rem;
+      margin-right: 0.2rem;
+    }
+ 
+    .p-select-dropdown {
+      flex: 0 0 auto;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 1.75rem;
+      color: $text-muted;
+    }
+  }
+}
+ 
+// ── Actions bar ──────────────────────────────────────────────────────────────
 .actions {
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  gap: t.$space-3;
-  margin-top: t.$space-2;
-  padding-top: t.$space-2;
+  gap: 10px;
+  margin-top: 8px;
+  padding-top: 8px;
   border-top: 1px solid $divider;
 }
-
-// ── Records count inline field (left-aligned in actions bar) ──────────────────
+ 
 .records-field {
   display: flex;
   align-items: center;
-  gap: t.$space-2;
+  gap: 6px;
   margin-right: auto;
-
+ 
   label {
-    font-size: 0.68rem;
-    font-weight: t.$font-weight-semibold;
+    font-size: 0.625rem;
+    font-weight: t.$font-weight-bold;
     text-transform: uppercase;
-    letter-spacing: 0.07em;
-    color: $text-label;
+    letter-spacing: 0.08em;
+    color: $text-mid;
     white-space: nowrap;
   }
-
+ 
   input.p-inputtext,
   input[pInputText] {
-    width: 72px;
-    height: 34px;
-    padding: 0 t.$space-3;
+    width: 60px;
+    height: 28px;
+    padding: 0 8px;
     background: $input-bg !important;
-    border: 1px solid $input-border !important;
-    border-radius: t.$radius-md !important;
-    color: #111827 !important;
-    font-size: t.$font-size-sm;
+    border: 1px solid $border !important;
+    border-radius: t.$radius-sm !important;
+    color: $text-body !important;
+    font-size: t.$font-size-xs;
     font-family: t.$font-sans;
     text-align: center;
-
+ 
     &:focus {
-      border-color: $navy !important;
-      box-shadow: 0 0 0 3px $navy-glow !important;
+      border-color: $primary !important;
+      box-shadow: 0 0 0 2px $primary-glow !important;
       outline: none !important;
     }
   }
 }
-
+ 
+// ── Buttons ──────────────────────────────────────────────────────────────────
 %btn-base {
   display: inline-flex;
   align-items: center;
-  gap: 7px;
-  height: 36px;
-  padding: 0 t.$space-4;
-  border-radius: t.$radius-md;
-  font-size: t.$font-size-sm;
+  gap: 6px;
+  height: 30px;
+  padding: 0 14px;
+  border-radius: t.$radius-sm;
+  font-size: t.$font-size-xs;
   font-weight: t.$font-weight-semibold;
   font-family: t.$font-sans;
   cursor: pointer;
-  transition: all t.$transition-base;
-
-  i { font-size: 0.76rem; }
+  transition: all t.$transition-fast;
+ 
+  i { font-size: 0.7rem; }
 }
-
+ 
 .btn-clear {
   @extend %btn-base;
-  background: #fff;
-  border: 1px solid $input-border;
+  background: $surface;
+  border: 1px solid $border;
   color: $text-muted;
-
-  &:hover { border-color: #9ca3af; color: $text-dark; background: #f9fafb; }
-  &:active { background: #f3f4f6; }
+ 
+  &:hover { border-color: $border-str; color: $text-body; background: $surface-alt; }
+  &:active { background: rgba($border, 0.2); }
 }
-
+ 
 .btn-search {
   @extend %btn-base;
-  background: $navy;
+  background: linear-gradient(135deg, $primary, $primary-dk);
   border: none;
   color: #fff;
-  box-shadow: 0 2px 10px $navy-glow;
-
-  &:hover { background: $navy-hover; box-shadow: 0 4px 16px rgba(10, 74, 122, 0.35); transform: translateY(-1px); }
-  &:active { transform: translateY(0); box-shadow: 0 1px 4px $navy-glow; }
+  box-shadow: 0 2px 8px rgba($primary, 0.2);
+ 
+  &:hover {
+    box-shadow: 0 4px 14px rgba($primary, 0.3);
+    transform: translateY(-1px);
+  }
+  &:active {
+    transform: translateY(0);
+    box-shadow: 0 1px 4px rgba($primary, 0.15);
+  }
 }
-
-@media (max-width: 1100px) {
+ 
+@media (max-width: 900px) {
   .grid { grid-template-columns: repeat(2, 1fr); }
 }
 @media (max-width: 500px) {
