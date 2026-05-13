@@ -33,7 +33,9 @@ export const NAV_GROUPS: NavGroup[] = [
     label: 'Intranet',
     icon: NAV_ICONS.intranet,
     roles: [Role.SuperAdmin, Role.Admin, Role.User],
-    children: [{ label: 'Users', route: '/intranet/users', icon: NAV_ICONS.users }],
+    children: [
+      { label: 'Edge Orders Search', route: '/intranet/Edge-Orders-Search', icon: NAV_ICONS.users },
+    ],
   },
   {
     label: 'Documentum',
@@ -51,7 +53,7 @@ export const NAV_GROUPS: NavGroup[] = [
     roles: 'all',
     children: [
       { label: 'Manage Queue', route: '/admin/manage-queue', icon: NAV_ICONS.manageQueue },
-      { label: 'Manage Users', route: '/admin/manage-users', icon: NAV_ICONS.manageUsers },
+      { label: 'Manage Users', route: '/documentum/users', icon: NAV_ICONS.manageUsers },
     ],
   },
 ];
@@ -68,6 +70,6 @@ export const ADMIN_NAV: NavStandaloneItem[] = [
 
 export const USER_NAV: NavStandaloneItem[] = [
   { label: 'User Settings', route: '/profile', icon: NAV_ICONS.userSettings, roles: 'all' },
-  { label: 'Help Desk',     route: '/help-desk', icon: NAV_ICONS.helpDesk, roles: 'all' },
-  { label: 'User Guide',    route: '/user-guide', icon: NAV_ICONS.userGuide, roles: 'all' },
+  { label: 'Help Desk', route: '/help-desk', icon: NAV_ICONS.helpDesk, roles: 'all' },
+  { label: 'User Guide', route: '/user-guide', icon: NAV_ICONS.userGuide, roles: 'all' },
 ];

@@ -21,6 +21,54 @@ export class SessionService {
     this.storage.remove(STORAGE_KEYS.TOKEN, 'local');
   }
 
+  // ── Refresh token ──────────────────────────────────────────────────────────
+
+  saveRefreshToken(token: string): void {
+    this.storage.set(STORAGE_KEYS.REFRESH_TOKEN, token, 'local');
+  }
+
+  getRefreshToken(): string | null {
+    return this.storage.get(STORAGE_KEYS.REFRESH_TOKEN, 'local');
+  }
+
+  clearRefreshToken(): void {
+    this.storage.remove(STORAGE_KEYS.REFRESH_TOKEN, 'local');
+  }
+
+  // ── Token expiry ───────────────────────────────────────────────────────────
+
+  saveExpiresAt(expiresAt: string): void {
+    this.storage.set(STORAGE_KEYS.EXPIRES_AT, expiresAt, 'local');
+  }
+
+  getExpiresAt(): string | null {
+    return this.storage.get(STORAGE_KEYS.EXPIRES_AT, 'local');
+  }
+
+  clearExpiresAt(): void {
+    this.storage.remove(STORAGE_KEYS.EXPIRES_AT, 'local');
+  }
+
+  // ── User profile ──────────────────────────────────────────────────────────
+
+  saveUser(user: AppUser): void {
+    this.storage.set(STORAGE_KEYS.USER, JSON.stringify(user), 'local');
+  }
+
+  getUser(): AppUser | null {
+    const raw = this.storage.get(STORAGE_KEYS.USER, 'local');
+    if (!raw) return null;
+    try {
+      return JSON.parse(raw) as AppUser;
+    } catch {
+      return null;
+    }
+  }
+
+  clearUser(): void {
+    this.storage.remove(STORAGE_KEYS.USER, 'local');
+  }
+
   // ── Dev user (development shortcut only) ───────────────────────────────────
 
   saveDevUser(user: AppUser): void {
@@ -41,10 +89,30 @@ export class SessionService {
     this.storage.remove(STORAGE_KEYS.DEV_USER);
   }
 
+  // ── Grouped convenience methods ────────────────────────────────────────────
+
+  /** Call once after a successful login — persists tokens + user profile. */
+  saveLoginSession(accessToken: string, refreshToken: string, expiresAt: string, user: AppUser): void {
+    this.saveToken(accessToken);
+    this.saveRefreshToken(refreshToken);
+    this.saveExpiresAt(expiresAt);
+    this.saveUser(user);
+  }
+
+  /** Call after a token refresh — updates tokens only, leaves user profile intact. */
+  saveTokens(accessToken: string, refreshToken: string, expiresAt: string): void {
+    this.saveToken(accessToken);
+    this.saveRefreshToken(refreshToken);
+    this.saveExpiresAt(expiresAt);
+  }
+
   // ── Full session lifecycle ─────────────────────────────────────────────────
 
   clearAll(): void {
     this.clearToken();
+    this.clearRefreshToken();
+    this.clearExpiresAt();
+    this.clearUser();
     this.clearDevUser();
   }
 }

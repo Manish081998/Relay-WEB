@@ -1,0 +1,178 @@
+// Internal form layout — dialog chrome is overridden globally via .eu-modal in styles.scss
+
+.eu-body {
+  display: flex;
+  flex-direction: column;
+}
+
+// ── Form ──────────────────────────────────────────────────────────────────────
+.eu-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 20px 20px 16px;
+}
+
+// form tag is a direct child of eu-form — must also be a flex column so eu-form's gap reaches the rows inside it
+.eu-form > form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.eu-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+
+  &.eu-row-full {
+    grid-template-columns: 1fr;
+  }
+}
+
+.eu-field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+// ── Labels ────────────────────────────────────────────────────────────────────
+.eu-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #374151;
+  line-height: 1;
+}
+
+.eu-req {
+  color: #ef4444;
+  margin-left: 2px;
+}
+
+// ── Inputs ────────────────────────────────────────────────────────────────────
+// eu-invalid applied via [class.eu-invalid] on the native input
+.eu-invalid {
+  border-color: #ef4444 !important;
+  box-shadow: 0 0 0 1px #ef4444 !important;
+}
+
+// ── Validation errors ────────────────────────────────────────────────────────
+.eu-err {
+  font-size: 11px;
+  color: #ef4444;
+  line-height: 1.3;
+}
+
+// ── Status row ────────────────────────────────────────────────────────────────
+.eu-status-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-top: 6px;
+}
+
+.eu-checkbox {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  flex-shrink: 0;
+  accent-color: #1a5fb4;
+}
+
+.eu-status-lbl {
+  font-size: 14px;
+  font-weight: 500;
+  color: #6b7280;
+  cursor: pointer;
+  user-select: none;
+  transition: color 0.15s;
+
+  &.eu-active {
+    color: #10b981;
+    font-weight: 600;
+  }
+}
+
+// ── Info bar (edit mode only) ─────────────────────────────────────────────────
+.eu-info-bar {
+  margin-top: 4px;
+  background: #f3f4f6;
+  border-top: 1px solid #e5e7eb;
+  padding: 10px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.eu-info-row {
+  display: flex;
+  gap: 32px;
+  font-size: 11px;
+  color: #6b7280;
+  line-height: 1.5;
+  flex-wrap: wrap;
+}
+
+.eu-info-key {
+  font-weight: 600;
+  color: #374151;
+  margin-right: 3px;
+}
+
+.eu-info-id {
+  font-family: ui-monospace, 'Cascadia Mono', 'Segoe UI Mono', Consolas, monospace;
+  font-size: 11px;
+  color: #2563eb;
+}
+
+// ── Footer ────────────────────────────────────────────────────────────────────
+.eu-footer {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 20px;
+  border-top: 1px solid #e5e7eb;
+  background: #ffffff;
+}
+
+.eu-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 36px;
+  padding: 0 18px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: background 0.15s, border-color 0.15s;
+
+  i { font-size: 0.8rem; }
+
+  &:disabled { opacity: 0.5; cursor: default; }
+}
+
+.eu-btn-cancel {
+  background: #fff;
+  border-color: #d1d5db;
+  color: #374151;
+
+  &:hover:not(:disabled) {
+    background: #f9fafb;
+    border-color: #9ca3af;
+  }
+}
+
+.eu-btn-save {
+  background: #1a5fb4;
+  color: #fff;
+  border-color: #1a5fb4;
+
+  &:hover:not(:disabled) {
+    background: #154d93;
+    border-color: #154d93;
+  }
+}

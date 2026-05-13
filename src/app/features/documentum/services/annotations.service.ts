@@ -10,6 +10,6 @@ export class AnnotationsService {
   private readonly api = inject(ApiService);
 
   getById(id: string): Observable<ApiResult<AnnotationDto>> {
-    return this.api.get<ApiResult<AnnotationDto>>(`${API_ENDPOINTS.ANNOTATIONS}/${id}`);
+    return this.api.get<ApiResult<AnnotationDto>>(`${API_ENDPOINTS.DOCUMENTUM.ANNOTATIONS}/${id}`);
   }
 }

@@ -1,0 +1,180 @@
+<p-dialog
+  [visible]="visible()"
+  (visibleChange)="visible.set($event)"
+  header="Edit User"
+  [modal]="true"
+  [draggable]="false"
+  [resizable]="false"
+  [closable]="!saving()"
+  [style]="{ width: '560px' }"
+  styleClass="eu-modal"
+  (onHide)="close()"
+>
+
+  <div class="eu-body">
+
+    <!--
+      Wrap rows in a plain div so p-select (a ControlValueAccessor) is outside
+      the [formGroup] boundary and cannot trigger "Cannot find control" errors.
+    -->
+    <div class="eu-form">
+
+      <form [formGroup]="form" (ngSubmit)="submit()" autocomplete="off">
+
+        <!-- Row 1: First Name | Last Name -->
+        <div class="eu-row">
+          <div class="eu-field">
+            <label for="eu-firstName" class="eu-label">
+              First Name <span class="eu-req">*</span>
+            </label>
+            <input
+              id="eu-firstName"
+              pInputText
+              type="text"
+              formControlName="firstName"
+              placeholder="First name"
+              [class.eu-invalid]="f['firstName'].invalid && f['firstName'].touched"
+            />
+            @if (f['firstName'].invalid && f['firstName'].touched) {
+              <span class="eu-err">First name is required.</span>
+            }
+          </div>
+
+          <div class="eu-field">
+            <label for="eu-lastName" class="eu-label">
+              Last Name <span class="eu-req">*</span>
+            </label>
+            <input
+              id="eu-lastName"
+              pInputText
+              type="text"
+              formControlName="lastName"
+              placeholder="Last name"
+              [class.eu-invalid]="f['lastName'].invalid && f['lastName'].touched"
+            />
+            @if (f['lastName'].invalid && f['lastName'].touched) {
+              <span class="eu-err">Last name is required.</span>
+            }
+          </div>
+        </div>
+
+        <!-- Row 2: Email ID | Global ID -->
+        <div class="eu-row">
+          <div class="eu-field">
+            <label for="eu-emailId" class="eu-label">
+              Email ID <span class="eu-req">*</span>
+            </label>
+            <input
+              id="eu-emailId"
+              pInputText
+              type="email"
+              formControlName="emailId"
+              placeholder="user@example.com"
+              [class.eu-invalid]="f['emailId'].invalid && f['emailId'].touched"
+            />
+            @if (f['emailId'].errors?.['required'] && f['emailId'].touched) {
+              <span class="eu-err">Email is required.</span>
+            } @else if (f['emailId'].errors?.['email'] && f['emailId'].touched) {
+              <span class="eu-err">Enter a valid email address.</span>
+            }
+          </div>
+
+          <div class="eu-field">
+            <label for="eu-globalId" class="eu-label">
+              Global ID (Username) <span class="eu-req">*</span>
+            </label>
+            <input
+              id="eu-globalId"
+              pInputText
+              type="text"
+              formControlName="globalId"
+              placeholder="Username"
+              [class.eu-invalid]="f['globalId'].invalid && f['globalId'].touched"
+            />
+            @if (f['globalId'].invalid && f['globalId'].touched) {
+              <span class="eu-err">Global ID is required.</span>
+            }
+          </div>
+        </div>
+
+
+      </form>
+
+      <!-- Row 4: Brand | Status — intentionally outside <form> so p-select
+           (ControlValueAccessor) does not interact with [formGroup] -->
+      <div class="eu-row">
+        <div class="eu-field">
+          <label class="eu-label">Brand</label>
+          <p-select
+            [ngModel]="selectedBrandId()"
+            (ngModelChange)="onBrandChange($event)"
+            [options]="brands()"
+            optionLabel="brandName"
+            optionValue="brandId"
+            placeholder="Select brand"
+            styleClass="eu-brand-select"
+            panelStyleClass="eu-brand-panel"
+            [fluid]="true"
+          />
+        </div>
+
+        <div class="eu-field">
+          <span class="eu-label">Status</span>
+          <div class="eu-status-row">
+            <input
+              type="checkbox"
+              id="eu-isActive"
+              [formControl]="form.controls.isActive"
+              class="eu-checkbox"
+            />
+            <label
+              for="eu-isActive"
+              class="eu-status-lbl"
+              [class.eu-active]="isActiveValue()"
+            >
+              Active
+            </label>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /.eu-form -->
+
+    <!-- Info bar -->
+    @if (user()) {
+      <div class="eu-info-bar">
+        <div class="eu-info-row">
+          <span>
+            <span class="eu-info-key">Created by:</span>
+            {{ user()!.createdBy }} on {{ user()!.createdDate | date:'yyyy-MM-dd HH:mm:ss' }}
+          </span>
+        </div>
+      </div>
+    }
+
+    <!-- Footer -->
+    <div class="eu-footer">
+      <button
+        type="button"
+        class="eu-btn eu-btn-cancel"
+        [disabled]="saving()"
+        (click)="close()"
+      >
+        Cancel
+      </button>
+      <button
+        type="button"
+        class="eu-btn eu-btn-save"
+        [disabled]="saving()"
+        (click)="submit()"
+      >
+        @if (saving()) {
+          <i class="pi pi-spin pi-spinner"></i>
+        }
+        {{ saving() ? 'Saving…' : 'Save Changes' }}
+      </button>
+    </div>
+
+  </div>
+
+</p-dialog>

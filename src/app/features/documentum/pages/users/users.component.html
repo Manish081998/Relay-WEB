@@ -1,0 +1,79 @@
+<div class="mu-page">
+
+  <!-- Page header -->
+  <div class="mu-title-row">
+    <div class="mu-title-left">
+      <h1 class="mu-title">Manage Users</h1>
+      <p class="mu-subtitle">View and manage all registered system users</p>
+    </div>
+    @if (!loading() && users().length > 0) {
+      <span class="mu-count-badge">{{ users().length }} users</span>
+    }
+  </div>
+
+  <!-- Results Grid -->
+  <div class="mu-grid-wrap">
+    <p-table
+      [value]="users()"
+      dataKey="userId"
+      [rowHover]="true"
+      [loading]="loading()"
+      [paginator]="true"
+      [rows]="10"
+      [rowsPerPageOptions]="[10, 25, 50]"
+      [showCurrentPageReport]="true"
+      currentPageReportTemplate="Showing {first} to {last} of {totalRecords} users"
+    >
+      <ng-template #header>
+        <tr>
+          <th pSortableColumn="firstName"   style="width: 155px">Full Name    <p-sortIcon field="firstName"   /></th>
+          <th pSortableColumn="emailId"     style="width: 180px">Email        <p-sortIcon field="emailId"     /></th>
+          <th pSortableColumn="brandName"   style="width: 110px">Brand        <p-sortIcon field="brandName"   /></th>
+          <th pSortableColumn="globalId"    style="width: 120px">Global ID    <p-sortIcon field="globalId"    /></th>
+          <th pSortableColumn="isActive"    style="width:  85px">Status       <p-sortIcon field="isActive"    /></th>
+          <th pSortableColumn="createdBy"   style="width: 130px">Created By   <p-sortIcon field="createdBy"   /></th>
+          <th pSortableColumn="createdDate" style="width: 110px">Created Date <p-sortIcon field="createdDate" /></th>
+          <th style="width: 72px; text-align: center">Actions</th>
+        </tr>
+      </ng-template>
+
+      <ng-template #body let-user>
+        <tr>
+          <td><span class="cell-name">{{ user.firstName }} {{ user.lastName }}</span></td>
+          <td class="cell-trunc">{{ user.emailId }}</td>
+          <td>{{ user.brandName }}</td>
+          <td class="cell-mono">{{ user.globalId }}</td>
+          <td>
+            <span class="status-chip" [attr.data-status]="user.isActive ? 'active' : 'inactive'">
+              {{ user.isActive ? 'Active' : 'Inactive' }}
+            </span>
+          </td>
+          <td class="cell-trunc">{{ user.createdBy }}</td>
+          <td>{{ user.createdDate | date:'MM/dd/yy hh:mm a' }}</td>
+          <td class="cell-actions">
+            <button class="action-btn" title="Edit user" (click)="openEdit(user)">
+              <i class="pi pi-pencil"></i>
+            </button>
+          </td>
+        </tr>
+      </ng-template>
+
+      <ng-template #emptymessage>
+        <tr>
+          <td colspan="8" class="cell-empty">No records found.</td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+
+</div>
+
+<!-- Edit User Dialog -->
+<app-edit-user-dialog
+  [visible]="editVisible()"
+  (visibleChange)="editVisible.set($event)"
+  [user]="editingUser()"
+  [saving]="saving()"
+  [brands]="brands()"
+  (saved)="onSave($event)"
+/>

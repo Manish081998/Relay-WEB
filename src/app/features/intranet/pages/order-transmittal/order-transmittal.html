@@ -1,0 +1,288 @@
+<div class="ot-wrapper">
+
+  <!-- Toolbar (hidden on print) -->
+  <div class="ot-toolbar no-print">
+    <button class="ot-btn" (click)="goBack()">&#8592; Back</button>
+    <span class="ot-toolbar-title">Order Transmittal{{ releaseNumber() ? ' — ' + releaseNumber() : '' }}</span>
+    <button class="ot-btn" (click)="print()">&#128438; Print</button>
+  </div>
+
+  @if (parseError()) {
+    <div class="ot-error no-print">{{ parseError() }}</div>
+  }
+
+  @if (order(); as o) {
+    <div class="ot-document">
+
+      <!-- ═══════════════════════════════════════════════════════
+           PAGE 1 — Order Header
+           ═══════════════════════════════════════════════════════ -->
+      <div class="ot-page">
+
+        <!-- Page header row -->
+        <table class="ot-page-header-table" cellpadding="4" cellspacing="0">
+          <tr>
+            <td class="ot-center" style="width:50%;"><strong>Order Transmittal</strong></td>
+            <td class="ot-center" style="width:50%;">Order No.</td>
+          </tr>
+        </table>
+
+        <!-- Top info band -->
+        <table class="ot-band-table" cellpadding="4" cellspacing="0">
+          <tr>
+            <td style="width:33%;">
+              <div class="ot-field-label">Rep Acct No:</div>
+              <div class="ot-field-large">{{ o.repAccountNo }}</div>
+            </td>
+            <td style="width:33%; text-align:center;">
+              <div class="ot-field-large"><strong>{{ o.totalNetWoFrt }}</strong></div>
+              <div class="ot-field-label">Total Net w/o Frt.</div>
+            </td>
+            <td style="width:34%; text-align:center;">
+              <div class="ot-field-large"><strong>{{ o.program }}</strong></div>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <div class="ot-field-label">Rep Phone: {{ o.repPhone }}</div>
+            </td>
+            <td></td>
+            <td style="text-align:center;">
+              <div class="ot-field-label">Mktg. Program: {{ o.programCode }}</div>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <div class="ot-field-label">Rep Fax: {{ o.repFax }}</div>
+            </td>
+            <td></td>
+            <td></td>
+          </tr>
+        </table>
+
+        <!-- Sold To / Ship To -->
+        <table class="ot-address-table" cellpadding="4" cellspacing="0">
+          <tr>
+            <td colspan="2" class="ot-section-header">Sold To:</td>
+            <td colspan="2" class="ot-section-header">Ship To:</td>
+          </tr>
+          <tr>
+            <td class="ot-label">Name:</td>
+            <td>{{ o.soldToName }}</td>
+            <td class="ot-label">Name:</td>
+            <td><strong>{{ o.shipToName }}</strong></td>
+          </tr>
+          <tr>
+            <td class="ot-label"></td>
+            <td></td>
+            <td class="ot-label">Care of:</td>
+            <td>{{ o.shipToCareOf }}</td>
+          </tr>
+          <tr>
+            <td class="ot-label">Address:</td>
+            <td>{{ o.soldToAddress }}</td>
+            <td class="ot-label">Address:</td>
+            <td>{{ o.shipToAddress }}</td>
+          </tr>
+          @if (o.shipToAddress2) {
+            <tr>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td>{{ o.shipToAddress2 }}</td>
+            </tr>
+          }
+          <tr>
+            <td class="ot-label">City:</td>
+            <td>{{ o.soldToCity }}&nbsp;&nbsp;{{ o.soldToState }}&nbsp;&nbsp;{{ o.soldToZip }}</td>
+            <td class="ot-label">City:</td>
+            <td><strong>{{ o.shipToCity }}</strong>&nbsp;&nbsp;{{ o.shipToState }}&nbsp;&nbsp;{{ o.shipToZip }}</td>
+          </tr>
+        </table>
+
+        <!-- Order details grid -->
+        <table class="ot-details-table" cellpadding="4" cellspacing="0">
+          <tr>
+            <td class="ot-label" style="width:15%;">Rep P.O. No:</td>
+            <td style="width:25%;"><strong>{{ o.repPONo }}</strong></td>
+            <td class="ot-label" style="width:10%;">FMA:</td>
+            <td style="width:20%;">{{ o.fma }}</td>
+            <td class="ot-label" style="width:15%;">Special Items:</td>
+            <td style="width:15%;"><strong>{{ o.specialItems }}</strong></td>
+          </tr>
+          <tr>
+            <td class="ot-label">Job Name:</td>
+            <td>{{ o.jobName }}</td>
+            <td class="ot-label">X-Lines:</td>
+            <td colspan="3">{{ o.xLines }}</td>
+          </tr>
+          <tr>
+            <td class="ot-label">Cust Acct No:</td>
+            <td>{{ o.custAccountNo }}</td>
+            <td class="ot-label" colspan="2">Cust P.O.: {{ o.custPO }}</td>
+            <td class="ot-label">Comm - Lines:</td>
+            <td>{{ o.commLines }}</td>
+          </tr>
+          <tr>
+            <td class="ot-label">Salesperson:</td>
+            <td colspan="5">{{ o.salesperson }}</td>
+          </tr>
+        </table>
+
+        <!-- Mark Order / Call Before / Shipping / Release Comments -->
+        <table class="ot-shipping-table" cellpadding="4" cellspacing="0">
+          <tr>
+            <td style="width:50%;">
+              <table cellpadding="2" cellspacing="0" style="width:100%;">
+                <tr>
+                  <td class="ot-label" style="width:30%;">Mark Order:</td>
+                  <td><strong>{{ o.markOrder }}</strong></td>
+                </tr>
+                <tr>
+                  <td class="ot-label">Call Before:</td>
+                  <td><strong>{{ o.callBefore }}</strong></td>
+                </tr>
+                <tr>
+                  <td colspan="2" style="padding-top:4px;">
+                    <span class="ot-label">Shipping Instructions:</span>{{ o.shippingInstructions }}
+                  </td>
+                </tr>
+                <tr>
+                  <td colspan="2"><span class="ot-label">Terms:</span><strong>{{ o.terms }}</strong></td>
+                </tr>
+                <tr>
+                  <td colspan="2">{{ o.noPartial }}</td>
+                </tr>
+                <tr>
+                  <td colspan="2"><span class="ot-label">Ship Via:</span>&nbsp;&nbsp;{{ o.shipVia }}</td>
+                </tr>
+              </table>
+            </td>
+            <td style="width:50%; vertical-align:top;">
+              <span class="ot-label">Release Comments:</span>
+              <div>{{ o.releaseComments }}</div>
+            </td>
+          </tr>
+        </table>
+
+        <!-- Bottom metadata row -->
+        <table class="ot-meta-table" cellpadding="3" cellspacing="0">
+          <tr>
+            <td>Model Count: &nbsp;<strong>{{ o.modelCount }}</strong></td>
+            <td>Job Number: &nbsp;<strong>{{ o.jobNumber }}</strong></td>
+            <td>Job Created: {{ o.jobCreated }}</td>
+          </tr>
+          <tr>
+            <td>Line Count: &nbsp;<strong>{{ o.lineCount }}</strong></td>
+            <td>EDGE: &nbsp;<strong>{{ o.edgeVersion }}</strong></td>
+            <td>E Mail: &nbsp;{{ o.email }}</td>
+          </tr>
+          <tr>
+            <td>Ctrl Qty: &nbsp;<strong>{{ o.ctrlQty }}</strong></td>
+            <td></td>
+            <td></td>
+          </tr>
+        </table>
+
+        <!-- Page footer -->
+        <div class="ot-page-footer">
+          <span>http://intranet.airsysco.com/EdgeOrders/Viewedge.asp?orderGUID={{ o.jobGuid }}</span>
+          <span class="ot-page-num">Page 1 of 2 &nbsp;&nbsp; {{ printDate() }}</span>
+        </div>
+
+      </div><!-- /page 1 -->
+
+      <!-- ═══════════════════════════════════════════════════════
+           PAGE 2 — Line Items
+           ═══════════════════════════════════════════════════════ -->
+      <div class="ot-page ot-page-break">
+
+        <div class="ot-list-models-heading">List Models</div>
+
+        <table class="ot-items-table" cellpadding="3" cellspacing="0">
+          <thead>
+            <tr>
+              <th rowspan="3">Line</th>
+              <th rowspan="3">Qty</th>
+              <th rowspan="3">Model</th>
+              <th rowspan="3">Dim 1</th>
+              <th rowspan="3">Dim 2</th>
+              <th colspan="1">Module Size</th>
+              <th rowspan="3">Frame</th>
+              <th rowspan="3">Border</th>
+              <th rowspan="3">Finish</th>
+              <th rowspan="2">Fastener</th>
+              <th rowspan="2">Damper Model</th>
+              <th rowspan="3">Accessories</th>
+              <th rowspan="3">Price Each</th>
+              <th rowspan="3">Total Price</th>
+            </tr>
+            <tr>
+              <th>End Border</th>
+            </tr>
+            <tr>
+              <th>Plenum Inlet</th>
+              <th>Pattern</th>
+              <th>Angle Cut</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (item of o.lineItems; track item.line) {
+              <tr class="ot-item-row">
+                <td class="ot-center">{{ item.line }}</td>
+                <td class="ot-center">{{ item.qty }}</td>
+                <td>{{ item.model }}</td>
+                <td class="ot-center">{{ item.dimOne }}</td>
+                <td class="ot-center">{{ item.dimTwo }}</td>
+                <td class="ot-center">{{ item.modSizeBorderPlen }}</td>
+                <td class="ot-center">{{ item.frameBorder }}</td>
+                <td class="ot-center">{{ item.finish }}</td>
+                <td class="ot-center">{{ item.fastenPattern }}</td>
+                <td class="ot-center">{{ item.damper }}</td>
+                <td class="ot-center">{{ item.accOne }}</td>
+                <td class="ot-center">{{ item.accTwo }} {{ item.accThree }}</td>
+                <td class="ot-right">{{ item.individualPrice }}</td>
+                <td class="ot-right">{{ item.totalCost }}</td>
+              </tr>
+              <tr class="ot-tag-row">
+                <td colspan="14">
+                  Tag: {{ item.tag }}
+                  &nbsp;&nbsp;&nbsp;
+                  Comments: {{ item.multiplier }}
+                  @if (item.comment) {
+                    &nbsp;&nbsp;{{ item.comment }}
+                  }
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+
+        <!-- Totals row -->
+        <table class="ot-totals-table" cellpadding="3" cellspacing="0">
+          <tr>
+            <td><strong>TOTALS:</strong></td>
+            <td>Price: {{ o.baseOrderCost }}</td>
+            <td>Set-up Charges: {{ o.setupCharge }}</td>
+            <td>Min. Order Charge:</td>
+            <td>Frt &amp; Surchg: {{ o.freight }}</td>
+            <td>Total Order Cost: {{ o.totalOrderCost }}</td>
+          </tr>
+          <tr>
+            <td colspan="3">TOTAL List Price : {{ o.totalListPrice }}</td>
+            <td colspan="3"></td>
+          </tr>
+        </table>
+
+        <!-- Page footer -->
+        <div class="ot-page-footer">
+          <span>http://intranet.airsysco.com/EdgeOrders/Viewedge.asp?orderGUID={{ o.jobGuid }}</span>
+          <span class="ot-page-num">Page 2 of 2 &nbsp;&nbsp; {{ printDate() }}</span>
+        </div>
+
+      </div><!-- /page 2 -->
+
+    </div><!-- /document -->
+  }
+
+</div>

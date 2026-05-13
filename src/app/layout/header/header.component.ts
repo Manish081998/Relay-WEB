@@ -5,12 +5,13 @@ import { filter, map, startWith } from 'rxjs';
 import { AuthStore } from '../../core/auth/auth.store';
 import { InitialsPipe } from '../../shared/pipes/initials.pipe';
 import { ENVIRONMENT } from '../../core/tokens/environment.token';
+import { ConfirmationDialogComponent } from '../../shared/components/confirmation-dialog/confirmation-dialog.component';
 
 @Component({
   selector: 'app-header',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [InitialsPipe, RouterLink],
+  imports: [InitialsPipe, RouterLink, ConfirmationDialogComponent],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss',
 })
@@ -41,7 +42,18 @@ export class HeaderComponent {
     forbidden:  'Access Denied',
   };
 
-  readonly dropdownOpen = signal(false);
+  readonly dropdownOpen     = signal(false);
+  readonly signOutModalOpen = signal(false);
+
+  onSignOutClick(): void {
+    this.dropdownOpen.set(false);
+    this.signOutModalOpen.set(true);
+  }
+
+  onSignOutConfirm(): void {
+    this.signOutModalOpen.set(false);
+    this.auth.logout();
+  }
 
   readonly sectionTitle = computed(() => {
     const segment = (this.currentUrl() ?? '').split('/').filter(Boolean)[0] ?? '';

@@ -17,8 +17,11 @@
  *            because the env banner warns and the real login is used.
  */
 export const STORAGE_KEYS = {
-  TOKEN:    'relay_token',
-  DEV_USER: 'relay_dev_user',
+  TOKEN:         'relay_token',
+  REFRESH_TOKEN: 'relay_refresh_token',
+  EXPIRES_AT:    'relay_expires_at',
+  USER:          'relay_user',
+  DEV_USER:      'relay_dev_user',
 } as const;
 
 /**

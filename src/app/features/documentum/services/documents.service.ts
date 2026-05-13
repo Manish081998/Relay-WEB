@@ -10,14 +10,14 @@ export class DocumentsService {
   private readonly api = inject(ApiService);
 
   getById(id: string): Observable<ApiResult<DocumentDto>> {
-    return this.api.get<ApiResult<DocumentDto>>(`${API_ENDPOINTS.DOCUMENTS}/${id}`);
+    return this.api.get<ApiResult<DocumentDto>>(`${API_ENDPOINTS.DOCUMENTUM.DOCUMENTS}/${id}`);
   }
 
   getByName(name: string): Observable<ApiResult<DocumentDto>> {
-    return this.api.get<ApiResult<DocumentDto>>(API_ENDPOINTS.DOCUMENTS, { params: { name } });
+    return this.api.get<ApiResult<DocumentDto>>(API_ENDPOINTS.DOCUMENTUM.DOCUMENTS, { params: { name } });
   }
 
   update(id: string, body: UpdateDocumentRequest): Observable<ApiResult<DocumentDto>> {
-    return this.api.put<ApiResult<DocumentDto>>(`${API_ENDPOINTS.DOCUMENTS}/${id}`, body);
+    return this.api.put<ApiResult<DocumentDto>>(`${API_ENDPOINTS.DOCUMENTUM.DOCUMENTS}/${id}`, body);
   }
 }

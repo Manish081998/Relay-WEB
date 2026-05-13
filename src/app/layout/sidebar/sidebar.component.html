@@ -134,7 +134,7 @@
   <!-- Sign Out -->
   <div class="sidebar-user-section">
     <button class="nav-link nav-link--signout"
-            (click)="auth.logout()"
+            (click)="signOutModalOpen.set(true)"
             type="button">
       <svg class="nav-icon" width="18" height="18" viewBox="0 0 24 24" fill="none"
            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
@@ -147,4 +147,14 @@
     </button>
   </div>
 
+
+  <app-confirmation-dialog
+    [isOpen]="signOutModalOpen()"
+    title="Sign Out"
+    description="Are you sure you want to sign out?"
+    confirmLabel="Sign Out"
+    confirmVariant="danger"
+    (confirmed)="onSignOutConfirm()"
+    (cancelled)="signOutModalOpen.set(false)"
+  />
 </aside>

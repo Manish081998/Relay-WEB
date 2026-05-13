@@ -58,7 +58,7 @@
             </a>
             <div class="user-dropdown__sep" role="separator"></div>
             <button class="user-dropdown__signout" role="menuitem"
-                    (click)="auth.logout(); dropdownOpen.set(false)" type="button">
+                    (click)="onSignOutClick()" type="button">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                 <path d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
@@ -71,3 +71,13 @@
     </div>
   </header>
 </div>
+
+<app-confirmation-dialog
+  [isOpen]="signOutModalOpen()"
+  title="Sign Out"
+  description="Are you sure you want to sign out?"
+  confirmLabel="Sign Out"
+  confirmVariant="danger"
+  (confirmed)="onSignOutConfirm()"
+  (cancelled)="signOutModalOpen.set(false)"
+/>

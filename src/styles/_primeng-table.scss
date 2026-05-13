@@ -1,0 +1,464 @@
+@use 'theme' as t;
+@use 'sass:color';
+
+// ─────────────────────────────────────────────────────────────────────────────
+// _primeng-table.scss  —  Reusable enterprise PrimeNG p-table skin
+//
+// Replicates the dense, light-mode "Queue Search" table design.
+// Import ONCE in styles.scss so it applies globally without ::ng-deep:
+//
+//   @use 'styles/primeng-table';
+//
+// To scope to a single component instead:
+//   In the component SCSS file: :host ::ng-deep { /* paste rules below */ }
+// ─────────────────────────────────────────────────────────────────────────────
+
+// ── Design tokens (CSS custom properties — override per page or :root) ────────
+:root {
+  // Header
+  --tbl-header-bg:          #eef2f6;
+  --tbl-header-color:       #1a2029;
+  --tbl-header-border-top:  1px solid #c4ccd6;
+  --tbl-header-border-bot:  2px solid #c4ccd6;
+
+  // Body rows
+  --tbl-row-bg:             #ffffff;
+  --tbl-row-alt-bg:         #f7f9fb;
+  --tbl-row-hover-bg:       #e7f0fa;
+  --tbl-row-selected-bg:    #d6e6f6;
+  --tbl-row-selected-color: #0c4a8a;
+
+  // Cells
+  --tbl-cell-color:         #2a323d;
+  --tbl-cell-border:        1px solid #eef2f6;
+  --tbl-font-size:          11px;
+  --tbl-cell-padding:       6px 8px;
+  --tbl-header-padding:     3px 8px;
+
+  // Outer wrapper
+  --tbl-outer-border:       #dde3ea;
+  --tbl-bg:                 #ffffff;
+
+  // Special cell — highlighted primary-key column (e.g. PO number)
+  --tbl-cell-po-bg:         #cfe0f5;
+  --tbl-cell-po-color:      #1a2029;
+
+  // Link-styled cell
+  --tbl-link-color:         #1a5fb4;
+  --tbl-link-hover-color:   #154d93;
+
+  // Paginator
+  --tbl-pager-bg:           #fafbfc;
+  --tbl-pager-border:       #dde3ea;
+  --tbl-pager-btn-bg:       #ffffff;
+  --tbl-pager-btn-border:   #c4ccd6;
+  --tbl-pager-btn-color:    #2a323d;
+  --tbl-pager-active-bg:    #1a5fb4;
+  --tbl-pager-active-color: #ffffff;
+
+  // Filter row
+  --tbl-filter-bg:          #f4f6f9;
+
+  // Loading overlay
+  --tbl-loading-color:      #1a5fb4;
+
+  // Transitions
+  --tbl-transition:         background 80ms ease;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// 1. TABLE WRAPPER
+// ─────────────────────────────────────────────────────────────────────────────
+
+.p-datatable {
+  background: var(--tbl-bg);
+  border: 1px solid var(--tbl-outer-border);
+  border-radius: 0;
+  font-family: t.$font-sans;
+  font-size: var(--tbl-font-size);
+
+  // Remove PrimeNG default box-shadow and extra borders
+  box-shadow: none;
+}
+
+// Scrollable container — horizontal overflow
+.p-datatable .p-datatable-table-container,
+.p-datatable .p-datatable-wrapper {
+  overflow-x: auto;
+}
+
+// The <table> element itself
+.p-datatable .p-datatable-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  background: var(--tbl-bg);
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// 2. HEADER ROW
+// ─────────────────────────────────────────────────────────────────────────────
+
+.p-datatable .p-datatable-thead > tr > th {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--tbl-header-color);
+  background: var(--tbl-header-bg) !important;
+  padding: var(--tbl-header-padding);
+  border-top: var(--tbl-header-border-top);
+  border-bottom: var(--tbl-header-border-bot);
+  border-left: none;
+  border-right: none;
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+
+  // Remove PrimeNG outline on focus
+  outline: none;
+  box-shadow: none !important;
+
+  // Right-aligned header variant — add class="col-r" to <th>
+  &.col-r { text-align: right; }
+}
+
+// Sortable column hover state
+.p-datatable .p-datatable-thead > tr > th.p-sortable-column:hover {
+  background: color.scale(#eef2f6, $lightness: -3%) !important;
+  color: var(--tbl-link-color);
+}
+
+// Sort icon — make it consistent with the header color
+.p-datatable .p-datatable-thead > tr > th .p-sortable-column-icon,
+.p-datatable .p-datatable-thead > tr > th .p-datatable-sort-icon {
+  font-size: 0.6rem;
+  color: #5c6773;
+  margin-left: 3px;
+}
+
+.p-datatable .p-datatable-thead > tr > th.p-highlight .p-sortable-column-icon,
+.p-datatable .p-datatable-thead > tr > th.p-highlight .p-datatable-sort-icon {
+  color: var(--tbl-link-color);
+}
+
+// Column filter menu button (funnel icon)
+.p-datatable .p-column-filter-menu-button {
+  width: 1rem;
+  height: 1rem;
+  color: #5c6773;
+  border-radius: 2px;
+  transition: background var(--tbl-transition), color var(--tbl-transition);
+
+  &:hover,
+  &.p-column-filter-menu-button-open,
+  &.p-column-filter-menu-button-active {
+    background: rgba(26, 95, 180, 0.12);
+    color: var(--tbl-link-color);
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// 3. FILTER ROW  (when filterDisplay="row")
+// ─────────────────────────────────────────────────────────────────────────────
+
+.p-datatable .p-datatable-thead > tr.p-datatable-filter-row > th,
+.p-datatable .p-column-filter-row th {
+  background: var(--tbl-filter-bg) !important;
+  padding: 4px 6px;
+  border-bottom: 1px solid var(--tbl-outer-border);
+
+  input {
+    height: 26px;
+    font-size: 11px;
+    padding: 0 6px;
+    border: 1px solid #c4ccd6;
+    border-radius: 2px;
+    background: #fff;
+    color: var(--tbl-cell-color);
+    width: 100%;
+
+    &:focus {
+      border-color: var(--tbl-link-color);
+      outline: none;
+      box-shadow: 0 0 0 2px rgba(26, 95, 180, 0.15);
+    }
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// 4. BODY ROWS
+// ─────────────────────────────────────────────────────────────────────────────
+
+.p-datatable .p-datatable-tbody > tr {
+  background: var(--tbl-row-bg);
+  transition: var(--tbl-transition);
+  border: none;
+
+  // Alternating row — PrimeNG applies .p-row-odd on odd rows
+  &.p-row-odd { background: var(--tbl-row-alt-bg); }
+
+  // Hover
+  &:hover,
+  &:hover.p-row-odd {
+    background: var(--tbl-row-hover-bg) !important;
+  }
+
+  // Selected row — PrimeNG uses .p-highlight or aria-selected
+  &.p-highlight,
+  &[aria-selected='true'] {
+    background: var(--tbl-row-selected-bg) !important;
+    color: var(--tbl-row-selected-color);
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// 5. BODY CELLS
+// ─────────────────────────────────────────────────────────────────────────────
+
+.p-datatable .p-datatable-tbody > tr > td {
+  font-size: var(--tbl-font-size);
+  color: var(--tbl-cell-color);
+  padding: var(--tbl-cell-padding);
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  border-bottom: var(--tbl-cell-border);
+  vertical-align: top;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  background: inherit; // inherits from row
+
+  // Right-aligned cell — add class="col-r" to <td>
+  &.col-r { text-align: right; }
+}
+
+// Highlighted primary-key column (e.g. Purchase Order)
+// Usage: <td class="cell-po">
+.p-datatable .p-datatable-tbody > tr > td.cell-po {
+  background: var(--tbl-cell-po-bg) !important;
+  color: var(--tbl-cell-po-color);
+  font-weight: 600;
+}
+
+// Darken PO cell on row hover
+.p-datatable .p-datatable-tbody > tr:hover > td.cell-po {
+  background: color.scale(#cfe0f5, $lightness: -4%) !important;
+}
+
+// Clickable / link-styled cell
+// Usage: <td class="cell-link">
+.p-datatable .p-datatable-tbody > tr > td.cell-link {
+  color: var(--tbl-link-color);
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+
+  &:hover { color: var(--tbl-link-hover-color); }
+}
+
+// Monospaced sequence / ID cell (Sales Order numbers, IDs)
+// Usage: <td class="cell-seq">
+.p-datatable .p-datatable-tbody > tr > td.cell-seq {
+  font-family: ui-monospace, 'Cascadia Mono', 'Segoe UI Mono', Consolas, monospace;
+  font-size: var(--tbl-font-size);
+  color: #5c6773;
+}
+
+// Forces text-overflow ellipsis on cells with dynamic/long content
+// Usage: <td class="cell-trunc">
+.p-datatable .p-datatable-tbody > tr > td.cell-trunc {
+  max-width: 0;
+}
+
+// Empty / no-results spanning cell
+// Usage: <td class="cell-empty" colspan="n">
+.p-datatable .p-datatable-tbody > tr > td.cell-empty {
+  text-align: center;
+  padding: 28px 16px;
+  color: #5c6773;
+  font-size: 12px;
+  font-style: italic;
+  white-space: normal;
+
+  i { margin-right: 6px; font-size: 0.85rem; }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// 6. STATUS CHIP  (inline badge for status column values)
+// Usage: <span class="tbl-status" data-status="active">Active</span>
+// ─────────────────────────────────────────────────────────────────────────────
+
+.tbl-status {
+  display: inline-block;
+  padding: 1px 7px;
+  border-radius: 2px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  background: #e2e6eb;
+  color: #3f4956;
+
+  &[data-status*='active'],
+  &[data-status*='progress'] {
+    background: #d6e6f6;
+    color: #0c4a8a;
+  }
+
+  &[data-status*='hold'],
+  &[data-status*='pending'],
+  &[data-status*='wait'] {
+    background: #fff3cd;
+    color: #7a4e00;
+  }
+
+  &[data-status*='complet'],
+  &[data-status*='done'],
+  &[data-status*='ready'],
+  &[data-status*='production'] {
+    background: #d4edda;
+    color: #0f5132;
+  }
+
+  &[data-status*='error'],
+  &[data-status*='fail'],
+  &[data-status*='cancel'] {
+    background: #f8d7da;
+    color: #842029;
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// 7. LOADING OVERLAY
+// ─────────────────────────────────────────────────────────────────────────────
+
+.p-datatable .p-datatable-loading-overlay {
+  background: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(2px);
+}
+
+.p-datatable .p-datatable-loading-icon {
+  color: var(--tbl-loading-color);
+  font-size: 1.4rem;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// 8. PAGINATOR
+// ─────────────────────────────────────────────────────────────────────────────
+
+.p-datatable .p-paginator,
+.p-paginator.p-datatable-paginator-bottom,
+.p-datatable-paginator-bottom .p-paginator {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 4px;
+  padding: 6px 12px;
+  background: var(--tbl-pager-bg) !important;
+  border: none;
+  border-top: 1px solid var(--tbl-pager-border);
+  border-radius: 0;
+  box-shadow: none;
+}
+
+// Nav & page buttons
+.p-datatable .p-paginator .p-paginator-first,
+.p-datatable .p-paginator .p-paginator-prev,
+.p-datatable .p-paginator .p-paginator-next,
+.p-datatable .p-paginator .p-paginator-last,
+.p-datatable .p-paginator .p-paginator-page {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 26px;
+  height: 26px;
+  padding: 0 8px;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: t.$font-sans;
+  border: 1px solid var(--tbl-pager-btn-border);
+  border-radius: 2px;
+  background: var(--tbl-pager-btn-bg);
+  color: var(--tbl-pager-btn-color);
+  cursor: pointer;
+  transition: background 100ms, border-color 100ms, color 100ms;
+  box-shadow: none;
+
+  &:hover:not(:disabled):not(.p-disabled) {
+    background: var(--tbl-header-bg);
+    border-color: var(--tbl-link-color);
+    color: var(--tbl-link-color);
+  }
+
+  &:disabled,
+  &.p-disabled {
+    opacity: 0.4;
+    cursor: default;
+    pointer-events: none;
+  }
+}
+
+// Active / current page
+.p-datatable .p-paginator .p-paginator-page.p-highlight,
+.p-datatable .p-paginator .p-paginator-page[aria-current='page'] {
+  background: var(--tbl-pager-active-bg) !important;
+  border-color: var(--tbl-pager-active-bg) !important;
+  color: var(--tbl-pager-active-color) !important;
+}
+
+// "Showing X to Y of Z entries" text
+.p-datatable .p-paginator .p-paginator-current {
+  font-size: 11px;
+  color: #5c6773;
+  white-space: nowrap;
+  padding: 0 8px;
+  border: none;
+  background: transparent;
+  cursor: default;
+  height: auto;
+  min-width: unset;
+}
+
+// Rows-per-page dropdown
+.p-datatable .p-paginator .p-paginator-rpp-options,
+.p-datatable .p-paginator .p-select {
+  height: 26px;
+  font-size: 12px;
+  border: 1px solid var(--tbl-pager-btn-border);
+  border-radius: 2px;
+  background: var(--tbl-pager-btn-bg);
+  color: var(--tbl-pager-btn-color);
+  padding: 0 6px;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// 9. RESPONSIVE  (horizontal scroll on narrow viewports)
+// ─────────────────────────────────────────────────────────────────────────────
+
+@media (max-width: 768px) {
+  .p-datatable .p-datatable-table-container,
+  .p-datatable .p-datatable-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  // Collapse paginator to a single row and allow wrapping
+  .p-datatable .p-paginator,
+  .p-paginator.p-datatable-paginator-bottom {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 6px;
+    padding: 8px;
+  }
+
+  .p-datatable .p-paginator .p-paginator-current {
+    width: 100%;
+    text-align: center;
+    order: -1;
+  }
+}

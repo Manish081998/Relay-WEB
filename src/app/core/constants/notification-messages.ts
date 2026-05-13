@@ -55,6 +55,11 @@ export const NOTIFICATION_MESSAGES = {
     ORDER: {
       SEARCH_FAILED: 'Failed to search orders.',
     },
+    USER: {
+      LOAD_FAILED:     'Failed to load users.',
+      UPDATE_SUCCESS:  'User updated successfully.',
+      UPDATE_FAILED:   'Failed to update user.',
+    },
   },
 
   // ── INTRANET module ───────────────────────────────────────────────────────
@@ -64,6 +69,9 @@ export const NOTIFICATION_MESSAGES = {
       NOT_FOUND: 'User not found.',
       UPDATE_SUCCESS: 'User updated successfully.',
       UPDATE_FAILED: 'Failed to update user.',
+    },
+    EDGE_ORDER: {
+      LOAD_FAILED: 'Failed to load edge orders.',
     },
   },
 

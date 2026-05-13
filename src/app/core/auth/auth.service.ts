@@ -1,7 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiService } from '../services/api.service';
-import { ENVIRONMENT } from '../tokens/environment.token';
 import { API_ENDPOINTS } from '../constants/api-endpoints.constants';
 
 export interface LoginRequest {
@@ -9,24 +8,39 @@ export interface LoginRequest {
   Password: string;
 }
 
+export interface ApiUserProfile {
+  userId: string | null;
+  globalId: string;
+  firstName: string;
+  lastName: string;
+  emailId: string;
+  title: string | null;
+  companyName: string | null;
+  department: string | null;
+  office: string | null;
+  userType: string;
+  profileImage: string | null;
+}
+
 export interface LoginResponse {
   accessToken: string;
   refreshToken: string;
   expiresAt: string;
+  user: ApiUserProfile;
 }
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private readonly api = inject(ApiService);
-  private readonly env = inject(ENVIRONMENT);
 
   login(username: string, password: string): Observable<LoginResponse> {
-    const url = `${this.env.apiBaseUrl}${API_ENDPOINTS.AUTH.LOGIN}`;
-    return this.api.post<LoginResponse>(url, { UserName: username, Password: password } satisfies LoginRequest);
+    return this.api.post<LoginResponse>(
+      API_ENDPOINTS.AUTH.LOGIN,
+      { UserName: username, Password: password } satisfies LoginRequest,
+    );
   }
 
   logout(): Observable<void> {
-    const url = `${this.env.apiBaseUrl}${API_ENDPOINTS.AUTH.LOGOUT}`;
-    return this.api.post<void>(url, {});
+    return this.api.post<void>(API_ENDPOINTS.AUTH.LOGOUT, {});
   }
 }

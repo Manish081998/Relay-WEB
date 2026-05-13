@@ -1,7 +1,6 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  computed,
   effect,
   ElementRef,
   inject,
@@ -9,7 +8,6 @@ import {
   untracked,
   viewChild,
 } from '@angular/core';
-import { RouterLink } from '@angular/router';
 import { AuthStore } from '../../core/auth/auth.store';
 import { InitialsPipe } from '../../shared/pipes/initials.pipe';
 
@@ -20,7 +18,7 @@ const CROP_RADIUS = 148;
   selector: 'app-profile',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterLink, InitialsPipe],
+  imports: [InitialsPipe],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.scss',
 })
@@ -29,22 +27,6 @@ export class ProfileComponent {
   readonly user = this.auth.currentUser;
 
   readonly photoPreview = signal<string | null>(null);
-  readonly showPasswordForm = signal(false);
-
-  readonly oldPassword = signal('');
-  readonly newPassword = signal('');
-  readonly confirmPassword = signal('');
-
-  readonly passwordMismatch = computed(
-    () => this.confirmPassword().length > 0 && this.newPassword() !== this.confirmPassword(),
-  );
-  readonly canSubmitPassword = computed(
-    () =>
-      this.oldPassword().length > 0 &&
-      this.newPassword().length > 0 &&
-      this.confirmPassword().length > 0 &&
-      !this.passwordMismatch(),
-  );
 
   readonly profileMeta = { title: 'Senior Analyst', workLocation: 'New York, NY' };
 
@@ -65,7 +47,6 @@ export class ProfileComponent {
   readonly cropCanvas = viewChild<ElementRef<HTMLCanvasElement>>('cropCanvas');
 
   constructor() {
-    // Re-render only when the modal/canvas first appears; drag+zoom render directly.
     effect(() => {
       const canvas = this.cropCanvas()?.nativeElement;
       if (!canvas || !this.cropModalOpen()) return;
@@ -81,7 +62,7 @@ export class ProfileComponent {
     const input = event.target as HTMLInputElement;
     const file = input.files?.[0];
     if (!file) return;
-    input.value = ''; // allow re-selecting same file
+    input.value = '';
 
     const reader = new FileReader();
     reader.onload = () => {
@@ -126,14 +107,12 @@ export class ProfileComponent {
       this._cropImg.naturalHeight * scale,
     );
 
-    // Vignette outside crop circle using evenodd fill
     ctx.beginPath();
     ctx.rect(0, 0, W, H);
     ctx.arc(cx, cy, r, 0, Math.PI * 2, true);
     ctx.fillStyle = 'rgba(6, 8, 15, 0.72)';
     ctx.fill('evenodd');
 
-    // Circle border
     ctx.beginPath();
     ctx.arc(cx, cy, r, 0, Math.PI * 2);
     ctx.strokeStyle = 'rgba(255, 255, 255, 0.82)';
@@ -214,17 +193,5 @@ export class ProfileComponent {
 
   cancelCrop(): void {
     this.cropModalOpen.set(false);
-  }
-
-  // ── Password form ─────────────────────────────────────────────────────────────
-
-  togglePasswordForm(): void {
-    const next = !this.showPasswordForm();
-    this.showPasswordForm.set(next);
-    if (!next) {
-      this.oldPassword.set('');
-      this.newPassword.set('');
-      this.confirmPassword.set('');
-    }
   }
 }

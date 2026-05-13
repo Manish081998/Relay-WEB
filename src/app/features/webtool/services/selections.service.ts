@@ -10,6 +10,6 @@ export class SelectionsService {
   private readonly api = inject(ApiService);
 
   getById(id: string): Observable<ApiResult<SelectionDto>> {
-    return this.api.get<ApiResult<SelectionDto>>(`${API_ENDPOINTS.SELECTIONS}/${id}`);
+    return this.api.get<ApiResult<SelectionDto>>(`${API_ENDPOINTS.WEBTOOL.SELECTIONS}/${id}`);
   }
 }

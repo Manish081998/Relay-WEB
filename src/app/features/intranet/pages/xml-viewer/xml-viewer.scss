@@ -1,0 +1,377 @@
+@use 'theme' as t;
+
+// ── Design tokens ─────────────────────────────────────────────────────────────
+$bg:          #0d1117;
+$bg-panel:    #161b22;
+$bg-hover:    #1c2330;
+$bg-match:    rgba(255, 210, 0, 0.07);
+
+$border:      #30363d;
+$border-sub:  #21262d;
+
+// Syntax palette
+$s-bracket:   #6e7681;
+$s-tag:       #79b8ff;
+$s-tag-close: rgba(121, 184, 255, 0.5);
+$s-attr-name: #b392f0;
+$s-attr-val:  #a5d6ff;
+$s-text:      #e6edf3;
+$s-ellipsis:  #484f58;
+
+// UI palette
+$accent:      #58a6ff;
+$green:       #3fb950;
+$white:       #e6edf3;
+$muted:       #8b949e;
+$dim:         #484f58;
+
+// ── Host — fills shell-content, owns its own scroll ──────────────────────────
+:host {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  font-family: t.$font-sans;
+  background: $bg;
+  color: $white;
+}
+
+// ── Page ──────────────────────────────────────────────────────────────────────
+.xv-page {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+// ── Sticky Header — non-scrolling flex item, always pinned at top ─────────────
+.xv-sticky-header {
+  flex-shrink: 0;
+  background: $bg-panel;
+  border-bottom: 1px solid $border;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+  z-index: 10;
+}
+
+// ── Top Bar ───────────────────────────────────────────────────────────────────
+.xv-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 16px;
+  border-bottom: 1px solid $border-sub;
+}
+
+.xv-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 30px;
+  padding: 0 10px;
+  background: transparent;
+  border: 1px solid $border;
+  border-radius: 6px;
+  color: $muted;
+  font-size: 12px;
+  font-weight: 500;
+  font-family: t.$font-sans;
+  cursor: pointer;
+  transition: border-color 140ms, color 140ms, background 140ms;
+  flex-shrink: 0;
+
+  svg { width: 13px; height: 13px; }
+
+  &:hover {
+    border-color: $accent;
+    color: $accent;
+    background: rgba(88, 166, 255, 0.08);
+  }
+}
+
+.xv-bar-center {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  justify-content: center;
+  min-width: 0;
+}
+
+.xv-bar-icon {
+  flex-shrink: 0;
+  svg { width: 26px; height: 26px; }
+}
+
+.xv-bar-title {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: $white;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 400px;
+  line-height: 1.3;
+}
+
+.xv-bar-sub {
+  font-size: 11px;
+  color: $dim;
+  letter-spacing: 0.03em;
+  line-height: 1.2;
+}
+
+.xv-bar-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+// ── Shared buttons ────────────────────────────────────────────────────────────
+.xv-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 30px;
+  padding: 0 11px;
+  background: #21262d;
+  border: 1px solid $border;
+  border-radius: 6px;
+  color: $muted;
+  font-size: 12px;
+  font-weight: 500;
+  font-family: t.$font-sans;
+  cursor: pointer;
+  transition: all 140ms;
+  white-space: nowrap;
+
+  svg { width: 12px; height: 12px; flex-shrink: 0; }
+
+  &:hover {
+    background: #2d333b;
+    border-color: #6e7681;
+    color: $white;
+  }
+
+  &--ghost {
+    background: transparent;
+    border-color: transparent;
+    &:hover { background: rgba(255,255,255,0.05); border-color: $border; }
+  }
+
+  &--ok {
+    background: rgba(63, 185, 80, 0.12) !important;
+    border-color: $green !important;
+    color: $green !important;
+  }
+}
+
+// ── Search Row ────────────────────────────────────────────────────────────────
+.xv-search-row {
+  padding: 8px 16px;
+}
+
+.xv-search-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.xv-search-ico {
+  position: absolute;
+  left: 10px;
+  width: 13px;
+  height: 13px;
+  color: $dim;
+  pointer-events: none;
+  flex-shrink: 0;
+}
+
+.xv-search-input {
+  width: 100%;
+  height: 34px;
+  padding: 0 100px 0 32px;
+  background: $bg;
+  border: 1px solid $border;
+  border-radius: 6px;
+  color: $white;
+  font-size: 12.5px;
+  font-family: 'JetBrains Mono', 'Cascadia Code', 'Fira Code', ui-monospace, Consolas, monospace;
+  transition: border-color 150ms, box-shadow 150ms;
+
+  &::placeholder {
+    color: $dim;
+    font-family: t.$font-sans;
+  }
+
+  &:focus {
+    outline: none;
+    border-color: $accent;
+    box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.14);
+  }
+}
+
+.xv-match-count {
+  position: absolute;
+  right: 30px;
+  font-size: 11px;
+  color: $muted;
+  white-space: nowrap;
+  pointer-events: none;
+
+  .xv-match-num {
+    font-weight: 700;
+    color: #e3b341;
+  }
+}
+
+.xv-search-clear {
+  position: absolute;
+  right: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  background: none;
+  border: none;
+  border-radius: 4px;
+  color: $dim;
+  cursor: pointer;
+  transition: color 120ms, background 120ms;
+
+  svg { width: 10px; height: 10px; }
+
+  &:hover { color: $white; background: rgba(255,255,255,0.08); }
+}
+
+// ── Error ─────────────────────────────────────────────────────────────────────
+.xv-error {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 16px;
+  padding: 12px 16px;
+  background: rgba(248, 81, 73, 0.08);
+  border: 1px solid rgba(248, 81, 73, 0.3);
+  border-radius: 8px;
+  color: #ff7b72;
+  font-size: 13px;
+
+  svg { width: 16px; height: 16px; flex-shrink: 0; }
+}
+
+// ── Tree — the only scrolling region ─────────────────────────────────────────
+.xv-tree {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 12px 0 32px;
+}
+
+.xv-tree-inner {
+  font-family: 'JetBrains Mono', 'Cascadia Code', 'Fira Code', ui-monospace, Consolas, monospace;
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+// ── Node ──────────────────────────────────────────────────────────────────────
+.xv-node {
+  &--match > .xv-row {
+    background: $bg-match;
+    box-shadow: inset 2px 0 0 #e3b341;
+  }
+
+  &--dim { opacity: 0.28; }
+}
+
+// ── Row ───────────────────────────────────────────────────────────────────────
+.xv-row {
+  display: flex;
+  align-items: baseline;
+  min-height: 24px;
+  padding-right: 24px;
+  transition: background 80ms;
+  cursor: default;
+
+  &--clickable { cursor: pointer; }
+
+  &:hover { background: $bg-hover; }
+}
+
+// ── Arrow / chevron ───────────────────────────────────────────────────────────
+.xv-arrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  margin-right: 4px;
+  color: $dim;
+  transition: transform 180ms cubic-bezier(.4, 0, .2, 1), color 120ms;
+  align-self: center;
+
+  svg { width: 7px; height: 11px; }
+
+  &--open {
+    transform: rotate(90deg);
+    color: $muted;
+  }
+}
+
+// ── Syntax line ───────────────────────────────────────────────────────────────
+.xv-line {
+  flex: 1;
+  min-width: 0;
+  word-break: break-all;
+  white-space: pre-wrap;
+}
+
+// ── Children + indent guide ───────────────────────────────────────────────────
+.xv-children {
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    left: var(--guide-x, 20px);
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: $border-sub;
+    pointer-events: none;
+  }
+}
+
+// ── Syntax token classes (used via innerHTML — needs ::ng-deep) ────────────────
+:host ::ng-deep {
+  .s-b  { color: $s-bracket; }
+  .s-t  { color: $s-tag; font-weight: 600; }
+  .s-tc { color: $s-tag-close; }
+  .s-an { color: $s-attr-name; }
+  .s-eq { color: $s-bracket; }
+  .s-av { color: $s-attr-val; }
+  .s-tx { color: $s-text; }
+  .s-el { color: $s-ellipsis; letter-spacing: 0.08em; padding: 0 2px; }
+
+  mark.hl {
+    background: rgba(255, 211, 61, 0.28);
+    color: #f0c040;
+    border-radius: 2px;
+    padding: 0 1px;
+    font-style: normal;
+  }
+}
+
+// ── Responsive ────────────────────────────────────────────────────────────────
+@media (max-width: 640px) {
+  .xv-bar { flex-wrap: wrap; }
+  .xv-bar-center { order: -1; width: 100%; justify-content: flex-start; }
+  .xv-bar-title { font-size: 13px; }
+  .xv-tree-inner { font-size: 12px; }
+}

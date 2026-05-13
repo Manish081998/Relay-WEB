@@ -1,12 +1,19 @@
 export const API_ENDPOINTS = {
   AUTH: {
-    LOGIN:   '/api/GenerateToken',
+    LOGIN: '/api/GenerateToken',
     REFRESH: '/api/auth/refresh',
-    LOGOUT:  '/api/auth/logout',
+    LOGOUT: '/api/auth/logout',
   },
-  DOCUMENTS:     '/api/documents',
-  ANNOTATIONS:   '/api/annotations',
-  ORDERS_SEARCH: '/api/documentum/orders/search',
-  USERS:         '/api/users',
-  SELECTIONS:    '/api/selections',
+  DOCUMENTUM: {
+    DOCUMENTS: '/api/documents',
+    ANNOTATIONS: '/api/annotations',
+    ORDERS_SEARCH: '/api/documentum/orders/search',
+  },
+  INTRANET: {
+    USERS: '/api/users',
+    EDGE_ORDERS_SEARCH: '/api/intranet/edge-orders/SearchEdgeOrders',
+  },
+  WEBTOOL: {
+    SELECTIONS: '/api/selections',
+  },
 } as const;

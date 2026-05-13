@@ -30,7 +30,7 @@ export const routes: Routes = [
       // Intranet — SuperAdmin, Admin
       {
         path: 'intranet',
-        canActivate: [roleGuard([Role.SuperAdmin, Role.Admin])],
+        canActivate: [roleGuard([Role.SuperAdmin, Role.Admin,Role.User])],
         loadChildren: () =>
           import('./features/intranet/intranet.routes').then(m => m.intranetRoutes),
       },

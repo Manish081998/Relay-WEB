@@ -1,0 +1,34 @@
+@if (isOpen()) {
+  <div
+    class="cd-backdrop"
+    role="presentation"
+    (click)="onBackdropClick($event)"
+  >
+    <div
+      #dialogPanel
+      class="cd-panel"
+      role="dialog"
+      aria-modal="true"
+      [attr.aria-labelledby]="'cd-title-' + uid"
+      [attr.aria-describedby]="'cd-desc-' + uid"
+      (keydown)="trapFocus($event)"
+    >
+      <h2 class="cd-title" [id]="'cd-title-' + uid">{{ title() }}</h2>
+      <p class="cd-desc" [id]="'cd-desc-' + uid">{{ description() }}</p>
+
+      <div class="cd-footer">
+        <button type="button" class="cd-btn cd-btn--cancel" (click)="cancelled.emit()">
+          {{ cancelLabel() }}
+        </button>
+        <button
+          #confirmBtn
+          type="button"
+          [class]="'cd-btn cd-btn--' + confirmVariant()"
+          (click)="confirmed.emit()"
+        >
+          {{ confirmLabel() }}
+        </button>
+      </div>
+    </div>
+  </div>
+}

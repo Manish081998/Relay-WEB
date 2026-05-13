@@ -10,12 +10,12 @@ export class UsersService {
   private readonly api = inject(ApiService);
 
   getById(id: string): Observable<ApiResult<UserDetailDto>> {
-    return this.api.get<ApiResult<UserDetailDto>>(`${API_ENDPOINTS.USERS}/${id}`);
+    return this.api.get<ApiResult<UserDetailDto>>(`${API_ENDPOINTS.INTRANET.USERS}/${id}`);
   }
 
   updateByEmail(email: string, body: UpdateUserRequest): Observable<ApiResult<UserDetailDto>> {
     return this.api.put<ApiResult<UserDetailDto>>(
-      `${API_ENDPOINTS.USERS}/${encodeURIComponent(email)}`,
+      `${API_ENDPOINTS.INTRANET.USERS}/${encodeURIComponent(email)}`,
       body,
     );
   }

@@ -1,0 +1,246 @@
+.ot-wrapper {
+  
+  background: #e5e5e5;
+  min-height: 100%;
+}
+
+.ot-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+  padding: 8px 12px;
+  background: #1c3a66;
+  border-radius: 6px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.ot-toolbar-title {
+  flex: 1;
+  color: #c4b5fd;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.ot-btn {
+  padding: 6px 14px;
+  background: #7c3aed;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+
+  &:hover {
+    background: #6d28d9;
+  }
+}
+
+.ot-error {
+  color: #f87171;
+  padding: 16px;
+  background: #2d1b1b;
+  border-radius: 6px;
+  font-size: 13px;
+}
+
+/* ── Document container ────────────────────────────────────────────────── */
+
+.ot-document {
+  background: #fff;
+  color: #000;
+  width: 900px;
+  margin: 0 auto;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 11px;
+}
+
+.ot-page {
+  padding: 20px 24px;
+  border-bottom: 1px solid #ccc;
+}
+
+.ot-page-break {
+  border-top: 2px dashed #aaa;
+  border-bottom: none;
+}
+
+/* ── Tables — shared reset ──────────────────────────────────────────────── */
+
+.ot-page-header-table,
+.ot-band-table,
+.ot-address-table,
+.ot-details-table,
+.ot-shipping-table,
+.ot-meta-table,
+.ot-items-table,
+.ot-totals-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 4px;
+
+  td, th {
+    font-size: 11px;
+    font-family: Arial, Helvetica, sans-serif;
+  }
+}
+
+/* ── Page 1 specific tables ─────────────────────────────────────────────── */
+
+.ot-page-header-table {
+  border: 1px solid #000;
+
+  td {
+    border: 1px solid #000;
+    padding: 4px 6px;
+    font-size: 13px;
+  }
+}
+
+.ot-band-table {
+  border: 1px solid #000;
+
+  td {
+    border: 1px solid #000;
+    padding: 4px 6px;
+    vertical-align: middle;
+  }
+}
+
+.ot-address-table {
+  border: 1px solid #000;
+
+  td {
+    border: 1px solid #000;
+    padding: 3px 6px;
+    vertical-align: top;
+    width: 25%;
+  }
+}
+
+.ot-details-table {
+  border: 1px solid #000;
+
+  td {
+    border: 1px solid #000;
+    padding: 3px 6px;
+    vertical-align: top;
+  }
+}
+
+.ot-shipping-table {
+  border: 1px solid #000;
+
+  td {
+    border: 1px solid #000;
+    padding: 4px 8px;
+    vertical-align: top;
+  }
+}
+
+.ot-meta-table {
+  border: 1px solid #000;
+
+  td {
+    border: 1px solid #000;
+    padding: 3px 6px;
+    width: 33.33%;
+  }
+}
+
+/* ── Page 2: line items table ───────────────────────────────────────────── */
+
+.ot-list-models-heading {
+  text-align: center;
+  font-weight: bold;
+  font-size: 13px;
+  margin-bottom: 8px;
+}
+
+.ot-items-table {
+  border: 1px solid #000;
+  font-size: 10px;
+
+  th {
+    border: 1px solid #000;
+    padding: 2px 4px;
+    background: #f0f0f0;
+    text-align: center;
+    font-size: 10px;
+    white-space: nowrap;
+  }
+
+  td {
+    border: 1px solid #000;
+    padding: 2px 4px;
+    vertical-align: middle;
+  }
+}
+
+.ot-tag-row td {
+  background: #fafafa;
+  font-size: 10px;
+  color: #444;
+  padding: 1px 6px 3px;
+  border-left: 1px solid #ccc;
+  border-right: 1px solid #ccc;
+  border-bottom: 1px solid #ccc;
+}
+
+.ot-totals-table {
+  border: 1px solid #000;
+  margin-top: 6px;
+
+  td {
+    border: 1px solid #000;
+    padding: 3px 8px;
+    font-size: 11px;
+  }
+}
+
+/* ── Utilities ──────────────────────────────────────────────────────────── */
+
+.ot-center  { text-align: center; }
+.ot-right   { text-align: right; }
+.ot-label   { font-weight: bold; white-space: nowrap; }
+.ot-field-label { font-size: 10px; }
+.ot-field-large { font-size: 13px; font-weight: bold; }
+.ot-section-header { font-weight: bold; text-align: center; }
+
+.ot-page-footer {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 12px;
+  font-size: 9px;
+  color: #555;
+  border-top: 1px solid #ccc;
+  padding-top: 4px;
+}
+
+.ot-page-num {
+  font-weight: bold;
+}
+
+/* ── Print overrides ────────────────────────────────────────────────────── */
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
+
+  .ot-wrapper {
+    background: #fff;
+    padding: 0;
+  }
+
+  .ot-document {
+    width: 100%;
+  }
+
+  .ot-page-break {
+    page-break-before: always;
+    border-top: none;
+  }
+}

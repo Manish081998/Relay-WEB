@@ -6,12 +6,13 @@ import { AuthStore } from '../../core/auth/auth.store';
 import { UiStore } from '../../store/ui/ui.store';
 import { InitialsPipe } from '../../shared/pipes/initials.pipe';
 import { ADMIN_NAV, DASHBOARD_NAV, NAV_GROUPS, USER_NAV, NavGroup, NavStandaloneItem } from './nav-config';
+import { ConfirmationDialogComponent } from '../../shared/components/confirmation-dialog/confirmation-dialog.component';
 
 @Component({
   selector: 'app-sidebar',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterLink, RouterLinkActive, InitialsPipe],
+  imports: [RouterLink, RouterLinkActive, InitialsPipe, ConfirmationDialogComponent],
   templateUrl: './sidebar.component.html',
   styleUrl: './sidebar.component.scss',
 })
@@ -29,8 +30,14 @@ export class SidebarComponent {
   private static readonly MAX_WIDTH = 420;
   private static readonly DEFAULT_WIDTH = 256;
 
-  readonly sidebarWidth = signal(SidebarComponent.DEFAULT_WIDTH);
-  readonly isResizing   = signal(false);
+  readonly sidebarWidth     = signal(SidebarComponent.DEFAULT_WIDTH);
+  readonly isResizing       = signal(false);
+  readonly signOutModalOpen = signal(false);
+
+  onSignOutConfirm(): void {
+    this.signOutModalOpen.set(false);
+    this.auth.logout();
+  }
 
   private resizeCleanup: (() => void) | null = null;
 

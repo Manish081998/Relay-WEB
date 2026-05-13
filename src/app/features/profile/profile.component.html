@@ -76,7 +76,7 @@
           }
           <label class="profile-photo-edit" for="photo-upload"
                  title="Change profile photo" aria-label="Change profile photo">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                  stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/>
               <circle cx="12" cy="13" r="4"/>
@@ -88,7 +88,9 @@
 
         <div class="profile-hero-meta">
           <h1 class="profile-hero-meta__name">{{ u.displayName }}</h1>
-          <p class="profile-hero-meta__sub">{{ profileMeta.title }} &nbsp;&bull;&nbsp; {{ profileMeta.workLocation }}</p>
+          <p class="profile-hero-meta__sub">
+            {{ u.title || profileMeta.title }}&nbsp;&bull;&nbsp;{{ u.office || profileMeta.workLocation }}
+          </p>
           <span class="role-chip">{{ u.roles[0] }}</span>
         </div>
       </div>
@@ -98,7 +100,7 @@
     <section class="info-card" aria-labelledby="section-account">
       <div class="info-card__header">
         <div class="info-card__icon-wrap">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/>
             <circle cx="12" cy="7" r="4"/>
@@ -119,16 +121,16 @@
         </div>
         <div class="field-group">
           <span class="field-label">Title</span>
-          <div class="field-value">{{ profileMeta.title }}</div>
+          <div class="field-value">{{ u.title || profileMeta.title }}</div>
         </div>
         <div class="field-group">
           <span class="field-label">Work Location</span>
-          <div class="field-value">{{ profileMeta.workLocation }}</div>
+          <div class="field-value">{{ u.office || profileMeta.workLocation }}</div>
         </div>
         <div class="field-group">
           <span class="field-label">Role</span>
           <div class="field-value">
-            <span class="role-chip">{{ u.roles[0] }}</span>
+            <span class="role-chip role-chip--inline">{{ u.roles[0] }}</span>
           </div>
         </div>
         <div class="field-group">
@@ -142,7 +144,7 @@
     <section class="info-card" aria-labelledby="section-security">
       <div class="info-card__header">
         <div class="info-card__icon-wrap">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
             <path d="M7 11V7a5 5 0 0110 0v4"/>
@@ -151,65 +153,13 @@
         <h2 class="info-card__title" id="section-security">Security</h2>
       </div>
 
-      @if (!showPasswordForm()) {
-        <div class="security-row">
-          <div class="security-row__info">
-            <span class="field-label">Password</span>
-            <span class="field-value--masked" aria-label="Password hidden">••••••••••••</span>
-          </div>
-          <button class="btn btn--outline" type="button" (click)="togglePasswordForm()">
-            Change Password
-          </button>
+      <div class="security-row">
+        <div class="security-row__info">
+          <span class="field-label">Password</span>
+          <div class="field-value field-value--masked" aria-label="Password hidden">••••••••••••</div>
         </div>
-      } @else {
-        <form class="password-form" (submit)="$event.preventDefault()" novalidate>
-          <div class="password-form__fields">
-
-            <div class="form-group">
-              <label class="field-label" for="old-password">Current Password</label>
-              <input id="old-password" class="form-input" type="password"
-                     placeholder="Enter current password" autocomplete="current-password"
-                     [value]="oldPassword()"
-                     (input)="oldPassword.set($any($event.target).value)" />
-            </div>
-
-            <div class="form-group">
-              <label class="field-label" for="new-password">New Password</label>
-              <input id="new-password" class="form-input" type="password"
-                     placeholder="Enter new password" autocomplete="new-password"
-                     [value]="newPassword()"
-                     (input)="newPassword.set($any($event.target).value)" />
-            </div>
-
-            <div class="form-group">
-              <label class="field-label" for="confirm-password">Confirm New Password</label>
-              <input id="confirm-password" class="form-input" type="password"
-                     [class.form-input--error]="passwordMismatch()"
-                     placeholder="Re-enter new password" autocomplete="new-password"
-                     [value]="confirmPassword()"
-                     (input)="confirmPassword.set($any($event.target).value)" />
-              @if (passwordMismatch()) {
-                <span class="form-error" role="alert">
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                       stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                    <circle cx="12" cy="12" r="10"/>
-                    <line x1="12" y1="8" x2="12" y2="12"/>
-                    <line x1="12" y1="16" x2="12.01" y2="16"/>
-                  </svg>
-                  Passwords do not match
-                </span>
-              }
-            </div>
-
-          </div>
-          <div class="password-form__actions">
-            <button class="btn btn--ghost" type="button" (click)="togglePasswordForm()">Cancel</button>
-            <button class="btn btn--primary" type="submit" [disabled]="!canSubmitPassword()">
-              Save Changes
-            </button>
-          </div>
-        </form>
-      }
+        <span class="security-managed-tag">Managed by your organisation</span>
+      </div>
     </section>
 
   </div>

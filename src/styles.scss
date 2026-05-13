@@ -1,4 +1,5 @@
 @use './styles/theme' as t;
+@use './styles/primeng-table';
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 @import "primeicons/primeicons.css";
@@ -37,6 +38,32 @@ html, body {
       background: #f3f4f6;
     }
   }
+}
+
+// ── PrimeNG Tooltip overrides ────────────────────────────────────────────────
+.p-tooltip {
+  max-width: 320px;
+
+  .p-tooltip-text {
+    padding: 6px 10px;
+    font-size: 0.75rem;
+    font-family: t.$font-sans;
+    font-weight: 500;
+    line-height: 1.5;
+    letter-spacing: 0.01em;
+    background: #1e293b;
+    color: #e2e8f0;
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+    border: 1px solid #334155;
+    word-break: break-word;
+  }
+
+  // Arrow colours to match the dark background
+  &.p-tooltip-top    .p-tooltip-arrow { border-top-color:    #1e293b; }
+  &.p-tooltip-bottom .p-tooltip-arrow { border-bottom-color: #1e293b; }
+  &.p-tooltip-left   .p-tooltip-arrow { border-left-color:   #1e293b; }
+  &.p-tooltip-right  .p-tooltip-arrow { border-right-color:  #1e293b; }
 }
 
 // ── PrimeNG Toast overrides ───────────────────────────────────────────────────

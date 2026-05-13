@@ -5,4 +5,12 @@ export interface AppUser {
   email: string;
   displayName: string;
   roles: Role[];
+  firstName?: string;
+  lastName?: string;
+  globalId?: string;
+  title?: string | null;
+  companyName?: string | null;
+  department?: string | null;
+  office?: string | null;
+  profileImage?: string | null;
 }

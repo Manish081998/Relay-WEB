@@ -1,0 +1,217 @@
+<div class="search-page">
+  <!-- ── Search Panel ────────────────────────────────────────────────────── -->
+  <div class="panel">
+    <div class="panel-header">
+      <i class="pi pi-sliders-h"></i>
+      <span>Search Criteria</span>
+    </div>
+
+    <form class="form" [formGroup]="form" (ngSubmit)="onSearch()">
+      <div class="grid">
+        <!-- <div class="field">
+          <label for="noRecords">No. Records</label>
+          <input
+            id="noRecords"
+            pInputText
+            type="text"
+            inputmode="numeric"
+            formControlName="noRecords"
+            autocomplete="off"
+            placeholder="e.g. 100"
+          />
+        </div> -->
+
+        <div class="field">
+          <label for="emailAddress">E-Mail Address</label>
+          <input
+            id="emailAddress"
+            pInputText
+            type="text"
+            formControlName="emailAddress"
+            autocomplete="off"
+            placeholder="user@example.com"
+          />
+        </div>
+
+        <div class="field">
+          <label for="pcUserName">PC UserName</label>
+          <input
+            id="pcUserName"
+            pInputText
+            type="text"
+            formControlName="pcUserName"
+            autocomplete="off"
+            placeholder="Username"
+          />
+        </div>
+
+        <div class="field">
+          <label for="release">Release</label>
+          <input
+            id="release"
+            pInputText
+            type="text"
+            formControlName="release"
+            autocomplete="off"
+            placeholder="Release number"
+          />
+        </div>
+
+        <div class="field">
+          <label for="repPo">Rep PO</label>
+          <input
+            id="repPo"
+            pInputText
+            type="text"
+            formControlName="repPo"
+            autocomplete="off"
+            placeholder="PO number"
+          />
+        </div>
+
+        <div class="field" style="width: 38%; height: 55px !important">
+          <label for="dateTime">Date / Time</label>
+          <p-datepicker
+          
+            inputId="dateTime"
+            formControlName="dateTime"
+            dateFormat="mm/dd/yy"
+            placeholder="MM/DD/YYYY"
+            appendTo="body"
+            inputStyleClass="w-full"
+          />
+        </div>
+
+        <div class="field">
+          <label for="releaseName">Release Name</label>
+          <input
+            id="releaseName"
+            pInputText
+            type="text"
+            formControlName="releaseName"
+            autocomplete="off"
+            placeholder="Release name"
+          />
+        </div>
+      </div>
+
+      <div class="actions">
+        <button type="button" class="btn-clear" (click)="onClear()">
+          <i class="pi pi-refresh"></i>
+          Clear
+        </button>
+        <button type="submit" class="btn-search">
+          <i class="pi pi-search"></i>
+          Search
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- ── Results ─────────────────────────────────────────────────────────── -->
+  <div class="results-card">
+    <div class="results-header">
+      <div class="results-title">
+        <i class="pi pi-table"></i>
+        <span>Results</span>
+        <span class="results-badge">{{ orders().length }}</span>
+        @if (apiResponseTime() !== null) {
+          <span class="results-fetch-time">
+            <i class="pi pi-clock"></i>
+            <span class="results-response-time"
+              >{{ apiResponseTime()! / 1000 | number: '1.2-2' }}s</span
+            >
+          </span>
+        }
+      </div>
+    </div>
+
+    <p-table
+      [value]="orders()"
+      [rows]="50"
+      [rowsPerPageOptions]="[50, 100, 150]"
+      [paginator]="true"
+      [rowHover]="true"
+      scrollHeight="490px"
+      [showCurrentPageReport]="true"
+      currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+      [tableStyle]="{ 'min-width': '90rem' }"
+    >
+      <ng-template #header>
+        <tr>
+          @for (col of columns; track col.field) {
+            @if (col.isXml) {
+              <th>{{ col.header }}</th>
+            } @else {
+              <th [pSortableColumn]="col.field">
+                <div class="flex justify-between items-center gap-2">
+                  {{ col.header }}
+                  <p-sortIcon [field]="col.field" />
+                  <p-columnFilter [field]="col.field" type="text" display="menu" class="ml-auto" />
+                </div>
+              </th>
+            }
+          }
+        </tr>
+      </ng-template>
+
+      <ng-template #body let-row>
+        <tr>
+          @for (col of columns; track col.field) {
+            <td
+              [pTooltip]="
+                col.isXml
+                  ? null
+                  : col.dateFormat
+                    ? (row[col.field] | date: 'MM/dd/yyyy HH:mm:ss')
+                    : row[col.field]
+              "
+              tooltipPosition="top"
+              [showDelay]="400"
+            >
+              @if (col.isXml) {
+                @if (row[col.field]) {
+                  <button
+                    type="button"
+                    class="xml-btn"
+                    pTooltip="Click to open XML"
+                    tooltipPosition="top"
+                    (click)="openXml(row)"
+                  >
+                    View XML
+                  </button>
+                }
+              } @else if (col.field === 'releaseNumber') {
+                @if (row.xmlMacPacOrder) {
+                  <button
+                    type="button"
+                    class="release-btn"
+                    pTooltip="Click to view order transmittal"
+                    tooltipPosition="top"
+                    (click)="openOrderTransmittal(row)"
+                  >
+                    {{ row[col.field] }}
+                  </button>
+                } @else {
+                  {{ row[col.field] }}
+                }
+              } @else if (col.dateFormat) {
+                {{ row[col.field] | date: col.dateFormat }}
+              } @else {
+                {{ row[col.field] }}
+              }
+            </td>
+          }
+        </tr>
+      </ng-template>
+
+      <ng-template #emptymessage>
+        <tr>
+          <td [attr.colspan]="columns.length" class="cell-empty">
+            <i class="pi pi-inbox"></i> No records found.
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+</div>

@@ -165,6 +165,10 @@
   text-transform: uppercase;
   width: fit-content;
   margin-top: t.$space-2;
+
+  &--inline {
+    margin-top: 0;
+  }
 }
 
 // ── Info cards ────────────────────────────────────────────────────────────────
@@ -288,76 +292,20 @@
   }
 }
 
-// ── Password form ─────────────────────────────────────────────────────────────
-
-.password-form {
-  display: flex;
-  flex-direction: column;
-  gap: t.$space-6;
-
-  &__fields {
-    display: flex;
-    flex-direction: column;
-    gap: t.$space-4;
-    max-width: 380px;
-  }
-
-  &__actions {
-    display: flex;
-    align-items: center;
-    gap: t.$space-3;
-  }
-}
-
-.form-group {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-}
-
-.form-input {
-  width: 100%;
-  padding: t.$space-2 t.$space-3;
-  background: #fff;
-  border: 1px solid #d1d9e6;
-  border-radius: t.$radius-md;
-  color: #111827;
-  font-family: t.$font-sans;
-  font-size: t.$font-size-sm;
-  line-height: 1.5;
-  transition: border-color t.$transition-fast, box-shadow t.$transition-fast;
-  outline: none;
-  box-sizing: border-box;
-
-  &::placeholder { color: t.$color-text-subtle; }
-
-  &:focus {
-    border-color: t.$color-primary;
-    box-shadow: 0 0 0 3px rgba(10, 74, 122, 0.1);
-  }
-
-  &--error {
-    border-color: t.$color-error;
-
-    &:focus {
-      box-shadow: 0 0 0 3px t.$color-error-bg;
-    }
-  }
-}
-
-.form-error {
-  display: flex;
-  align-items: center;
-  gap: 5px;
+.security-managed-tag {
   font-family: t.$font-sans;
   font-size: t.$font-size-xs;
-  color: t.$color-error;
-  margin-top: 2px;
-
-  svg { flex-shrink: 0; }
+  font-weight: t.$font-weight-medium;
+  color: t.$color-text-subtle;
+  background: #f4f4f5;
+  border: 1px solid #e5e7eb;
+  border-radius: t.$radius-full;
+  padding: 3px t.$space-3;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
 }
 
-// ── Buttons ───────────────────────────────────────────────────────────────────
+// ── Buttons (crop modal) ──────────────────────────────────────────────────────
 
 .btn {
   display: inline-flex;
@@ -389,17 +337,6 @@
     &:hover:not(:disabled) {
       background: t.$color-primary-dark;
       box-shadow: t.$shadow-btn;
-    }
-  }
-
-  &--outline {
-    background: #fff;
-    color: t.$color-primary;
-    border-color: #d1d9e6;
-
-    &:hover:not(:disabled) {
-      background: #f0f7ff;
-      border-color: t.$color-primary;
     }
   }
 
