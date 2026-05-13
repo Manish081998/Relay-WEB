@@ -2,6 +2,10 @@
 
   <!-- Shared Search Panel -->
   <app-order-search-panel
+    [productTypes]="productTypes()"
+    [brands]="brands()"
+    [queueNames]="queueNames()"
+    (brandChanged)="onBrandChanged($event)"
     (search)="onSearch($event)"
     (cleared)="onCleared()"
   />
@@ -9,7 +13,7 @@
   <!-- Record Summary -->
   @if (searched() && !loading()) {
     <div class="qs-summary">
-      Total Records: <strong>{{ totalCount() }}</strong>
+      Total Number of Active Queue Items: {{ selectedQueueName() || 'All Queues' }} = <strong>{{ totalCount() }}</strong>
     </div>
   }
 
@@ -50,7 +54,7 @@
         <tbody>
           @for (order of orders(); track order.orderGuid; let i = $index) {
             <tr [class.row-alt]="i % 2 !== 0">
-              <td class="cell-link cell-po">{{ order.repPO }}</td>
+              <td class="cell-link cell-po" (click)="openOrder(order)">{{ order.repPO }}</td>
               <td class="cell-seq">{{ order.orderSeq }}</td>
               <td>{{ order.accountNumber }}</td>
               <td>{{ order.brand }}</td>

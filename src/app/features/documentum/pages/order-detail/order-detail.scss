@@ -1,0 +1,104 @@
+@use '../detail-shared' as ds;
+@use 'theme' as t;
+
+:host { @extend %host-base; }
+.od-page { @extend %page-base; }
+
+// ═══ Package Info Card ══════════════════════════════════════════════════════
+.od-pkg-card {
+  @extend %card;
+  margin-bottom: 24px;
+}
+
+.od-pkg-bar {
+  @extend %card-bar;
+}
+
+.od-pkg-bar-title {
+  @extend %card-heading;
+}
+
+.od-pkg-body {
+  @extend %card-body;
+}
+
+.od-pkg-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 48px;
+}
+
+.od-pkg-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.od-pkg-field { @extend %pkg-field; }
+.od-pkg-label { @extend %pkg-label; min-width: 170px; }
+.od-pkg-value { @extend %pkg-value; }
+.od-pkg-value--status { @extend %pkg-value-status; }
+
+.od-pkg-actions {
+  display: flex;
+  gap: 10px;
+  padding: 14px 24px;
+  border-top: 1px solid rgba(ds.$border, 0.5);
+  background: ds.$surface-alt;
+}
+
+// ═══ Section Heading ════════════════════════════════════════════════════════
+.od-section-heading { @extend %section-heading; }
+
+// ═══ Notes ══════════════════════════════════════════════════════════════════
+.od-notes-section {
+  margin-bottom: 24px;
+  background: ds.$surface;
+  border: 1px solid ds.$border;
+  border-radius: t.$radius-lg;
+  padding: 24px;
+  box-shadow: t.$shadow-sm;
+}
+
+.od-notes-btns {
+  display: flex;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+// ═══ Tabs ═══════════════════════════════════════════════════════════════════
+.od-tabs { @extend %tabs-container; }
+.od-tab {
+  @extend %tab-button;
+  &--active { @extend %tab-active; }
+}
+
+// ═══ Divider ════════════════════════════════════════════════════════════════
+.od-divider { @extend %divider; }
+
+// ═══ Data Tables ════════════════════════════════════════════════════════════
+.od-tbl-section { margin-bottom: 24px; }
+.od-tbl-header-row { @extend %tbl-header-row; }
+.od-tbl-actions { @extend %tbl-actions; }
+.od-data-tbl { @extend %data-table; }
+.od-link { @extend %link-cell; }
+.od-version-cell { @extend %version-cell; }
+.od-empty-row { @extend %empty-row; }
+.od-status-text { @extend %status-cell; }
+
+.od-tbl-footer {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 14px;
+}
+
+// ═══ Buttons ════════════════════════════════════════════════════════════════
+.od-btn {
+  @extend %btn-base;
+
+  &--primary { @extend %btn-primary; }
+  &--disabled { @extend %btn-disabled; }
+  &--back { @extend %btn-back; }
+}
+
+// ═══ Footer ═════════════════════════════════════════════════════════════════
+.od-footer { @extend %footer; }

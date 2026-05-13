@@ -24,6 +24,17 @@ export const documentumRoutes: Routes = [
           import('./pages/queue-search/queue-search').then(m => m.QueueSearch),
       },
       {
+        path: 'order-detail/:orderGuid',
+        loadComponent: () =>
+          import('./pages/order-detail/order-detail').then(m => m.OrderDetail),
+      },
+      {
+        path: 'workflow-information/:orderGuid',
+        loadComponent: () =>
+          import('./pages/workflow-information/workflow-information').then(m => m.WorkflowInformation),
+      },
+
+      {
         path: 'test-annotation',
         loadComponent: () =>
           import('./pages/test.annotation.component/test.annotation.component').then(m => m.TestAnnotationComponent),

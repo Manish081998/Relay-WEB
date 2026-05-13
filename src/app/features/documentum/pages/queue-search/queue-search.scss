@@ -1,72 +1,107 @@
 @use 'theme' as t;
 @use 'sass:color';
 
-// ── Design tokens (from design system) ───────────────────────────────────────
-$blue:        #1a5fb4;
-$blue-hover:  #154d93;
-$blue-50:     #e7f0fa;
-$neutral-25:  #f7f9fb;   // zebra alt row
-$neutral-100: #eef2f6;   // thead background
-$neutral-200: #dde3ea;   // outer border
-$neutral-300: #c4ccd6;   // thead border
-$neutral-400: #eef2f6;   // td divider (very light)
-$fg-1:        #1a2029;   // headings
-$fg-2:        #2a323d;   // body text
-$fg-3:        #5c6773;   // muted
-$po-bg:       #cfe0f5;   // highlighted primary-key column
+// ── Tokens from project theme ────────────────────────────────────────────────
+$primary:     t.$color-primary;
+$primary-dk:  t.$color-primary-dark;
+$brand-5:     rgba(t.$color-primary, 0.04);
+$brand-8:     rgba(t.$color-primary, 0.07);
+$po-bg:       rgba(t.$color-primary, 0.12);
+
+$surface:     t.$color-bg-surface;
+$surface-alt: t.$color-bg-subtle;
+
+$border:      t.$color-border;
+$border-str:  t.$color-border-strong;
+
+$text:        t.$color-text-base;
+$text-muted:  t.$color-text-muted;
+$text-faint:  t.$color-text-subtle;
 
 // ── Page ─────────────────────────────────────────────────────────────────────
-:host { display: block; font-family: t.$font-sans; }
+:host {
+  display: block;
+  font-family: t.$font-sans;
+  -webkit-font-smoothing: antialiased;
+}
 
-.qs-page { display: flex; flex-direction: column; gap: 0; }
+.qs-page {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
 
-// ── Title row ─────────────────────────────────────────────────────────────────
+// ── Title row ────────────────────────────────────────────────────────────────
 .qs-title-row {
-  margin-bottom: 8px;
-  padding-bottom: 6px;
-  border-bottom: 1px solid #f3f4f6;
+  margin-bottom: 6px;
 }
 .qs-title {
   margin: 0;
-  font-size: 20px;
-  font-weight: 700;
-  color: $fg-1;
+  font-size: t.$font-size-lg;
+  font-weight: t.$font-weight-bold;
+  color: $text;
   letter-spacing: -0.01em;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  &::before {
+    content: '';
+    display: inline-block;
+    width: 3px;
+    height: 20px;
+    background: linear-gradient(180deg, $primary, color.adjust($primary, $lightness: 15%));
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
 }
 
-// ── Summary line ──────────────────────────────────────────────────────────────
+// ── Summary line ─────────────────────────────────────────────────────────────
 .qs-summary {
-  margin: 8px 0 6px;
-  font-size: 12px;
-  color: $fg-3;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 4px 0 8px;
+  padding: 5px 14px;
+  font-size: t.$font-size-xs;
+  color: $text-muted;
+  background: $brand-5;
+  border: 1px solid rgba($primary, 0.12);
+  border-radius: t.$radius-full;
 
-  strong { color: $fg-1; font-weight: 700; }
+  strong {
+    color: $primary;
+    font-weight: t.$font-weight-bold;
+  }
 }
 
-// ── Grid wrapper ──────────────────────────────────────────────────────────────
+// ── Grid wrapper ─────────────────────────────────────────────────────────────
 .qs-grid-wrap {
-  background: #fff;
-  border: 1px solid $neutral-200;
+  background: $surface;
+  border: 1px solid $border;
+  border-radius: t.$radius-lg;
+  overflow: hidden;
+  box-shadow: t.$shadow-card;
   position: relative;
 }
 
-// ── Loading overlay ───────────────────────────────────────────────────────────
+// ── Loading overlay ──────────────────────────────────────────────────────────
 .qs-loading {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  padding: 32px;
-  font-size: 13px;
-  color: $fg-3;
+  padding: 28px;
+  font-size: t.$font-size-sm;
+  color: $text-muted;
 
-  i { font-size: 1.1rem; color: $blue; }
+  i { font-size: 1.1rem; color: $primary; }
 }
 
-// ── Scrollable table container ────────────────────────────────────────────────
+// ── Scrollable table container ───────────────────────────────────────────────
 .qs-tbl-scroll { overflow-x: auto; }
 
-// ── Dense enterprise table ────────────────────────────────────────────────────
+// ── Dense enterprise table ───────────────────────────────────────────────────
 .qs-tbl {
   width: 100%;
   border-collapse: collapse;
@@ -74,13 +109,14 @@ $po-bg:       #cfe0f5;   // highlighted primary-key column
 
   // ── Header ─────────────────────────────────────────────────────────────────
   thead th {
-    font-size: 13px;
-    font-weight: 700;
-    color: $fg-1;
-    background: $neutral-100;
-    padding: 6px 8px;
-    border-top: 1px solid $neutral-300;
-    border-bottom: 2px solid $neutral-300;
+    font-size: t.$font-size-xs;
+    font-weight: t.$font-weight-bold;
+    color: $text-muted;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    background: $surface-alt;
+    padding: 8px 10px;
+    border-bottom: 2px solid $border;
     text-align: left;
     white-space: nowrap;
     overflow: hidden;
@@ -94,147 +130,162 @@ $po-bg:       #cfe0f5;   // highlighted primary-key column
 
   // ── Body rows ──────────────────────────────────────────────────────────────
   tbody tr {
-    background: #fff;
+    background: $surface;
     transition: background 80ms;
 
-    &.row-alt { background: $neutral-25; }
+    &.row-alt { background: $brand-5; }
 
-    &:hover { background: $blue-50; }
+    &:hover { background: $brand-8; }
   }
 
   // ── Body cells ─────────────────────────────────────────────────────────────
   tbody td {
-    font-size: 13px;
-    color: $fg-2;
-    padding: 6px 8px;
-    border-bottom: 1px solid $neutral-400;
-    vertical-align: top;
+    font-size: t.$font-size-xs;
+    color: $text;
+    padding: 7px 10px;
+    border-bottom: 1px solid rgba($border, 0.4);
+    vertical-align: middle;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
 
-    &.col-r { text-align: right; }
+    &.col-r { text-align: right; font-variant-numeric: tabular-nums; }
   }
 
   // ── Highlighted PO column (primary key) ────────────────────────────────────
   td.cell-po {
     background: $po-bg;
-    font-weight: 600;
+    font-weight: t.$font-weight-semibold;
   }
-  tr:hover td.cell-po { background: color.scale($po-bg, $lightness: -4%); }
+  tr:hover td.cell-po { background: color.scale($po-bg, $lightness: -6%); }
 
   // ── Link-styled clickable cells ────────────────────────────────────────────
   td.cell-link {
-    color: $blue;
-    font-weight: 500;
+    color: $primary;
+    font-weight: t.$font-weight-medium;
     cursor: pointer;
     text-decoration: underline;
     text-underline-offset: 2px;
+    text-decoration-color: rgba($primary, 0.3);
+    transition: color t.$transition-fast, text-decoration-color t.$transition-fast;
 
-    &:hover { color: $blue-hover; }
+    &:hover {
+      color: $primary-dk;
+      text-decoration-color: $primary-dk;
+    }
   }
 
   // ── Sales Order sequence — subtle mono ─────────────────────────────────────
   td.cell-seq {
     font-family: ui-monospace, 'Cascadia Mono', 'Segoe UI Mono', Consolas, monospace;
-    font-size: 13px;
-    color: $fg-3;
+    font-size: t.$font-size-xs;
+    color: $text-muted;
+    letter-spacing: 0.01em;
   }
 
   // ── Truncated long-text cells ──────────────────────────────────────────────
   td.cell-trunc {
-    max-width: 0; // forces table cell to respect parent col width for ellipsis
+    max-width: 0;
   }
 
   // ── Empty / placeholder row ────────────────────────────────────────────────
   td.cell-empty {
     text-align: center;
-    padding: 28px 16px;
-    color: $fg-3;
-    font-size: 12px;
+    padding: 36px 16px;
+    color: $text-faint;
+    font-size: t.$font-size-sm;
     font-style: italic;
     white-space: normal;
+    background: $surface-alt;
 
-    i { margin-right: 6px; font-size: 0.85rem; }
+    i {
+      margin-right: 6px;
+      font-size: 0.9rem;
+      vertical-align: -1px;
+    }
   }
 }
 
-// ── Status chip ───────────────────────────────────────────────────────────────
+// ── Status chip ──────────────────────────────────────────────────────────────
 .status-chip {
   display: inline-block;
-  padding: 1px 7px;
-  border-radius: 2px;
-  font-size: 10px;
-  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: t.$radius-full;
+  font-size: 0.6rem;
+  font-weight: t.$font-weight-bold;
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  background: #e2e6eb;
-  color: #3f4956;
+  background: rgba($border, 0.3);
+  color: $text-muted;
 
   &[data-status*="active"],
   &[data-status*="progress"] {
-    background: #d6e6f6;
-    color: #0c4a8a;
+    background: rgba(t.$color-info, 0.1);
+    color: t.$color-info;
+    border: 1px solid t.$color-info-border;
   }
   &[data-status*="hold"],
   &[data-status*="pending"],
   &[data-status*="wait"] {
-    background: #fff3cd;
+    background: t.$color-warning-bg;
     color: #7a4e00;
+    border: 1px solid t.$color-warning-border;
   }
   &[data-status*="complet"],
   &[data-status*="done"],
   &[data-status*="ready"],
   &[data-status*="production"] {
-    background: #d4edda;
-    color: #0f5132;
+    background: t.$color-success-bg;
+    color: #065f46;
+    border: 1px solid t.$color-success-border;
   }
   &[data-status*="error"],
   &[data-status*="fail"],
   &[data-status*="cancel"] {
-    background: #f8d7da;
+    background: t.$color-error-bg;
     color: #842029;
+    border: 1px solid t.$color-error-border;
   }
 }
 
-// ── Pagination bar ────────────────────────────────────────────────────────────
+// ── Pagination bar ───────────────────────────────────────────────────────────
 .qs-pager {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 8px 12px;
-  border-top: 1px solid $neutral-200;
-  background: #fafbfc;
+  padding: 6px 14px;
+  border-top: 1px solid $border;
+  background: $surface-alt;
   justify-content: flex-end;
 }
 
 .pg-btn {
   height: 26px;
-  padding: 0 12px;
-  font-size: 12px;
-  font-weight: 600;
+  padding: 0 14px;
+  font-size: t.$font-size-xs;
+  font-weight: t.$font-weight-semibold;
   font-family: t.$font-sans;
-  border: 1px solid $neutral-300;
-  border-radius: 2px;
-  background: #fff;
-  color: $fg-2;
+  border: 1px solid $border;
+  border-radius: t.$radius-sm;
+  background: $surface;
+  color: $text-muted;
   cursor: pointer;
-  transition: background 100ms, border-color 100ms;
+  transition: all t.$transition-fast;
 
   &:hover:not(:disabled) {
-    background: $neutral-100;
-    border-color: $blue;
-    color: $blue;
+    background: $brand-5;
+    border-color: $primary;
+    color: $primary;
   }
 
   &:disabled {
-    opacity: 0.4;
+    opacity: 0.35;
     cursor: default;
   }
 }
 
 .pg-info {
-  font-size: 11px;
-  color: $fg-3;
+  font-size: t.$font-size-xs;
+  color: $text-muted;
   white-space: nowrap;
 }

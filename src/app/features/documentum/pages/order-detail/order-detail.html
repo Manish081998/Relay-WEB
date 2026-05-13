@@ -1,0 +1,266 @@
+<div class="od-page">
+
+  <!-- ═══ Sales Order Package Information ═══ -->
+  <div class="od-pkg-card">
+    <div class="od-pkg-bar">
+      <h2 class="od-pkg-bar-title">Sales Order Package Information</h2>
+    </div>
+    <div class="od-pkg-body">
+      <div class="od-pkg-grid">
+        <!-- Left column -->
+        <div class="od-pkg-col">
+          <div class="od-pkg-field">
+            <span class="od-pkg-label">Sales Order Number:</span>
+            <span class="od-pkg-value">{{ packageInfo.salesOrderNumber }}</span>
+          </div>
+          <div class="od-pkg-field">
+            <span class="od-pkg-label">Purchase Order Number:</span>
+            <span class="od-pkg-value">{{ packageInfo.purchaseOrderNumber }}</span>
+          </div>
+          <div class="od-pkg-field">
+            <span class="od-pkg-label">Account Number:</span>
+            <span class="od-pkg-value">{{ packageInfo.accountNumber }}</span>
+          </div>
+          <div class="od-pkg-field">
+            <span class="od-pkg-label">Rep Name:</span>
+            <span class="od-pkg-value">{{ packageInfo.repName }}</span>
+          </div>
+          <div class="od-pkg-field">
+            <span class="od-pkg-label">Job Name:</span>
+            <span class="od-pkg-value">{{ packageInfo.jobName || '&nbsp;' }}</span>
+          </div>
+          <div class="od-pkg-field">
+            <span class="od-pkg-label">Brand:</span>
+            <span class="od-pkg-value">{{ packageInfo.brand }}</span>
+          </div>
+          <div class="od-pkg-field">
+            <span class="od-pkg-label">Priority:</span>
+            <span class="od-pkg-value">{{ packageInfo.priority }}</span>
+          </div>
+        </div>
+
+        <!-- Right column -->
+        <div class="od-pkg-col">
+          <div class="od-pkg-field">
+            <span class="od-pkg-label">Product Type:</span>
+            <span class="od-pkg-value">{{ packageInfo.productType }}</span>
+          </div>
+          <div class="od-pkg-field">
+            <span class="od-pkg-label">Region:</span>
+            <span class="od-pkg-value">{{ packageInfo.region }}</span>
+          </div>
+          <div class="od-pkg-field">
+            <span class="od-pkg-label">Capture Date:</span>
+            <span class="od-pkg-value">{{ packageInfo.captureDate }}</span>
+          </div>
+          <div class="od-pkg-field">
+            <span class="od-pkg-label">Completion Date:</span>
+            <span class="od-pkg-value">{{ packageInfo.completionDate }}</span>
+          </div>
+          <div class="od-pkg-field">
+            <span class="od-pkg-label">Status:</span>
+            <span class="od-pkg-value od-pkg-value--status">{{ packageInfo.status }}</span>
+          </div>
+          <div class="od-pkg-field">
+            <span class="od-pkg-label">Queue Owner:</span>
+            <span class="od-pkg-value">{{ packageInfo.queueOwner || '&nbsp;' }}</span>
+          </div>
+          <div class="od-pkg-field">
+            <span class="od-pkg-label">Sub Brand:</span>
+            <span class="od-pkg-value">{{ packageInfo.subBrand || '&nbsp;' }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="od-pkg-actions">
+      <button class="od-btn od-btn--disabled" disabled>Import Support Doc</button>
+      <button class="od-btn od-btn--disabled" disabled>Edit Package Metadata</button>
+    </div>
+  </div>
+
+  <!-- ═══ Notes ═══ -->
+  <div class="od-notes-section">
+    <h3 class="od-section-heading">Notes</h3>
+    <table class="od-data-tbl">
+      <thead>
+        <tr>
+          <th>Created on</th>
+          <th>User Name</th>
+          <th>Note</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (note of notes; track note.createdOn) {
+          <tr>
+            <td>{{ note.createdOn }}</td>
+            <td class="od-link">{{ note.userName }}</td>
+            <td>{{ note.note }}</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+    <div class="od-notes-btns">
+      <button class="od-btn od-btn--primary">Create Note</button>
+      <button class="od-btn od-btn--primary">Email Notes</button>
+    </div>
+  </div>
+
+  <!-- ═══ Tabs ═══ -->
+  <div class="od-tabs">
+    <button
+      class="od-tab"
+      [class.od-tab--active]="activeTab() === 'documents'"
+      (click)="setTab('documents')"
+    >Sales Order &amp; Support Documents</button>
+    <button
+      class="od-tab"
+      [class.od-tab--active]="activeTab() === 'logs'"
+      (click)="setTab('logs')"
+    >Workflow Logs</button>
+  </div>
+
+  <hr class="od-divider" />
+
+  <!-- ═══ Tab: Sales Order & Support Documents ═══ -->
+  @if (activeTab() === 'documents') {
+    <!-- Sales Order -->
+    <div class="od-tbl-section">
+      <h3 class="od-section-heading">Sales Order</h3>
+      <table class="od-data-tbl">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Created on</th>
+            <th>Created by</th>
+            <th>Version Label</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (doc of salesOrders; track doc.name) {
+            <tr>
+              <td class="od-link">{{ doc.name }}</td>
+              <td>{{ doc.createdOn }}</td>
+              <td>{{ doc.createdBy }}</td>
+              <td class="od-version-cell">{{ doc.versionLabel }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Support Documents -->
+    <div class="od-tbl-section">
+      <h3 class="od-section-heading">Support Documents</h3>
+      <table class="od-data-tbl">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Created On</th>
+            <th>Created By</th>
+            <th>Last Changed</th>
+            <th>Last Changed By</th>
+            <th>ID</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (doc of supportDocuments; track doc.id) {
+            <tr>
+              <td>{{ doc.name }}</td>
+              <td>{{ doc.createdOn }}</td>
+              <td>{{ doc.createdBy }}</td>
+              <td>{{ doc.lastChanged }}</td>
+              <td>{{ doc.lastChangedBy }}</td>
+              <td>{{ doc.id }}</td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="6" class="od-empty-row">No results found.</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+      <div class="od-tbl-footer">
+        <button class="od-btn od-btn--disabled" disabled>View Selected Support Document</button>
+      </div>
+    </div>
+  }
+
+  <!-- ═══ Tab: Workflow Logs ═══ -->
+  @if (activeTab() === 'logs') {
+    <!-- Workflow History -->
+    <div class="od-tbl-section">
+      <div class="od-tbl-header-row">
+        <h3 class="od-section-heading">Workflow History</h3>
+        <div class="od-tbl-actions">
+          <button class="od-btn od-btn--primary">Email Log</button>
+          <button class="od-btn od-btn--primary">Refresh</button>
+        </div>
+      </div>
+      <table class="od-data-tbl">
+        <thead>
+          <tr>
+            <th>Activity Name</th>
+            <th>Comments</th>
+            <th>User Name</th>
+            <th>Timestamp</th>
+            <th>Event Type</th>
+            <th>Order Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of workflowHistory; track row.timestamp) {
+            <tr>
+              <td class="od-link">{{ row.activityName }}</td>
+              <td>{{ row.comments }}</td>
+              <td class="od-link">{{ row.userName }}</td>
+              <td>{{ row.timestamp }}</td>
+              <td class="od-link">{{ row.eventType }}</td>
+              <td><span class="od-status-text">{{ row.orderStatus }}</span></td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <hr class="od-divider" />
+
+    <!-- Sales Order History -->
+    <div class="od-tbl-section">
+      <div class="od-tbl-header-row">
+        <h3 class="od-section-heading">Sales Order History</h3>
+        <div class="od-tbl-actions">
+          <button class="od-btn od-btn--disabled" disabled>View Selected Version</button>
+        </div>
+      </div>
+      <table class="od-data-tbl">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Created on</th>
+            <th>Created by</th>
+            <th>Version Label</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of salesOrderHistory; track row.name) {
+            <tr>
+              <td class="od-link">{{ row.name }}</td>
+              <td>{{ row.createdOn }}</td>
+              <td>{{ row.createdBy }}</td>
+              <td><strong>{{ row.versionLabel }}</strong></td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+
+  <!-- ═══ Footer ═══ -->
+  <div class="od-footer">
+    <button class="od-btn od-btn--back" (click)="goBack()">
+      &larr; Back to Search
+    </button>
+  </div>
+
+</div>

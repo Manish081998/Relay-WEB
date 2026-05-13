@@ -22,13 +22,23 @@ export interface OrderSearchResponse {
 }
 
 export interface OrderSearchRequest {
+  salesOrderNumber?: string;
   repPO?: string;
   accountNumber?: string;
+  productType?: string;
+  region?: string;
+  priority?: string;
   brand?: string;
-  repUserName?: string;
-  jobNumber?: string;
-  orderDateFrom?: string;
-  orderDateTo?: string;
+  captureDateFrom?: string;
+  captureDateTo?: string;
+  jobName?: string;
+  queueName?: string;
+  packageOwner?: string;
   pageNumber: number;
   pageSize: number;
+}
+
+export interface DropdownOption {
+  label: string;
+  value: string;
 }

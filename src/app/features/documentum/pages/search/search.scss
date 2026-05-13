@@ -1,61 +1,291 @@
-@use 'form-controls' as fc;
 @use 'theme' as t;
+@use 'sass:color';
 
-// This page's search form is rendered by <app-order-search-panel> which owns
-// its own SCSS. Only page-level layout lives here.
+// ── Tokens from project theme ────────────────────────────────────────────────
+$primary:     t.$color-primary;
+$primary-dk:  t.$color-primary-dark;
+$brand-5:     rgba(t.$color-primary, 0.04);
+$brand-8:     rgba(t.$color-primary, 0.07);
+$po-bg:       rgba(t.$color-primary, 0.12);
 
+$surface:     t.$color-bg-surface;
+$surface-alt: t.$color-bg-subtle;
+
+$border:      t.$color-border;
+$border-str:  t.$color-border-strong;
+
+$text:        t.$color-text-base;
+$text-muted:  t.$color-text-muted;
+$text-faint:  t.$color-text-subtle;
+
+// ── Page ─────────────────────────────────────────────────────────────────────
 :host {
   display: block;
   font-family: t.$font-sans;
+  -webkit-font-smoothing: antialiased;
 }
 
-// ── Results card ──────────────────────────────────────────────────────────────
-.results-card {
-  @include fc.results-card;
+.qs-page {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
 }
 
-.results-header {
-  @include fc.results-header;
+// ── Title row ────────────────────────────────────────────────────────────────
+.qs-title-row {
+  margin-bottom: 6px;
 }
-
-.results-title {
+.qs-title {
+  margin: 0;
+  font-size: t.$font-size-lg;
+  font-weight: t.$font-weight-bold;
+  color: $text;
+  letter-spacing: -0.01em;
   display: flex;
   align-items: center;
-  gap: t.$space-2;
+  gap: 8px;
 
-  > i {
-    font-size: 0.78rem;
-    color: #4b5563;
-  }
-
-  > span:first-of-type {
-    font-size: t.$font-size-xs;
-    font-weight: t.$font-weight-semibold;
-    text-transform: uppercase;
-    letter-spacing: 0.09em;
-    color: #4b5563;
+  &::before {
+    content: '';
+    display: inline-block;
+    width: 3px;
+    height: 20px;
+    background: linear-gradient(180deg, $primary, color.adjust($primary, $lightness: 15%));
+    border-radius: 2px;
+    flex-shrink: 0;
   }
 }
 
-.results-badge { @include fc.count-badge; }
+// ── Summary line ─────────────────────────────────────────────────────────────
+.qs-summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 4px 0 8px;
+  padding: 5px 14px;
+  font-size: t.$font-size-xs;
+  color: $text-muted;
+  background: $brand-5;
+  border: 1px solid rgba($primary, 0.12);
+  border-radius: t.$radius-full;
 
-// ── Table link buttons ────────────────────────────────────────────────────────
-.xml-btn     { @include fc.link-btn; font-weight: 500; }
-.release-btn { @include fc.link-btn; font-weight: 600; }
-
-// ── Empty state ───────────────────────────────────────────────────────────────
-.cell-empty {
-  padding: 36px 16px;
-  color: #9ca3af;
-  font-size: 0.8125rem;
-  text-align: center;
-  white-space: normal;
-  font-style: italic;
-
-  i {
-    display: block;
-    font-size: 1.5rem;
-    opacity: 0.35;
-    margin-bottom: 6px;
+  strong {
+    color: $primary;
+    font-weight: t.$font-weight-bold;
   }
+}
+
+// ── Grid wrapper ─────────────────────────────────────────────────────────────
+.qs-grid-wrap {
+  background: $surface;
+  border: 1px solid $border;
+  border-radius: t.$radius-lg;
+  overflow: hidden;
+  box-shadow: t.$shadow-card;
+  position: relative;
+}
+
+// ── Loading overlay ──────────────────────────────────────────────────────────
+.qs-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 28px;
+  font-size: t.$font-size-sm;
+  color: $text-muted;
+
+  i { font-size: 1.1rem; color: $primary; }
+}
+
+// ── Scrollable table container ───────────────────────────────────────────────
+.qs-tbl-scroll { overflow-x: auto; }
+
+// ── Dense enterprise table ───────────────────────────────────────────────────
+.qs-tbl {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+
+  // ── Header ─────────────────────────────────────────────────────────────────
+  thead th {
+    font-size: t.$font-size-xs;
+    font-weight: t.$font-weight-bold;
+    color: $text-muted;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    background: $surface-alt;
+    padding: 8px 10px;
+    border-bottom: 2px solid $border;
+    text-align: left;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+
+    &.col-r { text-align: right; }
+  }
+
+  // ── Body rows ──────────────────────────────────────────────────────────────
+  tbody tr {
+    background: $surface;
+    transition: background 80ms;
+
+    &.row-alt { background: $brand-5; }
+
+    &:hover { background: $brand-8; }
+  }
+
+  // ── Body cells ─────────────────────────────────────────────────────────────
+  tbody td {
+    font-size: t.$font-size-xs;
+    color: $text;
+    padding: 7px 10px;
+    border-bottom: 1px solid rgba($border, 0.4);
+    vertical-align: middle;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    &.col-r { text-align: right; font-variant-numeric: tabular-nums; }
+  }
+
+  // ── Highlighted PO column (primary key) ────────────────────────────────────
+  td.cell-po {
+    background: $po-bg;
+    font-weight: t.$font-weight-semibold;
+  }
+  tr:hover td.cell-po { background: color.scale($po-bg, $lightness: -6%); }
+
+  // ── Link-styled clickable cells ────────────────────────────────────────────
+  td.cell-link {
+    color: $primary;
+    font-weight: t.$font-weight-medium;
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    text-decoration-color: rgba($primary, 0.3);
+    transition: color t.$transition-fast, text-decoration-color t.$transition-fast;
+
+    &:hover {
+      color: $primary-dk;
+      text-decoration-color: $primary-dk;
+    }
+  }
+
+  // ── Sales Order sequence — subtle mono ─────────────────────────────────────
+  td.cell-seq {
+    font-family: ui-monospace, 'Cascadia Mono', 'Segoe UI Mono', Consolas, monospace;
+    font-size: t.$font-size-xs;
+    color: $text-muted;
+    letter-spacing: 0.01em;
+  }
+
+  // ── Truncated long-text cells ──────────────────────────────────────────────
+  td.cell-trunc {
+    max-width: 0;
+  }
+
+  // ── Empty / placeholder row ────────────────────────────────────────────────
+  td.cell-empty {
+    text-align: center;
+    padding: 36px 16px;
+    color: $text-faint;
+    font-size: t.$font-size-sm;
+    font-style: italic;
+    white-space: normal;
+    background: $surface-alt;
+
+    i {
+      margin-right: 6px;
+      font-size: 0.9rem;
+      vertical-align: -1px;
+    }
+  }
+}
+
+// ── Status chip ──────────────────────────────────────────────────────────────
+.status-chip {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: t.$radius-full;
+  font-size: 0.6rem;
+  font-weight: t.$font-weight-bold;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  background: rgba($border, 0.3);
+  color: $text-muted;
+
+  &[data-status*="active"],
+  &[data-status*="progress"] {
+    background: rgba(t.$color-info, 0.1);
+    color: t.$color-info;
+    border: 1px solid t.$color-info-border;
+  }
+  &[data-status*="hold"],
+  &[data-status*="pending"],
+  &[data-status*="wait"] {
+    background: t.$color-warning-bg;
+    color: #7a4e00;
+    border: 1px solid t.$color-warning-border;
+  }
+  &[data-status*="complet"],
+  &[data-status*="done"],
+  &[data-status*="ready"],
+  &[data-status*="production"] {
+    background: t.$color-success-bg;
+    color: #065f46;
+    border: 1px solid t.$color-success-border;
+  }
+  &[data-status*="error"],
+  &[data-status*="fail"],
+  &[data-status*="cancel"] {
+    background: t.$color-error-bg;
+    color: #842029;
+    border: 1px solid t.$color-error-border;
+  }
+}
+
+// ── Pagination bar ───────────────────────────────────────────────────────────
+.qs-pager {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 6px 14px;
+  border-top: 1px solid $border;
+  background: $surface-alt;
+  justify-content: flex-end;
+}
+
+.pg-btn {
+  height: 26px;
+  padding: 0 14px;
+  font-size: t.$font-size-xs;
+  font-weight: t.$font-weight-semibold;
+  font-family: t.$font-sans;
+  border: 1px solid $border;
+  border-radius: t.$radius-sm;
+  background: $surface;
+  color: $text-muted;
+  cursor: pointer;
+  transition: all t.$transition-fast;
+
+  &:hover:not(:disabled) {
+    background: $brand-5;
+    border-color: $primary;
+    color: $primary;
+  }
+
+  &:disabled {
+    opacity: 0.35;
+    cursor: default;
+  }
+}
+
+.pg-info {
+  font-size: t.$font-size-xs;
+  color: $text-muted;
+  white-space: nowrap;
 }

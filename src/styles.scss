@@ -16,6 +16,30 @@ html, body {
   overflow-x: hidden;
 }
 
+// ── PrimeNG Select overlay overrides ──────────────────────────────────────────
+.order-search-select-panel.p-select-overlay {
+  border: 1px solid #d1d5db;
+  border-radius: t.$radius-md;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  background: #fff;
+
+  .p-select-option {
+    padding: 6px 12px;
+    font-size: t.$font-size-sm;
+    font-family: t.$font-sans;
+    color: #1f2937;
+
+    &.p-select-option-selected {
+      background: #0a4a7a;
+      color: #fff;
+    }
+
+    &:not(.p-select-option-selected).p-focus {
+      background: #f3f4f6;
+    }
+  }
+}
+
 // ── PrimeNG Tooltip overrides ────────────────────────────────────────────────
 .p-tooltip {
   max-width: 320px;

@@ -6,111 +6,71 @@
 
   <form class="form" [formGroup]="form" (ngSubmit)="onSearch()">
     <div class="grid">
+      <!-- Row 1 -->
       <div class="field">
-        <label for="repPO">Purchase Order Number</label>
-        <input
-          id="repPO"
-          pInputText
-          type="text"
-          formControlName="repPO"
-          placeholder="Purchase Order #"
-          autocomplete="off"
-        />
+        <label for="salesOrderNumber">Sales Order #</label>
+        <input id="salesOrderNumber" pInputText type="text" formControlName="salesOrderNumber" placeholder="Enter SO#" autocomplete="off" />
       </div>
-
       <div class="field">
-        <label for="accountNumber">Account Number</label>
-        <input
-          id="accountNumber"
-          pInputText
-          type="text"
-          formControlName="accountNumber"
-          placeholder="Account #"
-          autocomplete="off"
-        />
+        <label for="productType">Product Type</label>
+        <p-select id="productType" formControlName="productType" [options]="productTypes()" optionLabel="label" optionValue="value" placeholder="Select" [showClear]="true" appendTo="body" panelStyleClass="order-search-select-panel" styleClass="w-full" />
       </div>
-
+      <div class="field">
+        <label for="captureDateFrom">Date From</label>
+        <input id="captureDateFrom" pInputText type="text" formControlName="captureDateFrom" placeholder="MM/DD/YYYY" autocomplete="off" />
+      </div>
       <div class="field">
         <label for="brand">Brand</label>
-        <input
-          id="brand"
-          pInputText
-          type="text"
-          formControlName="brand"
-          placeholder="Brand name"
-          autocomplete="off"
-        />
+        <p-select id="brand" formControlName="brand" [options]="brands()" optionLabel="label" optionValue="value" placeholder="Select" [showClear]="true" appendTo="body" panelStyleClass="order-search-select-panel" styleClass="w-full" (onChange)="onBrandChange()" />
       </div>
 
+      <!-- Row 2 -->
       <div class="field">
-        <label for="repSalesPerson">Rep Sales Person</label>
-        <input
-          id="repSalesPerson"
-          pInputText
-          type="text"
-          formControlName="repSalesPerson"
-          placeholder="Sales person"
-          autocomplete="off"
-        />
+        <label for="repPO">Purchase Order #</label>
+        <input id="repPO" pInputText type="text" formControlName="repPO" placeholder="Enter PO#" autocomplete="off" />
+      </div>
+      <div class="field">
+        <label for="region">Region</label>
+        <p-select id="region" formControlName="region" [options]="regions" optionLabel="label" optionValue="value" placeholder="Select" [showClear]="true" appendTo="body" panelStyleClass="order-search-select-panel" styleClass="w-full" />
+      </div>
+      <div class="field">
+        <label for="captureDateTo">Date To</label>
+        <input id="captureDateTo" pInputText type="text" formControlName="captureDateTo" placeholder="MM/DD/YYYY" autocomplete="off" />
+      </div>
+      <div class="field">
+        <label for="queueName">Queue Name</label>
+        <p-select id="queueName" formControlName="queueName" [options]="queueNames()" optionLabel="label" optionValue="value" placeholder="Select" [showClear]="true" appendTo="body" panelStyleClass="order-search-select-panel" styleClass="w-full" />
       </div>
 
+      <!-- Row 3 -->
       <div class="field">
-        <label for="jobNumber">Job Number</label>
-        <input
-          id="jobNumber"
-          pInputText
-          type="text"
-          formControlName="jobNumber"
-          placeholder="Job #"
-          autocomplete="off"
-        />
+        <label for="accountNumber">Account #</label>
+        <input id="accountNumber" pInputText type="text" formControlName="accountNumber" placeholder="Enter Account#" autocomplete="off" />
       </div>
-
       <div class="field">
-        <label for="orderDateFrom">Order Date From</label>
-        <input
-          id="orderDateFrom"
-          pInputText
-          type="text"
-          formControlName="orderDateFrom"
-          placeholder="MM/DD/YYYY"
-          autocomplete="off"
-        />
+        <label for="priority">Priority</label>
+        <p-select id="priority" formControlName="priority" [options]="priorities" optionLabel="label" optionValue="value" placeholder="Select" [showClear]="true" appendTo="body" panelStyleClass="order-search-select-panel" styleClass="w-full" />
       </div>
-
       <div class="field">
-        <label for="orderDateTo">Order Date To</label>
-        <input
-          id="orderDateTo"
-          pInputText
-          type="text"
-          formControlName="orderDateTo"
-          placeholder="MM/DD/YYYY"
-          autocomplete="off"
-        />
+        <label for="jobName">Job Name</label>
+        <input id="jobName" pInputText type="text" formControlName="jobName" placeholder="Enter Job" autocomplete="off" />
+      </div>
+      <div class="field">
+        <label for="packageOwner">Package Owner</label>
+        <input id="packageOwner" pInputText type="text" formControlName="packageOwner" placeholder="Enter Owner" autocomplete="off" />
       </div>
     </div>
 
     <div class="actions">
       <div class="records-field">
-        <label for="pageSize">No. Records</label>
-        <input
-          id="pageSize"
-          pInputText
-          type="text"
-          inputmode="numeric"
-          formControlName="pageSize"
-          placeholder="100"
-          autocomplete="off"
-        />
+        <label for="pageSize">Records</label>
+        <input id="pageSize" pInputText type="text" inputmode="numeric" formControlName="pageSize" placeholder="100" autocomplete="off" />
       </div>
       <button type="button" class="btn-clear" (click)="onClear()">
-        <i class="pi pi-refresh"></i>
-        Clear
+        <i class="pi pi-refresh"></i> Clear
       </button>
       <button type="submit" class="btn-search">
-        <i class="pi pi-search"></i>
-        Search
+        <i class="pi pi-search"></i> Search
       </button>
     </div>
   </form>

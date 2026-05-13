@@ -62,7 +62,9 @@ export class HeaderComponent {
 
   /** Breadcrumb trail: e.g. ['Home', 'Intranet', 'Users'] */
   readonly breadcrumbTrail = computed<string[]>(() => {
-    const segments = (this.currentUrl() ?? '').split('/').filter(Boolean);
+    const raw = this.currentUrl() ?? '';
+    const [path, qs] = raw.split('?');
+    const segments = path.split('/').filter(Boolean);
     const trail: string[] = ['Home'];
 
     const section = segments[0] ?? '';
@@ -73,7 +75,17 @@ export class HeaderComponent {
     }
 
     const page = segments[1];
-    if (page) {
+    if (page === 'workflow-information') {
+      trail.push('Queue Search');
+      const params = new URLSearchParams(qs ?? '');
+      const so = params.get('so');
+      if (so) trail.push(so);
+    } else if (page === 'order-detail') {
+      trail.push('Search');
+      const params = new URLSearchParams(qs ?? '');
+      const so = params.get('so');
+      if (so) trail.push(so);
+    } else if (page) {
       trail.push(page.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase()));
     }
 
