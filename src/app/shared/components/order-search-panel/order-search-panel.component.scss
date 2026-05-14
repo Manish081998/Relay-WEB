@@ -225,6 +225,21 @@ $divider:     rgba(t.$color-border, 0.4);
   i { font-size: 0.7rem; }
 }
  
+.btn-acquire {
+  @extend %btn-base;
+  background: $surface-alt;
+  border: 1px solid $border-str;
+  color: $text-body;
+  padding: 0 16px;
+
+  &:hover {
+    border-color: $primary;
+    color: $primary;
+    background: rgba($primary, 0.04);
+  }
+  &:active { background: rgba($primary, 0.08); }
+}
+
 .btn-clear {
   @extend %btn-base;
   background: $surface;

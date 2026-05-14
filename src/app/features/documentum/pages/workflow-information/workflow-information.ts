@@ -1,16 +1,19 @@
 import {
   ChangeDetectionStrategy, Component, computed,
-  inject, input, signal,
+  DestroyRef, ElementRef, inject, input, signal, viewChild,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { map } from 'rxjs';
+import { OrdersService } from '../../services/orders.service';
+import { DropdownOption } from '../../models/order.model';
 
 @Component({
   selector: 'app-workflow-information',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './workflow-information.html',
   styleUrl: './workflow-information.scss',
@@ -18,6 +21,8 @@ import { map } from 'rxjs';
 export class WorkflowInformation {
   private readonly router = inject(Router);
   private readonly route  = inject(ActivatedRoute);
+  private readonly ordersService = inject(OrdersService);
+  private readonly destroyRef = inject(DestroyRef);
 
   readonly orderGuid = input<string>('');
   readonly activeTab = signal<'info' | 'documents' | 'history'>('info');
@@ -26,6 +31,10 @@ export class WorkflowInformation {
     this.route.queryParamMap.pipe(map(p => p.get('so') ?? '')),
     { initialValue: '' },
   );
+
+  // ── Route To Department dropdown ──────────────────────────────────────────
+  readonly routeToDepartmentQueues = signal<DropdownOption[]>([]);
+  readonly selectedRouteTo = signal<string>('');
 
   readonly workflow = {
     queueName: 'Release to Production',
@@ -65,12 +74,71 @@ export class WorkflowInformation {
     { name: '18T109JB3G 1-14-2020_093800.pdf', createdOn: '01/14/20 09:38 pm', createdBy: 'asc_order_load', versionLabel: 'CURRENT' },
   ];
 
-  readonly notes = [
+  readonly notes = signal([
     { createdOn: '12/22/25 06:42 pm', userName: 'ccarfwja', note: '113.62 1' },
-  ];
+  ]);
+
+  // ── Add Note panel ────────────────────────────────────────────────────────
+  readonly showNotePanel = signal(false);
+  readonly newNoteText = signal('');
+  readonly isSavingNote = signal(false);
+  readonly noteTextarea = viewChild<ElementRef<HTMLTextAreaElement>>('noteTextarea');
+
+  constructor() {
+    // Load Route To Department queues based on the order's brand
+    if (this.packageInfo.brand) {
+      this.ordersService.getRouteToDepartment(this.packageInfo.brand)
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe(queues => this.routeToDepartmentQueues.set(queues));
+    }
+  }
 
   setTab(tab: 'info' | 'documents' | 'history'): void {
     this.activeTab.set(tab);
+  }
+
+  toggleNotePanel(): void {
+    const opening = !this.showNotePanel();
+    this.showNotePanel.set(opening);
+    if (opening) {
+      this.newNoteText.set('');
+      // Focus the textarea after DOM renders
+      setTimeout(() => this.noteTextarea()?.nativeElement.focus(), 50);
+    }
+  }
+
+  saveNote(): void {
+    const text = this.newNoteText().trim();
+    if (!text) return;
+
+    this.isSavingNote.set(true);
+
+    // Build new note with current timestamp
+    const now = new Date();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    const year = String(now.getFullYear()).slice(-2);
+    const hours = now.getHours();
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    const ampm = hours >= 12 ? 'pm' : 'am';
+    const h12 = hours % 12 || 12;
+    const timestamp = `${month}/${day}/${year} ${String(h12).padStart(2, '0')}:${minutes} ${ampm}`;
+
+    const newNote = {
+      createdOn: timestamp,
+      userName: 'current_user', // TODO: replace with actual logged-in user
+      note: text,
+    };
+
+    this.notes.update(prev => [newNote, ...prev]);
+    this.newNoteText.set('');
+    this.isSavingNote.set(false);
+    this.showNotePanel.set(false);
+  }
+
+  cancelNote(): void {
+    this.newNoteText.set('');
+    this.showNotePanel.set(false);
   }
 
   goBack(): void {

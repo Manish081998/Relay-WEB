@@ -66,6 +66,11 @@
         <label for="pageSize">Records</label>
         <input id="pageSize" pInputText type="text" inputmode="numeric" formControlName="pageSize" placeholder="100" autocomplete="off" />
       </div>
+      @if (showAcquireButton()) {
+        <button type="button" class="btn-acquire" (click)="acquire.emit()">
+          Acquire Selected Queue Items
+        </button>
+      }
       <button type="button" class="btn-clear" (click)="onClear()">
         <i class="pi pi-refresh"></i> Clear
       </button>

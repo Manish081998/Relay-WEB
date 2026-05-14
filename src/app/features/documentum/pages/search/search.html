@@ -10,15 +10,35 @@
     [productTypes]="productTypes()"
     [brands]="brands()"
     [queueNames]="queueNames()"
+    [defaultBrand]="'Carrier'"
     (brandChanged)="onBrandChanged($event)"
     (search)="onSearch($event)"
     (cleared)="onCleared()"
   />
 
-  <!-- Record Summary -->
+  <!-- Record Summary + Selection Info -->
   @if (searched() && !loading()) {
-    <div class="qs-summary">
-      Total Number of Active Queue Items: {{ selectedQueueName() || 'All Queues' }} = <strong>{{ totalCount() }}</strong>
+    <div class="qs-toolbar">
+      <div class="qs-summary">
+        Total Records: {{ selectedQueueName() || 'All Queues' }} = <strong>{{ totalCount() }}</strong>
+        @if (hasActiveFilters) {
+          <span class="filter-badge">
+            <i class="pi pi-filter"></i> Filtered
+          </span>
+        }
+      </div>
+      <div class="qs-toolbar-actions">
+        @if (selectedCount() > 0) {
+          <span class="selection-badge">
+            <i class="pi pi-check-square"></i> {{ selectedCount() }} selected
+          </span>
+        }
+        @if (hasActiveFilters) {
+          <button class="btn-clear-filters" (click)="clearAllFilters()">
+            <i class="pi pi-filter-slash"></i> Clear Filters
+          </button>
+        }
+      </div>
     </div>
   }
 
@@ -35,42 +55,96 @@
     <div class="qs-tbl-scroll">
       <table class="qs-tbl">
         <colgroup>
-          <col style="width:110px" />  <!-- Rep PO          -->
-          <col style="width:90px"  />  <!-- Order Seq       -->
-          <col style="width:100px" />  <!-- Account #       -->
-          <col style="width:80px"  />  <!-- Brand           -->
-          <col style="width:140px" />  <!-- Rep Name        -->
-          <col style="width:90px"  />  <!-- Job #           -->
-          <col style="width:95px"  />  <!-- Total Net       -->
-          <col style="width:115px" />  <!-- Created Date    -->
+          <col style="width:36px"  />  <!-- Checkbox         -->
+          <col style="width:120px" />  <!-- Purchase Order    -->
+          <col style="width:90px"  />  <!-- Sales Order       -->
+          <col style="width:50px"  />  <!-- Priority          -->
+          <col style="width:100px" />  <!-- Account Number    -->
+          <col style="width:120px" />  <!-- Rep Name          -->
+          <col style="width:150px" />  <!-- Queue Name        -->
+          <col style="width:65px"  />  <!-- Product           -->
+          <col style="width:65px"  />  <!-- Region            -->
+          <col style="width:100px" />  <!-- Job Name          -->
+          <col style="width:130px" />  <!-- Created Date      -->
+          <col style="width:130px" />  <!-- Date in Queue     -->
+          <col style="width:110px" />  <!-- Package Owner     -->
+          <col style="width:80px"  />  <!-- Brand             -->
         </colgroup>
         <thead>
           <tr>
+            <th class="col-chk">
+              <label class="chk-wrap">
+                <input type="checkbox"
+                       [checked]="isAllSelected()"
+                       [indeterminate]="isIndeterminate()"
+                       (change)="toggleSelectAll()" />
+                <span class="chk-box">
+                  <i class="pi" [class.pi-check]="isAllSelected()" [class.pi-minus]="isIndeterminate()"></i>
+                </span>
+              </label>
+            </th>
             <th>Purchase Order</th>
             <th>Sales Order</th>
+            <th>Priority</th>
             <th>Account Number</th>
-            <th>Brand</th>
             <th>Rep Name</th>
-            <th>Job #</th>
-            <th class="col-r">Total Net</th>
+            <th>Queue Name</th>
+            <th>Product</th>
+            <th>Region</th>
+            <th>Job Name</th>
             <th>Created Date</th>
+            <th>Date in Queue</th>
+            <th>Package Owner</th>
+            <th>Brand</th>
+          </tr>
+          <!-- Filter row -->
+          <tr class="filter-row">
+            <th class="col-chk"></th>
+            <th><input type="text" class="col-filter" placeholder="Filter..." [ngModel]="colFilters()['repPO'] ?? ''" (ngModelChange)="onFilterChange('repPO', $event)" /></th>
+            <th><input type="text" class="col-filter" placeholder="Filter..." [ngModel]="colFilters()['salesOrderNumber'] ?? ''" (ngModelChange)="onFilterChange('salesOrderNumber', $event)" /></th>
+            <th><input type="text" class="col-filter" placeholder="Filter..." [ngModel]="colFilters()['priority'] ?? ''" (ngModelChange)="onFilterChange('priority', $event)" /></th>
+            <th><input type="text" class="col-filter" placeholder="Filter..." [ngModel]="colFilters()['accountNumber'] ?? ''" (ngModelChange)="onFilterChange('accountNumber', $event)" /></th>
+            <th><input type="text" class="col-filter" placeholder="Filter..." [ngModel]="colFilters()['repName'] ?? ''" (ngModelChange)="onFilterChange('repName', $event)" /></th>
+            <th><input type="text" class="col-filter" placeholder="Filter..." [ngModel]="colFilters()['queueName'] ?? ''" (ngModelChange)="onFilterChange('queueName', $event)" /></th>
+            <th><input type="text" class="col-filter" placeholder="Filter..." [ngModel]="colFilters()['productType'] ?? ''" (ngModelChange)="onFilterChange('productType', $event)" /></th>
+            <th><input type="text" class="col-filter" placeholder="Filter..." [ngModel]="colFilters()['region'] ?? ''" (ngModelChange)="onFilterChange('region', $event)" /></th>
+            <th><input type="text" class="col-filter" placeholder="Filter..." [ngModel]="colFilters()['jobName'] ?? ''" (ngModelChange)="onFilterChange('jobName', $event)" /></th>
+            <th></th>
+            <th></th>
+            <th><input type="text" class="col-filter" placeholder="Filter..." [ngModel]="colFilters()['packageOwner'] ?? ''" (ngModelChange)="onFilterChange('packageOwner', $event)" /></th>
+            <th><input type="text" class="col-filter" placeholder="Filter..." [ngModel]="colFilters()['brand'] ?? ''" (ngModelChange)="onFilterChange('brand', $event)" /></th>
           </tr>
         </thead>
         <tbody>
           @for (order of orders(); track order.orderGuid; let i = $index) {
-            <tr [class.row-alt]="i % 2 !== 0">
+            <tr [class.row-alt]="i % 2 !== 0" [class.row-selected]="isRowSelected(order.orderGuid)">
+              <td class="col-chk">
+                <label class="chk-wrap">
+                  <input type="checkbox"
+                         [checked]="isRowSelected(order.orderGuid)"
+                         (change)="toggleRow(order.orderGuid)" />
+                  <span class="chk-box">
+                    <i class="pi pi-check"></i>
+                  </span>
+                </label>
+              </td>
               <td class="cell-link cell-po" (click)="openOrder(order)">{{ order.repPO }}</td>
-              <td class="cell-seq">{{ order.orderSeq }}</td>
+              <td class="cell-seq">{{ order.salesOrderNumber || order.orderSeq }}</td>
+              <td>{{ order.priority }}</td>
               <td>{{ order.accountNumber }}</td>
-              <td>{{ order.brand }}</td>
-              <td class="cell-trunc">{{ order.repUserName }}</td>
-              <td>{{ order.jobNumber }}</td>
-              <td class="col-r">{{ order.totalNet }}</td>
+              <td class="cell-trunc">{{ order.repName || order.repUserName }}</td>
+              <td class="cell-trunc">{{ order.queueName }}</td>
+              <td>{{ order.productType }}</td>
+              <td>{{ order.region }}</td>
+              <td class="cell-trunc">{{ order.jobName }}</td>
+              <td>{{ order.createdDate | date:'MM/dd/yy hh:mm a' }}</td>
               <td>{{ order.orderDate | date:'MM/dd/yy hh:mm a' }}</td>
+              <td class="cell-trunc">{{ order.packageOwner }}</td>
+              <td>{{ order.brand }}</td>
             </tr>
           } @empty {
             <tr>
-              <td colspan="8" class="cell-empty">
+              <td colspan="14" class="cell-empty">
                 @if (searched()) {
                   <i class="pi pi-inbox"></i> No records found matching your criteria.
                 } @else {

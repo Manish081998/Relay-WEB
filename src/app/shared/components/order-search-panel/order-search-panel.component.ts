@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, inject, input, output } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { InputTextModule } from 'primeng/inputtext';
 import { Select } from 'primeng/select';
@@ -14,10 +14,14 @@ import { DropdownOption, OrderSearchRequest } from '../../../features/documentum
 })
 export class OrderSearchPanelComponent {
   private readonly fb = inject(FormBuilder);
+  private defaultBrandApplied = false;
 
   readonly search = output<OrderSearchRequest>();
   readonly cleared = output<void>();
   readonly brandChanged = output<string>();
+  readonly acquire = output<void>();
+
+  readonly showAcquireButton = input(false);
 
   readonly productTypes = input<DropdownOption[]>([]);
   readonly regions: DropdownOption[] = [
@@ -33,6 +37,9 @@ export class OrderSearchPanelComponent {
   readonly brands = input<DropdownOption[]>([]);
   readonly queueNames = input<DropdownOption[]>([]);
 
+  /** Default brand to pre-select and auto-search on page load. */
+  readonly defaultBrand = input<string>('');
+
   readonly form = this.fb.group({
     salesOrderNumber: [''],
     repPO:            [''],
@@ -46,8 +53,25 @@ export class OrderSearchPanelComponent {
     jobName:          [''],
     queueName:        [null as string | null],
     packageOwner:     [''],
-    pageSize:         ['100'],
+    pageSize:         ['20'],
   });
+
+  constructor() {
+    // When brands arrive and a defaultBrand is set, pre-select it and auto-search
+    effect(() => {
+      const brandList = this.brands();
+      const defaultVal = this.defaultBrand();
+      if (!defaultVal || brandList.length === 0 || this.defaultBrandApplied) return;
+
+      const match = brandList.find(b => b.value === defaultVal);
+      if (match) {
+        this.defaultBrandApplied = true;
+        this.form.patchValue({ brand: match.value });
+        this.brandChanged.emit(match.value);
+        this.onSearch();
+      }
+    });
+  }
 
   onBrandChange(): void {
     const brand = this.form.get('brand')!.value;
@@ -59,7 +83,7 @@ export class OrderSearchPanelComponent {
     const raw = this.form.getRawValue();
     const request: OrderSearchRequest = {
       pageNumber: 1,
-      pageSize: parseInt(raw.pageSize ?? '100', 10) || 100,
+      pageSize: parseInt(raw.pageSize ?? '20', 10) || 20,
     };
     if (raw.salesOrderNumber?.trim()) request.salesOrderNumber = raw.salesOrderNumber.trim();
     if (raw.repPO?.trim())            request.repPO            = raw.repPO.trim();
@@ -77,8 +101,12 @@ export class OrderSearchPanelComponent {
   }
 
   onClear(): void {
-    this.form.reset({ pageSize: '100' });
+    const currentBrand = this.form.get('brand')!.value;
+    this.form.reset({ pageSize: '20', brand: currentBrand });
     this.cleared.emit();
-    this.brandChanged.emit('');
+    // Re-emit brand so parent reloads queue names from API
+    this.brandChanged.emit(currentBrand ?? '');
+    // Auto-search with the retained brand so table reloads
+    this.onSearch();
   }
 }

@@ -27,6 +27,7 @@ export class OrdersService {
     if (request.jobName)          params['jobName']          = request.jobName;
     if (request.queueName)        params['queueName']        = request.queueName;
     if (request.packageOwner)     params['packageOwner']     = request.packageOwner;
+    if (request.repName)          params['repName']          = request.repName;
 
     return this.api.get<OrderSearchResponse>(
       `${this.env.apiBaseUrl}/api/documentum/orders/search`,
@@ -45,6 +46,15 @@ export class OrdersService {
   getQueuesByBrand(brandName: string): Observable<DropdownOption[]> {
     return this.api.get<string[]>(
       `${this.env.apiBaseUrl}/api/documentum/orders/queues`,
+      { params: { brandName } },
+    ).pipe(
+      map(queues => queues.map(q => ({ label: q, value: q }))),
+    );
+  }
+
+  getRouteToDepartment(brandName: string): Observable<DropdownOption[]> {
+    return this.api.get<string[]>(
+      `${this.env.apiBaseUrl}/api/documentum/orders/route-to-department`,
       { params: { brandName } },
     ).pipe(
       map(queues => queues.map(q => ({ label: q, value: q }))),

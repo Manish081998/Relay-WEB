@@ -2,86 +2,268 @@
 @use 'theme' as t;
 @use 'sass:color';
 
-:host { @extend %host-base; }
-.od-page { @extend %page-base; }
+// ── Local palette ────────────────────────────────────────────────────────────
+$amber:       #f59e0b;
+$amber-bg:    rgba(245, 158, 11, 0.10);
+$amber-bdr:   rgba(245, 158, 11, 0.30);
+$info-blue:   #3b82f6;
+$info-bg:     rgba(59, 130, 246, 0.08);
+$info-bdr:    rgba(59, 130, 246, 0.25);
 
-// ═══ Workflow Card ═══════════════════════════════════════════════════════════
-.od-card { @extend %card; margin-bottom: 24px; }
-.od-card__bar { @extend %card-bar; }
-.od-card__heading { @extend %card-heading; }
-.od-card__body { @extend %card-body; }
+:host { @extend %host-base; }
+
+.od-page {
+  @extend %page-base;
+  gap: 0;
+  padding: 0 0 32px;
+}
+
+// ═════════════════════════════════════════════════════════════════════════════
+// WORKFLOW CARD — Hero header
+// ═════════════════════════════════════════════════════════════════════════════
+.od-card {
+  @extend %card;
+  margin-bottom: 0;
+  border-radius: t.$radius-lg t.$radius-lg 0 0;
+  border-bottom: none;
+  overflow: visible;
+}
+
+.od-card__bar {
+  @extend %card-bar;
+  padding: 16px 28px;
+  background:
+    linear-gradient(135deg, ds.$brand 0%, ds.$brand-dark 60%, color.adjust(ds.$brand-dark, $lightness: -4%) 100%);
+  position: relative;
+  overflow: hidden;
+
+  // Subtle geometric pattern overlay
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(circle at 90% 20%, rgba(255,255,255,0.06) 0%, transparent 50%),
+      radial-gradient(circle at 10% 80%, rgba(255,255,255,0.03) 0%, transparent 40%);
+    pointer-events: none;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15) 30%, rgba(255,255,255,0.15) 70%, transparent);
+  }
+}
+
+.od-card__bar-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  position: relative;
+  z-index: 1;
+}
+
+.od-card__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: t.$radius-md;
+  color: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(8px);
+}
+
+.od-card__heading {
+  @extend %card-heading;
+  font-size: t.$font-size-lg;
+  letter-spacing: -0.01em;
+  position: relative;
+  z-index: 1;
+}
+
+.od-card__bar-btn {
+  @extend %btn-base;
+  position: relative;
+  z-index: 1;
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  font-size: t.$font-size-sm;
+  padding: 8px 20px;
+  backdrop-filter: blur(8px);
+  gap: 6px;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.45);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  }
+
+  &:active {
+    transform: translateY(0);
+    background: rgba(255, 255, 255, 0.15);
+  }
+}
+
+.od-card__body {
+  @extend %card-body;
+  padding: 20px 28px 22px;
+  background: ds.$surface;
+  border-left: 1px solid ds.$border;
+  border-right: 1px solid ds.$border;
+}
 
 .od-wf-row {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
-  gap: 8px 48px;
+  gap: 0 56px;
 }
 
 .od-wf-field {
   display: flex;
-  align-items: baseline;
-  gap: 12px;
+  flex-direction: column;
+  gap: 4px;
+  padding: 8px 0;
 }
 
 .od-wf-label {
-  font-size: t.$font-size-sm;
+  font-size: t.$font-size-xs;
   color: ds.$text-muted;
-  white-space: nowrap;
-  min-width: 90px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: t.$font-weight-semibold;
 }
 
 .od-wf-value {
-  font-size: t.$font-size-sm;
+  font-size: t.$font-size-base;
   color: ds.$text;
   font-weight: t.$font-weight-semibold;
+
+  &--state {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+}
+
+.od-state-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: $amber;
+  box-shadow: 0 0 8px rgba($amber, 0.5);
+  animation: statePulse 2s ease-in-out infinite;
+}
+
+@keyframes statePulse {
+  0%, 100% { box-shadow: 0 0 4px rgba($amber, 0.3); }
+  50%      { box-shadow: 0 0 12px rgba($amber, 0.7); }
+}
+
+.od-wf-route {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(ds.$border, 0.6);
 }
 
 .od-select { @extend %wf-select; }
 
-.od-card__bar-btn {
-  @extend %btn-base;
-  background: rgba(255, 255, 255, 0.15);
-  color: #fff;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  font-size: t.$font-size-sm;
-  padding: 7px 22px;
-  backdrop-filter: blur(4px);
+// ═════════════════════════════════════════════════════════════════════════════
+// TABS — Attached underline style
+// ═════════════════════════════════════════════════════════════════════════════
+.od-tabs-bar {
+  background: ds.$surface;
+  border-left: 1px solid ds.$border;
+  border-right: 1px solid ds.$border;
+  border-bottom: 2px solid ds.$border;
+  padding: 0 28px;
+}
 
-  &:hover {
-    background: rgba(255, 255, 255, 0.25);
-    border-color: rgba(255, 255, 255, 0.5);
-    transform: translateY(-1px);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+.od-tabs {
+  display: flex;
+  gap: 0;
+  margin: 0;
+}
+
+.od-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 14px 24px;
+  font-size: t.$font-size-sm;
+  font-weight: t.$font-weight-semibold;
+  font-family: t.$font-sans;
+  color: ds.$text-muted;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  cursor: pointer;
+  transition: all t.$transition-fast;
+  position: relative;
+  letter-spacing: 0.01em;
+
+  &:hover:not(.od-tab--active) {
+    color: ds.$brand;
+    background: rgba(ds.$brand, 0.03);
+  }
+
+  &--active {
+    color: ds.$brand;
+    border-bottom-color: ds.$brand;
+    background: rgba(ds.$brand, 0.04);
   }
 }
 
-// ═══ Tabs ════════════════════════════════════════════════════════════════════
-.od-tabs { @extend %tabs-container; }
-.od-tab {
-  @extend %tab-button;
-  &--active { @extend %tab-active; }
+.od-tab__icon {
+  opacity: 0.65;
+  flex-shrink: 0;
+
+  .od-tab--active & {
+    opacity: 1;
+  }
 }
 
-// ═══ Divider ═════════════════════════════════════════════════════════════════
-.od-divider { @extend %divider; }
+// ═════════════════════════════════════════════════════════════════════════════
+// TAB CONTENT AREA
+// ═════════════════════════════════════════════════════════════════════════════
+.od-tab-content {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding-top: 28px;
+}
 
-// ═══ Package Info Section (Order Info tab) ════════════════════════════════════
+// ═════════════════════════════════════════════════════════════════════════════
+// PACKAGE INFO — Refined card
+// ═════════════════════════════════════════════════════════════════════════════
 .od-pkg-section {
-  margin-bottom: 8px;
   background: ds.$surface;
   border: 1px solid ds.$border;
   border-radius: t.$radius-lg;
-  padding: 24px;
-  box-shadow: t.$shadow-sm;
+  padding: 0;
+  box-shadow: t.$shadow-card;
+  overflow: hidden;
 }
 
 .od-pkg-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 20px;
-  padding-bottom: 16px;
-  border-bottom: 1px solid rgba(ds.$border, 0.5);
+  padding: 18px 24px;
+  background: ds.$surface-alt;
+  border-bottom: 1px solid ds.$border;
 }
 
 .od-pkg-title {
@@ -89,7 +271,7 @@
   font-size: t.$font-size-sm;
   font-weight: t.$font-weight-bold;
   color: ds.$text;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.03em;
   text-transform: uppercase;
   display: flex;
   align-items: center;
@@ -108,72 +290,333 @@
 .od-pkg-grid {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
-  gap: 0 48px;
-  padding: 0 8px;
+  gap: 0;
+  padding: 8px 0;
 }
 
-.od-pkg-field { @extend %pkg-field; }
-.od-pkg-label { @extend %pkg-label; min-width: 165px; }
-.od-pkg-value { @extend %pkg-value; }
-.od-pkg-value--status { @extend %pkg-value-status; }
+.od-pkg-field {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 24px;
+  border-bottom: 1px solid rgba(ds.$border, 0.35);
+  min-height: 42px;
 
-// ═══ Notes (Order Info tab) ══════════════════════════════════════════════════
-.od-notes-wrap { @extend %notes-wrap; }
-.od-notes-left { @extend %notes-left; }
-.od-notes-heading { @extend %section-heading; }
-.od-notes-tbl { @extend %data-table; }
-.od-notes-user { @extend %link-cell; }
-.od-notes-actions { @extend %notes-actions; }
+  &:nth-last-child(-n+3) {
+    border-bottom: none;
+  }
 
-// ═══ Data Tables (Documents & History tabs) ══════════════════════════════════
-.od-tbl-section { margin-bottom: 24px; }
-.od-tbl-heading { @extend %section-heading; }
-.od-tbl-header-row { @extend %tbl-header-row; }
-.od-tbl-actions { @extend %tbl-actions; }
-.od-data-tbl { @extend %data-table; }
+  // Subtle column separator
+  &:not(:nth-child(3n)) {
+    border-right: 1px solid rgba(ds.$border, 0.25);
+  }
+}
+
+.od-pkg-label {
+  @extend %pkg-label;
+  min-width: 160px;
+  font-size: t.$font-size-xs;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-weight: t.$font-weight-semibold;
+}
+
+.od-pkg-value {
+  @extend %pkg-value;
+
+  &--mono {
+    font-family: 'JetBrains Mono', 'Fira Code', 'SF Mono', monospace;
+    font-size: t.$font-size-xs;
+    letter-spacing: 0.03em;
+    background: rgba(ds.$brand, 0.06);
+    padding: 2px 8px;
+    border-radius: t.$radius-sm;
+  }
+
+  &--empty {
+    color: ds.$text-faint;
+    font-weight: t.$font-weight-normal;
+  }
+
+  &--status { @extend %pkg-value-status; }
+}
+
+.od-pkg-tag {
+  display: inline-flex;
+  align-items: center;
+  font-size: t.$font-size-xs;
+  font-weight: t.$font-weight-bold;
+  padding: 2px 10px;
+  border-radius: t.$radius-full;
+  background: $info-bg;
+  color: $info-blue;
+  border: 1px solid $info-bdr;
+  letter-spacing: 0.04em;
+
+  &--brand {
+    background: rgba(ds.$brand, 0.08);
+    color: ds.$brand;
+    border-color: rgba(ds.$brand, 0.25);
+  }
+}
+
+.od-priority-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  font-size: t.$font-size-xs;
+  font-weight: t.$font-weight-bold;
+  background: $amber-bg;
+  color: color.adjust($amber, $lightness: -12%);
+  border: 1px solid $amber-bdr;
+}
+
+// ═════════════════════════════════════════════════════════════════════════════
+// NOTES SECTION — Modernized
+// ═════════════════════════════════════════════════════════════════════════════
+.od-notes-section {
+  background: ds.$surface;
+  border: 1px solid ds.$border;
+  border-radius: t.$radius-lg;
+  box-shadow: t.$shadow-card;
+  overflow: hidden;
+}
+
+.od-notes-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 24px;
+  background: ds.$surface-alt;
+  border-bottom: 1px solid ds.$border;
+}
+
+.od-notes-heading {
+  @extend %section-heading;
+  margin: 0;
+}
+
+.od-notes-toolbar {
+  display: flex;
+  gap: 8px;
+}
+
+.od-notes-tbl {
+  @extend %data-table;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.od-notes-user {
+  @extend %link-cell;
+}
+
+.od-notes-date {
+  font-variant-numeric: tabular-nums;
+  font-size: t.$font-size-xs;
+  color: ds.$text-muted;
+}
+
+// ═══ Inline Add Note Panel ═══════════════════════════════════════════════════
+.od-note-panel {
+  border-bottom: 1px solid ds.$border;
+  background: rgba(ds.$brand, 0.025);
+  animation: noteSlideDown 0.2s ease-out;
+}
+
+.od-note-panel__body {
+  padding: 20px 24px;
+}
+
+.od-note-panel__label {
+  display: block;
+  font-size: t.$font-size-xs;
+  font-weight: t.$font-weight-bold;
+  color: ds.$text-muted;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 8px;
+}
+
+.od-note-panel__textarea {
+  width: 100%;
+  min-height: 80px;
+  max-height: 200px;
+  resize: vertical;
+  font-size: t.$font-size-sm;
+  font-family: t.$font-sans;
+  color: ds.$text;
+  background: ds.$surface;
+  border: 1px solid ds.$border-strong;
+  border-radius: t.$radius-md;
+  padding: 12px 14px;
+  outline: none;
+  transition: border-color t.$transition-fast, box-shadow t.$transition-fast;
+  line-height: 1.6;
+
+  &::placeholder {
+    color: ds.$text-faint;
+  }
+
+  &:hover {
+    border-color: ds.$brand;
+  }
+
+  &:focus {
+    border-color: ds.$brand;
+    box-shadow: ds.$shadow-focus;
+  }
+}
+
+.od-note-panel__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 12px;
+}
+
+.od-note-panel__char-count {
+  font-size: t.$font-size-xs;
+  color: ds.$text-faint;
+  font-variant-numeric: tabular-nums;
+}
+
+.od-note-panel__actions {
+  display: flex;
+  gap: 8px;
+}
+
+.od-note-panel__spinner {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: noteSpin 0.6s linear infinite;
+}
+
+@keyframes noteSlideDown {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes noteSpin {
+  to { transform: rotate(360deg); }
+}
+
+// ═════════════════════════════════════════════════════════════════════════════
+// DOCUMENT/HISTORY SECTIONS — Unified card style
+// ═════════════════════════════════════════════════════════════════════════════
+.od-doc-section {
+  background: ds.$surface;
+  border: 1px solid ds.$border;
+  border-radius: t.$radius-lg;
+  box-shadow: t.$shadow-card;
+  overflow: hidden;
+}
+
+.od-doc-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 24px;
+  background: ds.$surface-alt;
+  border-bottom: 1px solid ds.$border;
+}
+
+.od-doc-toolbar {
+  display: flex;
+  gap: 8px;
+}
+
+.od-tbl-heading { @extend %section-heading; margin: 0; }
+.od-data-tbl {
+  @extend %data-table;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+}
 .od-link { @extend %link-cell; }
 .od-status-text { @extend %status-cell; }
-.od-version-cell { @extend %version-cell; }
 .od-empty-row { @extend %empty-row; }
 
-// ═══ Documents tab layout ════════════════════════════════════════════════════
-.od-doc-row { @extend %doc-row; }
-.od-doc-left { @extend %doc-left; }
-.od-doc-actions { @extend %doc-actions; }
-
-.od-history-footer {
-  display: flex;
-  justify-content: flex-end;
-  margin-top: 14px;
+.od-event-badge {
+  display: inline-flex;
+  align-items: center;
+  font-size: t.$font-size-xs;
+  font-weight: t.$font-weight-semibold;
+  padding: 3px 10px;
+  border-radius: t.$radius-full;
+  background: $info-bg;
+  color: $info-blue;
+  border: 1px solid $info-bdr;
+  letter-spacing: 0.02em;
 }
 
-// ═══ Placeholder ═════════════════════════════════════════════════════════════
-.od-placeholder {
-  padding: 48px 20px;
-  color: ds.$text-faint;
-  font-size: t.$font-size-sm;
-  text-align: center;
-  background: ds.$surface-alt;
-  border: 1px dashed ds.$border;
-  border-radius: t.$radius-lg;
-
-  p { margin: 0; }
+.od-version-badge {
+  display: inline-flex;
+  align-items: center;
+  font-size: t.$font-size-xs;
+  font-weight: t.$font-weight-bold;
+  padding: 3px 12px;
+  border-radius: t.$radius-full;
+  background: t.$color-success-bg;
+  color: #065f46;
+  border: 1px solid t.$color-success-border;
+  letter-spacing: 0.04em;
 }
 
-// ═══ Buttons ═════════════════════════════════════════════════════════════════
+// ═════════════════════════════════════════════════════════════════════════════
+// BUTTONS
+// ═════════════════════════════════════════════════════════════════════════════
 .od-btn {
   @extend %btn-base;
 
   &--primary { @extend %btn-primary; }
+
+  &--sm {
+    font-size: t.$font-size-xs;
+    padding: 7px 16px;
+  }
+
   &--outline-sm {
     @extend %btn-outline;
     font-size: t.$font-size-xs;
-    padding: 6px 16px;
+    padding: 7px 16px;
   }
+
+  &--ghost {
+    background: transparent;
+    color: ds.$text-muted;
+    border-color: transparent;
+    padding: 7px 16px;
+    font-size: t.$font-size-xs;
+
+    &:hover {
+      background: rgba(ds.$border, 0.4);
+      color: ds.$text;
+    }
+  }
+
   &--back { @extend %btn-back; }
+
   &--block { min-width: 160px; width: auto; }
-  &--disabled { @extend %btn-disabled; }
+
+  &--disabled, &:disabled {
+    @extend %btn-disabled;
+  }
 }
 
-// ═══ Footer ══════════════════════════════════════════════════════════════════
-.od-footer { @extend %footer; }
+// ═════════════════════════════════════════════════════════════════════════════
+// FOOTER
+// ═════════════════════════════════════════════════════════════════════════════
+.od-footer {
+  @extend %footer;
+  margin-top: 32px;
+  padding-top: 24px;
+}

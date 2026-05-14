@@ -12,6 +12,16 @@ export interface OrderItem {
   status: string;
   totalNet: string;
   orderRecdDate: string;
+  salesOrderNumber: string;
+  priority: string;
+  repName: string;
+  queueName: string;
+  productType: string;
+  region: string;
+  jobName: string;
+  createdDate: string;
+  completionDate: string;
+  packageOwner: string;
 }
 
 export interface OrderSearchResponse {
@@ -34,6 +44,7 @@ export interface OrderSearchRequest {
   jobName?: string;
   queueName?: string;
   packageOwner?: string;
+  repName?: string;
   pageNumber: number;
   pageSize: number;
 }

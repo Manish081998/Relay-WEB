@@ -3,136 +3,251 @@
   <!-- ═══ Workflow Information Card ═══ -->
   <div class="od-card">
     <div class="od-card__bar">
-      <h2 class="od-card__heading">Workflow Information</h2>
-      <button class="od-card__bar-btn">Acquire</button>
+      <div class="od-card__bar-left">
+        <span class="od-card__icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/>
+            <polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/>
+            <line x1="4" y1="4" x2="9" y2="9"/>
+          </svg>
+        </span>
+        <h2 class="od-card__heading">Workflow Information</h2>
+      </div>
+      <button class="od-card__bar-btn">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 5v14M5 12h14"/>
+        </svg>
+        Acquire
+      </button>
     </div>
     <div class="od-card__body">
       <div class="od-wf-row">
         <div class="od-wf-field">
-          <span class="od-wf-label">Queue Name:</span>
+          <span class="od-wf-label">Queue Name</span>
           <span class="od-wf-value">{{ workflow.queueName }}</span>
         </div>
         <div class="od-wf-field">
-          <span class="od-wf-label">State:</span>
-          <span class="od-wf-value">{{ workflow.state }}</span>
+          <span class="od-wf-label">State</span>
+          <span class="od-wf-value od-wf-value--state">
+            <span class="od-state-dot"></span>
+            {{ workflow.state }}
+          </span>
         </div>
         <div class="od-wf-field">
-          <span class="od-wf-label">Started on:</span>
+          <span class="od-wf-label">Started on</span>
           <span class="od-wf-value">{{ workflow.startedOn }}</span>
         </div>
       </div>
-      <div class="od-wf-field" style="margin-top: 12px;">
-        <span class="od-wf-label">Route To:</span>
-        <select class="od-select">
-          <option value=""></option>
+      <div class="od-wf-route">
+        <span class="od-wf-label">Route To</span>
+        <select class="od-select" [(ngModel)]="selectedRouteTo">
+          <option value="">Select Department</option>
+          @for (queue of routeToDepartmentQueues(); track queue.value) {
+            <option [value]="queue.value">{{ queue.label }}</option>
+          }
         </select>
       </div>
     </div>
   </div>
 
   <!-- ═══ Tabs ═══ -->
-  <div class="od-tabs">
-    <button
-      class="od-tab"
-      [class.od-tab--active]="activeTab() === 'info'"
-      (click)="setTab('info')"
-    >Order Info</button>
-    <button
-      class="od-tab"
-      [class.od-tab--active]="activeTab() === 'documents'"
-      (click)="setTab('documents')"
-    >Orders Documents</button>
-    <button
-      class="od-tab"
-      [class.od-tab--active]="activeTab() === 'history'"
-      (click)="setTab('history')"
-    >Order History</button>
+  <div class="od-tabs-bar">
+    <div class="od-tabs">
+      <button
+        class="od-tab"
+        [class.od-tab--active]="activeTab() === 'info'"
+        (click)="setTab('info')"
+      >
+        <svg class="od-tab__icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/>
+        </svg>
+        Order Info
+      </button>
+      <button
+        class="od-tab"
+        [class.od-tab--active]="activeTab() === 'documents'"
+        (click)="setTab('documents')"
+      >
+        <svg class="od-tab__icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>
+        </svg>
+        Orders Documents
+      </button>
+      <button
+        class="od-tab"
+        [class.od-tab--active]="activeTab() === 'history'"
+        (click)="setTab('history')"
+      >
+        <svg class="od-tab__icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+        </svg>
+        Order History
+      </button>
+    </div>
   </div>
 
-  <hr class="od-divider" />
+  <!-- ═══ Tab Content Wrapper ═══ -->
+  <div class="od-tab-content">
 
-  <!-- ═══ Tab: Order Info ═══ -->
-  @if (activeTab() === 'info') {
-    <div class="od-pkg-section">
-      <div class="od-pkg-header">
-        <h2 class="od-pkg-title">
-          <span class="od-pkg-bullet"></span>
-          Sales Order Package Information
-        </h2>
-        <button class="od-btn od-btn--outline-sm">Edit Package Info</button>
+    <!-- ═══ Tab: Order Info ═══ -->
+    @if (activeTab() === 'info') {
+      <div class="od-pkg-section">
+        <div class="od-pkg-header">
+          <h2 class="od-pkg-title">
+            <span class="od-pkg-bullet"></span>
+            Sales Order Package Information
+          </h2>
+          <button class="od-btn od-btn--outline-sm">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+              <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+            </svg>
+            Edit Package Info
+          </button>
+        </div>
+
+        <div class="od-pkg-grid">
+          <div class="od-pkg-field">
+            <span class="od-pkg-label">Sales Order Number</span>
+            <span class="od-pkg-value od-pkg-value--mono">{{ packageInfo.salesOrderNumber }}</span>
+          </div>
+          <div class="od-pkg-field">
+            <span class="od-pkg-label">Product Type</span>
+            <span class="od-pkg-value">{{ packageInfo.productType }}</span>
+          </div>
+          <div class="od-pkg-field">
+            <span class="od-pkg-label">Capture Date</span>
+            <span class="od-pkg-value">{{ packageInfo.captureDate }}</span>
+          </div>
+
+          <div class="od-pkg-field">
+            <span class="od-pkg-label">Purchase Order Number</span>
+            <span class="od-pkg-value od-pkg-value--mono">{{ packageInfo.purchaseOrderNumber }}</span>
+          </div>
+          <div class="od-pkg-field">
+            <span class="od-pkg-label">Region</span>
+            <span class="od-pkg-value">
+              <span class="od-pkg-tag">{{ packageInfo.region }}</span>
+            </span>
+          </div>
+          <div class="od-pkg-field">
+            <span class="od-pkg-label">Completion Date</span>
+            <span class="od-pkg-value od-pkg-value--empty">&mdash;</span>
+          </div>
+
+          <div class="od-pkg-field">
+            <span class="od-pkg-label">Account Number</span>
+            <span class="od-pkg-value od-pkg-value--mono">{{ packageInfo.accountNumber }}</span>
+          </div>
+          <div class="od-pkg-field">
+            <span class="od-pkg-label">Rep Name</span>
+            <span class="od-pkg-value">{{ packageInfo.repName }}</span>
+          </div>
+          <div class="od-pkg-field">
+            <span class="od-pkg-label">Status</span>
+            <span class="od-pkg-value od-pkg-value--status">{{ packageInfo.status }}</span>
+          </div>
+
+          <div class="od-pkg-field">
+            <span class="od-pkg-label">Job Name</span>
+            <span class="od-pkg-value">{{ packageInfo.jobName }}</span>
+          </div>
+          <div class="od-pkg-field">
+            <span class="od-pkg-label">Sub Brand</span>
+            <span class="od-pkg-value od-pkg-value--empty">&mdash;</span>
+          </div>
+          <div class="od-pkg-field">
+            <span class="od-pkg-label">Task Owner</span>
+            <span class="od-pkg-value od-pkg-value--empty">&mdash;</span>
+          </div>
+
+          <div class="od-pkg-field">
+            <span class="od-pkg-label">Brand</span>
+            <span class="od-pkg-value">
+              <span class="od-pkg-tag od-pkg-tag--brand">{{ packageInfo.brand }}</span>
+            </span>
+          </div>
+          <div class="od-pkg-field">
+            <span class="od-pkg-label">Priority</span>
+            <span class="od-pkg-value">
+              <span class="od-priority-badge">{{ packageInfo.priority }}</span>
+            </span>
+          </div>
+          <div class="od-pkg-field"></div>
+        </div>
       </div>
 
-      <div class="od-pkg-grid">
-        <div class="od-pkg-field">
-          <span class="od-pkg-label">Sales Order Number:</span>
-          <span class="od-pkg-value">{{ packageInfo.salesOrderNumber }}</span>
-        </div>
-        <div class="od-pkg-field">
-          <span class="od-pkg-label">Product Type:</span>
-          <span class="od-pkg-value">{{ packageInfo.productType }}</span>
-        </div>
-        <div class="od-pkg-field">
-          <span class="od-pkg-label">Capture Date:</span>
-          <span class="od-pkg-value">{{ packageInfo.captureDate }}</span>
-        </div>
-
-        <div class="od-pkg-field">
-          <span class="od-pkg-label">Purchase Order Number:</span>
-          <span class="od-pkg-value">{{ packageInfo.purchaseOrderNumber }}</span>
-        </div>
-        <div class="od-pkg-field">
-          <span class="od-pkg-label">Region:</span>
-          <span class="od-pkg-value">{{ packageInfo.region }}</span>
-        </div>
-        <div class="od-pkg-field">
-          <span class="od-pkg-label">Completion Date:</span>
-          <span class="od-pkg-value">&nbsp;</span>
-        </div>
-
-        <div class="od-pkg-field">
-          <span class="od-pkg-label">Account Number:</span>
-          <span class="od-pkg-value">{{ packageInfo.accountNumber }}</span>
-        </div>
-        <div class="od-pkg-field">
-          <span class="od-pkg-label">Rep Name:</span>
-          <span class="od-pkg-value">{{ packageInfo.repName }}</span>
-        </div>
-        <div class="od-pkg-field">
-          <span class="od-pkg-label">Status:</span>
-          <span class="od-pkg-value od-pkg-value--status">{{ packageInfo.status }}</span>
+      <!-- Sales Order Notes (Order Info tab only) -->
+      <div class="od-notes-section">
+        <div class="od-notes-header">
+          <h2 class="od-notes-heading">Sales Order Notes</h2>
+          <div class="od-notes-toolbar">
+            <button
+              class="od-btn od-btn--primary od-btn--sm"
+              (click)="toggleNotePanel()"
+            >
+              @if (!showNotePanel()) {
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 5v14M5 12h14"/>
+                </svg>
+              } @else {
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                </svg>
+              }
+              {{ showNotePanel() ? 'Close' : 'Add Note' }}
+            </button>
+            <button class="od-btn od-btn--outline-sm">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                <polyline points="22,6 12,13 2,6"/>
+              </svg>
+              Email Notes
+            </button>
+          </div>
         </div>
 
-        <div class="od-pkg-field">
-          <span class="od-pkg-label">Job Name:</span>
-          <span class="od-pkg-value">{{ packageInfo.jobName }}</span>
-        </div>
-        <div class="od-pkg-field">
-          <span class="od-pkg-label">Sub Brand:</span>
-          <span class="od-pkg-value">&nbsp;</span>
-        </div>
-        <div class="od-pkg-field">
-          <span class="od-pkg-label">Task Owner:</span>
-          <span class="od-pkg-value">&nbsp;</span>
-        </div>
+        <!-- ── Inline Add Note Panel ── -->
+        @if (showNotePanel()) {
+          <div class="od-note-panel">
+            <div class="od-note-panel__body">
+              <label class="od-note-panel__label">New Note</label>
+              <textarea
+                #noteTextarea
+                class="od-note-panel__textarea"
+                placeholder="Type your note here..."
+                [ngModel]="newNoteText()"
+                (ngModelChange)="newNoteText.set($event)"
+                rows="3"
+              ></textarea>
+              <div class="od-note-panel__footer">
+                <span class="od-note-panel__char-count">
+                  {{ newNoteText().length }} characters
+                </span>
+                <div class="od-note-panel__actions">
+                  <button
+                    class="od-btn od-btn--ghost"
+                    (click)="cancelNote()"
+                  >Cancel</button>
+                  <button
+                    class="od-btn od-btn--primary od-btn--sm"
+                    [disabled]="!newNoteText().trim()"
+                    (click)="saveNote()"
+                  >
+                    @if (isSavingNote()) {
+                      <span class="od-note-panel__spinner"></span>
+                    }
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                      <polyline points="20 6 9 17 4 12"/>
+                    </svg>
+                    Save Note
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        }
 
-        <div class="od-pkg-field">
-          <span class="od-pkg-label">Brand:</span>
-          <span class="od-pkg-value">{{ packageInfo.brand }}</span>
-        </div>
-        <div class="od-pkg-field">
-          <span class="od-pkg-label">Priority:</span>
-          <span class="od-pkg-value">{{ packageInfo.priority }}</span>
-        </div>
-        <div class="od-pkg-field"></div>
-      </div>
-    </div>
-
-    <hr class="od-divider" />
-
-    <!-- Sales Order Notes (Order Info tab only) -->
-    <div class="od-notes-wrap">
-      <div class="od-notes-left">
-        <h2 class="od-notes-heading">Sales Order Notes</h2>
         <table class="od-notes-tbl">
           <thead>
             <tr>
@@ -142,29 +257,48 @@
             </tr>
           </thead>
           <tbody>
-            @for (note of notes; track note.createdOn) {
+            @for (note of notes(); track note.createdOn) {
               <tr>
-                <td>{{ note.createdOn }}</td>
-                <td class="od-notes-user">{{ note.userName }}</td>
+                <td>
+                  <span class="od-notes-date">{{ note.createdOn }}</span>
+                </td>
+                <td>
+                  <span class="od-notes-user">{{ note.userName }}</span>
+                </td>
                 <td>{{ note.note }}</td>
+              </tr>
+            }
+            @if (notes().length === 0) {
+              <tr>
+                <td colspan="3" class="od-empty-row">No notes yet.</td>
               </tr>
             }
           </tbody>
         </table>
       </div>
-      <div class="od-notes-actions">
-        <button class="od-btn od-btn--primary od-btn--block">Add Notes</button>
-        <button class="od-btn od-btn--primary od-btn--block">Email Notes</button>
-      </div>
-    </div>
-  }
+    }
 
-  <!-- ═══ Tab: Orders Documents ═══ -->
-  @if (activeTab() === 'documents') {
-    <!-- Sales Order -->
-    <div class="od-doc-row">
-      <div class="od-doc-left">
-        <h3 class="od-tbl-heading">Sales Order</h3>
+    <!-- ═══ Tab: Orders Documents ═══ -->
+    @if (activeTab() === 'documents') {
+      <!-- Sales Order -->
+      <div class="od-doc-section">
+        <div class="od-doc-header">
+          <h3 class="od-tbl-heading">Sales Order</h3>
+          <div class="od-doc-toolbar">
+            <button class="od-btn od-btn--primary od-btn--sm">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+              </svg>
+              View Sales Order
+            </button>
+            <button class="od-btn od-btn--outline-sm" disabled>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
+              </svg>
+              Import New Version
+            </button>
+          </div>
+        </div>
         <table class="od-data-tbl">
           <thead>
             <tr>
@@ -184,18 +318,16 @@
           </tbody>
         </table>
       </div>
-      <div class="od-doc-actions">
-        <button class="od-btn od-btn--primary od-btn--block">View Sales Order</button>
-        <button class="od-btn od-btn--disabled od-btn--block" disabled>Import New Sales Order Version</button>
-      </div>
-    </div>
 
-    <hr class="od-divider" />
-
-    <!-- Support Documents -->
-    <div class="od-doc-row">
-      <div class="od-doc-left">
-        <h3 class="od-tbl-heading">Support Documents</h3>
+      <!-- Support Documents -->
+      <div class="od-doc-section">
+        <div class="od-doc-header">
+          <h3 class="od-tbl-heading">Support Documents</h3>
+          <div class="od-doc-toolbar">
+            <button class="od-btn od-btn--outline-sm" disabled>View Selected</button>
+            <button class="od-btn od-btn--outline-sm" disabled>Import Support Doc</button>
+          </div>
+        </div>
         <table class="od-data-tbl">
           <thead>
             <tr>
@@ -207,91 +339,109 @@
           <tbody>
             @if (supportDocuments.length === 0) {
               <tr>
-                <td colspan="3" class="od-empty-row">No results found.</td>
+                <td colspan="3" class="od-empty-row">No support documents found.</td>
               </tr>
             }
           </tbody>
         </table>
       </div>
-      <div class="od-doc-actions">
-        <button class="od-btn od-btn--disabled od-btn--block" disabled>View Selected Support Document</button>
-        <button class="od-btn od-btn--disabled od-btn--block" disabled>Import Support Doc</button>
-      </div>
-    </div>
-  }
+    }
 
-  <!-- ═══ Tab: Order History ═══ -->
-  @if (activeTab() === 'history') {
-    <!-- Workflow History -->
-    <div class="od-tbl-section">
-      <div class="od-tbl-header-row">
-        <h3 class="od-tbl-heading">Workflow History</h3>
-        <div class="od-tbl-actions">
-          <button class="od-btn od-btn--primary">Email Log</button>
-          <button class="od-btn od-btn--primary">Refresh</button>
+    <!-- ═══ Tab: Order History ═══ -->
+    @if (activeTab() === 'history') {
+      <!-- Workflow History -->
+      <div class="od-doc-section">
+        <div class="od-doc-header">
+          <h3 class="od-tbl-heading">Workflow History</h3>
+          <div class="od-doc-toolbar">
+            <button class="od-btn od-btn--outline-sm">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                <polyline points="22,6 12,13 2,6"/>
+              </svg>
+              Email Log
+            </button>
+            <button class="od-btn od-btn--primary od-btn--sm">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+              </svg>
+              Refresh
+            </button>
+          </div>
         </div>
-      </div>
-      <table class="od-data-tbl">
-        <thead>
-          <tr>
-            <th>Activity Name</th>
-            <th>Comments</th>
-            <th>User Name</th>
-            <th>Timestamp</th>
-            <th>Event Type</th>
-            <th>Order Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (row of workflowHistory; track row.timestamp) {
+        <table class="od-data-tbl">
+          <thead>
             <tr>
-              <td class="od-link">{{ row.activityName }}</td>
-              <td>{{ row.comments }}</td>
-              <td class="od-link">{{ row.userName }}</td>
-              <td>{{ row.timestamp }}</td>
-              <td class="od-link">{{ row.eventType }}</td>
-              <td><span class="od-status-text">{{ row.orderStatus }}</span></td>
+              <th>Activity Name</th>
+              <th>Comments</th>
+              <th>User Name</th>
+              <th>Timestamp</th>
+              <th>Event Type</th>
+              <th>Order Status</th>
             </tr>
-          }
-        </tbody>
-      </table>
-    </div>
-
-    <hr class="od-divider" />
-
-    <!-- Sales Order History -->
-    <div class="od-tbl-section">
-      <h3 class="od-tbl-heading">Sales Order History</h3>
-      <table class="od-data-tbl">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Created on</th>
-            <th>Created by</th>
-            <th>Version Label</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (row of salesOrderHistory; track row.name) {
-            <tr>
-              <td class="od-link">{{ row.name }}</td>
-              <td>{{ row.createdOn }}</td>
-              <td>{{ row.createdBy }}</td>
-              <td><strong>{{ row.versionLabel }}</strong></td>
-            </tr>
-          }
-        </tbody>
-      </table>
-      <div class="od-history-footer">
-        <button class="od-btn od-btn--outline-sm" disabled>View Selected Version</button>
+          </thead>
+          <tbody>
+            @for (row of workflowHistory; track row.timestamp) {
+              <tr>
+                <td class="od-link">{{ row.activityName }}</td>
+                <td>{{ row.comments }}</td>
+                <td class="od-link">{{ row.userName }}</td>
+                <td>{{ row.timestamp }}</td>
+                <td>
+                  <span class="od-event-badge">{{ row.eventType }}</span>
+                </td>
+                <td>
+                  @if (row.orderStatus) {
+                    <span class="od-status-text">{{ row.orderStatus }}</span>
+                  }
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
       </div>
-    </div>
-  }
+
+      <!-- Sales Order History -->
+      <div class="od-doc-section">
+        <div class="od-doc-header">
+          <h3 class="od-tbl-heading">Sales Order History</h3>
+          <div class="od-doc-toolbar">
+            <button class="od-btn od-btn--outline-sm" disabled>View Selected Version</button>
+          </div>
+        </div>
+        <table class="od-data-tbl">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Created on</th>
+              <th>Created by</th>
+              <th>Version Label</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (row of salesOrderHistory; track row.name) {
+              <tr>
+                <td class="od-link">{{ row.name }}</td>
+                <td>{{ row.createdOn }}</td>
+                <td>{{ row.createdBy }}</td>
+                <td>
+                  <span class="od-version-badge">{{ row.versionLabel }}</span>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </div>
 
   <!-- ═══ Footer ═══ -->
   <div class="od-footer">
     <button class="od-btn od-btn--back" (click)="goBack()">
-      &larr; Back to Queue
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>
+      </svg>
+      Back to Queue
     </button>
   </div>
 
