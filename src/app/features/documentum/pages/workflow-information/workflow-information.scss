@@ -287,6 +287,13 @@ $info-bdr:    rgba(59, 130, 246, 0.25);
   flex-shrink: 0;
 }
 
+.od-pkg-loading {
+  padding: 2rem;
+  text-align: center;
+  color: ds.$text-muted;
+  font-size: 0.875rem;
+}
+
 .od-pkg-grid {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;

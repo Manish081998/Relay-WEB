@@ -106,75 +106,97 @@
           </button>
         </div>
 
-        <div class="od-pkg-grid">
-          <div class="od-pkg-field">
-            <span class="od-pkg-label">Sales Order Number</span>
-            <span class="od-pkg-value od-pkg-value--mono">{{ packageInfo.salesOrderNumber }}</span>
-          </div>
-          <div class="od-pkg-field">
-            <span class="od-pkg-label">Product Type</span>
-            <span class="od-pkg-value">{{ packageInfo.productType }}</span>
-          </div>
-          <div class="od-pkg-field">
-            <span class="od-pkg-label">Capture Date</span>
-            <span class="od-pkg-value">{{ packageInfo.captureDate }}</span>
-          </div>
+        @if (isLoadingOrder()) {
+          <div class="od-pkg-loading">Loading order information...</div>
+        } @else if (order(); as o) {
+          <div class="od-pkg-grid">
+            <div class="od-pkg-field">
+              <span class="od-pkg-label">Sales Order Number</span>
+              <span class="od-pkg-value od-pkg-value--mono">{{ o.salesOrderNumber || '&mdash;' }}</span>
+            </div>
+            <div class="od-pkg-field">
+              <span class="od-pkg-label">Product Type</span>
+              <span class="od-pkg-value">{{ o.productType || '&mdash;' }}</span>
+            </div>
+            <div class="od-pkg-field">
+              <span class="od-pkg-label">Capture Date</span>
+              <span class="od-pkg-value">{{ o.createdDate || '&mdash;' }}</span>
+            </div>
 
-          <div class="od-pkg-field">
-            <span class="od-pkg-label">Purchase Order Number</span>
-            <span class="od-pkg-value od-pkg-value--mono">{{ packageInfo.purchaseOrderNumber }}</span>
-          </div>
-          <div class="od-pkg-field">
-            <span class="od-pkg-label">Region</span>
-            <span class="od-pkg-value">
-              <span class="od-pkg-tag">{{ packageInfo.region }}</span>
-            </span>
-          </div>
-          <div class="od-pkg-field">
-            <span class="od-pkg-label">Completion Date</span>
-            <span class="od-pkg-value od-pkg-value--empty">&mdash;</span>
-          </div>
+            <div class="od-pkg-field">
+              <span class="od-pkg-label">Purchase Order Number</span>
+              <span class="od-pkg-value od-pkg-value--mono">{{ o.repPO || '&mdash;' }}</span>
+            </div>
+            <div class="od-pkg-field">
+              <span class="od-pkg-label">Region</span>
+              <span class="od-pkg-value">
+                @if (o.region) {
+                  <span class="od-pkg-tag">{{ o.region }}</span>
+                } @else {
+                  &mdash;
+                }
+              </span>
+            </div>
+            <div class="od-pkg-field">
+              <span class="od-pkg-label">Completion Date</span>
+              <span class="od-pkg-value">{{ o.completionDate || '&mdash;' }}</span>
+            </div>
 
-          <div class="od-pkg-field">
-            <span class="od-pkg-label">Account Number</span>
-            <span class="od-pkg-value od-pkg-value--mono">{{ packageInfo.accountNumber }}</span>
-          </div>
-          <div class="od-pkg-field">
-            <span class="od-pkg-label">Rep Name</span>
-            <span class="od-pkg-value">{{ packageInfo.repName }}</span>
-          </div>
-          <div class="od-pkg-field">
-            <span class="od-pkg-label">Status</span>
-            <span class="od-pkg-value od-pkg-value--status">{{ packageInfo.status }}</span>
-          </div>
+            <div class="od-pkg-field">
+              <span class="od-pkg-label">Account Number</span>
+              <span class="od-pkg-value od-pkg-value--mono">{{ o.accountNumber || '&mdash;' }}</span>
+            </div>
+            <div class="od-pkg-field">
+              <span class="od-pkg-label">Rep Name</span>
+              <span class="od-pkg-value">{{ o.repName || '&mdash;' }}</span>
+            </div>
+            <div class="od-pkg-field">
+              <span class="od-pkg-label">Status</span>
+              @if (o.status) {
+                <span class="od-pkg-value od-pkg-value--status">{{ o.status }}</span>
+              } @else {
+                <span class="od-pkg-value">&mdash;</span>
+              }
+            </div>
 
-          <div class="od-pkg-field">
-            <span class="od-pkg-label">Job Name</span>
-            <span class="od-pkg-value">{{ packageInfo.jobName }}</span>
-          </div>
-          <div class="od-pkg-field">
-            <span class="od-pkg-label">Sub Brand</span>
-            <span class="od-pkg-value od-pkg-value--empty">&mdash;</span>
-          </div>
-          <div class="od-pkg-field">
-            <span class="od-pkg-label">Task Owner</span>
-            <span class="od-pkg-value od-pkg-value--empty">&mdash;</span>
-          </div>
+            <div class="od-pkg-field">
+              <span class="od-pkg-label">Job Name</span>
+              <span class="od-pkg-value">{{ o.jobName || '&mdash;' }}</span>
+            </div>
+            <div class="od-pkg-field">
+              <span class="od-pkg-label">Sub Brand</span>
+              <span class="od-pkg-value">&mdash;</span>
+            </div>
+            <div class="od-pkg-field">
+              <span class="od-pkg-label">Task Owner</span>
+              <span class="od-pkg-value">{{ o.packageOwner || '&mdash;' }}</span>
+            </div>
 
-          <div class="od-pkg-field">
-            <span class="od-pkg-label">Brand</span>
-            <span class="od-pkg-value">
-              <span class="od-pkg-tag od-pkg-tag--brand">{{ packageInfo.brand }}</span>
-            </span>
+            <div class="od-pkg-field">
+              <span class="od-pkg-label">Brand</span>
+              <span class="od-pkg-value">
+                @if (o.brand) {
+                  <span class="od-pkg-tag od-pkg-tag--brand">{{ o.brand }}</span>
+                } @else {
+                  &mdash;
+                }
+              </span>
+            </div>
+            <div class="od-pkg-field">
+              <span class="od-pkg-label">Priority</span>
+              <span class="od-pkg-value">
+                @if (o.priority) {
+                  <span class="od-priority-badge">{{ o.priority }}</span>
+                } @else {
+                  &mdash;
+                }
+              </span>
+            </div>
+            <div class="od-pkg-field"></div>
           </div>
-          <div class="od-pkg-field">
-            <span class="od-pkg-label">Priority</span>
-            <span class="od-pkg-value">
-              <span class="od-priority-badge">{{ packageInfo.priority }}</span>
-            </span>
-          </div>
-          <div class="od-pkg-field"></div>
-        </div>
+        } @else {
+          <div class="od-pkg-loading">Order not found.</div>
+        }
       </div>
 
       <!-- Sales Order Notes (Order Info tab only) -->

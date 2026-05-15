@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
-import { DropdownOption } from '../models/order.model';
+import { DropdownOption, OrderItem } from '../models/order.model';
 import { ApiService } from '../../../core/services/api.service';
 import { ENVIRONMENT } from '../../../core/tokens/environment.token';
 import { OrderSearchRequest, OrderSearchResponse } from '../models/order.model';
@@ -32,6 +32,12 @@ export class OrdersService {
     return this.api.get<OrderSearchResponse>(
       `${this.env.apiBaseUrl}/api/documentum/orders/search`,
       { params },
+    );
+  }
+
+  getByOrderSeq(orderSeq: number): Observable<OrderItem> {
+    return this.api.get<OrderItem>(
+      `${this.env.apiBaseUrl}/api/documentum/orders/${orderSeq}`,
     );
   }
 

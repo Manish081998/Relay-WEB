@@ -150,7 +150,7 @@ export class QueueSearch {
   openOrder(order: OrderItem): void {
     this.router.navigate(
       ['/documentum/workflow-information', order.orderGuid],
-      { queryParams: { so: order.orderSeq } },
+      { queryParams: { so: order.orderSeq }, state: { order } },
     );
   }
 

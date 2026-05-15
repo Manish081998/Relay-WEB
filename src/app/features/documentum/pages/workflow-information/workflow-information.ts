@@ -8,7 +8,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { map } from 'rxjs';
 import { OrdersService } from '../../services/orders.service';
-import { DropdownOption } from '../../models/order.model';
+import { DropdownOption, OrderItem } from '../../models/order.model';
 
 @Component({
   selector: 'app-workflow-information',
@@ -27,10 +27,14 @@ export class WorkflowInformation {
   readonly orderGuid = input<string>('');
   readonly activeTab = signal<'info' | 'documents' | 'history'>('info');
 
-  readonly salesOrderNumber = toSignal(
-    this.route.queryParamMap.pipe(map(p => p.get('so') ?? '')),
-    { initialValue: '' },
+  readonly orderSeq = toSignal(
+    this.route.queryParamMap.pipe(map(p => Number(p.get('so')) || 0)),
+    { initialValue: 0 },
   );
+
+  // ── Order data fetched from API ──────────────────────────────────────────
+  readonly order = signal<OrderItem | null>(null);
+  readonly isLoadingOrder = signal(true);
 
   // ── Route To Department dropdown ──────────────────────────────────────────
   readonly routeToDepartmentQueues = signal<DropdownOption[]>([]);
@@ -40,23 +44,6 @@ export class WorkflowInformation {
     queueName: 'Release to Production',
     state: 'Dormant',
     startedOn: '12/22/25',
-  };
-
-  readonly packageInfo = {
-    salesOrderNumber: 'H78303',
-    purchaseOrderNumber: 'SS24-289',
-    accountNumber: '742400',
-    jobName: 'PAULR...',
-    brand: 'Krueger',
-    productType: 'GRD',
-    region: 'CENTRAL',
-    repName: 'SWANEY SALES',
-    subBrand: '',
-    priority: '2',
-    captureDate: '10/13/24 09:48 pm',
-    completionDate: '',
-    status: 'Release to Production',
-    taskOwner: '',
   };
 
   readonly salesOrders = [
@@ -85,9 +72,39 @@ export class WorkflowInformation {
   readonly noteTextarea = viewChild<ElementRef<HTMLTextAreaElement>>('noteTextarea');
 
   constructor() {
-    // Load Route To Department queues based on the order's brand
-    if (this.packageInfo.brand) {
-      this.ordersService.getRouteToDepartment(this.packageInfo.brand)
+    // Try to get order data from router state (passed from queue-search)
+    const nav = this.router.getCurrentNavigation();
+    const stateOrder = nav?.extras?.state?.['order'] as OrderItem | undefined;
+
+    if (stateOrder) {
+      this.order.set(stateOrder);
+      this.isLoadingOrder.set(false);
+      this.loadRouteToDepartment(stateOrder.brand);
+    } else {
+      // Fallback: fetch from API if navigated directly via URL
+      const seq = this.orderSeq();
+      if (seq > 0) {
+        this.ordersService.getByOrderSeq(seq)
+          .pipe(takeUntilDestroyed(this.destroyRef))
+          .subscribe({
+            next: (order) => {
+              this.order.set(order);
+              this.isLoadingOrder.set(false);
+              this.loadRouteToDepartment(order.brand);
+            },
+            error: () => {
+              this.isLoadingOrder.set(false);
+            },
+          });
+      } else {
+        this.isLoadingOrder.set(false);
+      }
+    }
+  }
+
+  private loadRouteToDepartment(brand: string | undefined): void {
+    if (brand) {
+      this.ordersService.getRouteToDepartment(brand)
         .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe(queues => this.routeToDepartmentQueues.set(queues));
     }
