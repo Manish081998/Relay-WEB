@@ -1,0 +1,148 @@
+@use 'form-controls' as fc with (
+  $fc-primary:       #1a5fb4,
+  $fc-primary-hover: #154d93,
+  $fc-primary-glow:  rgba(26, 95, 180, 0.22)
+);
+
+// ── Dialog body wrapper ───────────────────────────────────────────────────────
+.qd-body {
+  display: flex;
+  flex-direction: column;
+}
+
+// ── Form area ─────────────────────────────────────────────────────────────────
+.qd-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 20px 20px 16px;
+}
+
+// ── Field ─────────────────────────────────────────────────────────────────────
+.qd-field {
+  @include fc.dialog-field;
+}
+
+.qd-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #374151;
+  line-height: 1;
+}
+
+.qd-label-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0;
+}
+
+.qd-char-count {
+  font-size: 11px;
+  color: #9ca3af;
+  font-variant-numeric: tabular-nums;
+}
+
+// pInputText ──────────────────────────────────────────────────────────────────
+.qd-field input[pInputText] {
+  @include fc.input;
+}
+
+// Textarea ────────────────────────────────────────────────────────────────────
+.qd-textarea {
+  width: 100%;
+  resize: vertical;
+  font-family: inherit;
+  font-size: 13px;
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid fc.$fc-input-border-raw;
+  background: fc.$fc-input-bg;
+  color: fc.$fc-input-text;
+  transition: border-color fc.$fc-transition, box-shadow fc.$fc-transition;
+  box-sizing: border-box;
+
+  &::placeholder { color: fc.$fc-text-placeholder; font-size: 12px; }
+  &:hover  { border-color: fc.$fc-input-hover-border; }
+  &:focus  {
+    border-color: fc.$fc-primary;
+    box-shadow: 0 0 0 3px fc.$fc-primary-glow;
+    outline: none;
+  }
+}
+
+// ── Validation ────────────────────────────────────────────────────────────────
+.qd-req { color: fc.$fc-danger; margin-left: 2px; }
+
+.qd-invalid {
+  border-color: fc.$fc-input-error-border !important;
+  background:   fc.$fc-input-error-bg     !important;
+  box-shadow:   0 0 0 3px fc.$fc-input-error-glow !important;
+}
+
+.qd-field--err .qd-label { color: fc.$fc-danger; }
+
+.qd-err { @include fc.field-error; }
+
+// ── Status checkbox row ───────────────────────────────────────────────────────
+.qd-status-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-top: 4px;
+}
+
+.qd-checkbox { @include fc.checkbox; }
+
+.qd-status-lbl {
+  font-size: 14px;
+  font-weight: 500;
+  color: #6b7280;
+  cursor: pointer;
+  user-select: none;
+  transition: color 0.15s;
+
+  &.qd-active {
+    color: #10b981;
+    font-weight: 600;
+  }
+}
+
+// ── Audit info bar ────────────────────────────────────────────────────────────
+.qd-info-bar { @include fc.info-bar; }
+
+.qd-info-row {
+  display: flex;
+  gap: 24px;
+  font-size: 11px;
+  color: #6b7280;
+  line-height: 1.6;
+  flex-wrap: wrap;
+}
+
+.qd-info-id-row { margin-top: 2px; }
+
+.qd-info-key {
+  font-weight: 600;
+  color: #374151;
+  margin-right: 3px;
+}
+
+.qd-info-id {
+  font-family: ui-monospace, 'Cascadia Mono', 'Segoe UI Mono', Consolas, monospace;
+  font-size: 11px;
+  color: #2563eb;
+}
+
+// ── Footer ────────────────────────────────────────────────────────────────────
+.qd-footer { @include fc.dialog-footer; }
+
+.qd-btn-cancel {
+  @include fc.btn-secondary;
+  padding: 0 18px;
+}
+
+.qd-btn-save {
+  @include fc.btn-primary;
+  padding: 0 18px;
+}

@@ -8,6 +8,7 @@ export const API_ENDPOINTS = {
     DOCUMENTS: '/api/documents',
     ANNOTATIONS: '/api/annotations',
     ORDERS_SEARCH: '/api/documentum/orders/search',
+    QUEUES: '/api/documentum/queues',
   },
   INTRANET: {
     USERS: '/api/users',

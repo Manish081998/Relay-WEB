@@ -1,0 +1,114 @@
+<p-dialog
+  [visible]="visible()"
+  (visibleChange)="visible.set($event)"
+  [header]="title()"
+  [modal]="true"
+  [draggable]="false"
+  [resizable]="false"
+  [closable]="!saving()"
+  [style]="{ width: '520px' }"
+  styleClass="qd-modal"
+  (onHide)="close()"
+>
+  <div class="qd-body">
+
+    <div class="qd-form">
+
+      <!-- Queue Name -->
+      <div class="qd-field" [class.qd-field--err]="f['queueName'].invalid && f['queueName'].touched">
+        <label for="qd-queueName" class="qd-label">
+          Queue Name <span class="qd-req">*</span>
+        </label>
+        <input
+          id="qd-queueName"
+          pInputText
+          type="text"
+          [formControl]="f['queueName']"
+          placeholder="Enter queue name"
+          [class.qd-invalid]="f['queueName'].invalid && f['queueName'].touched"
+          autocomplete="off"
+        />
+        @if (f['queueName'].errors?.['required'] && f['queueName'].touched) {
+          <span class="qd-err">Queue name is required.</span>
+        } @else if (f['queueName'].errors?.['maxlength'] && f['queueName'].touched) {
+          <span class="qd-err">Queue name cannot exceed 200 characters.</span>
+        }
+      </div>
+
+      <!-- Description -->
+      <div class="qd-field">
+        <div class="qd-label-row">
+          <label for="qd-description" class="qd-label">Description</label>
+          <span class="qd-char-count">{{ descLength() }} / 400</span>
+        </div>
+        <textarea
+          id="qd-description"
+          pTextarea
+          [formControl]="f['description']"
+          placeholder="Enter description"
+          [rows]="4"
+          [autoResize]="false"
+          [maxlength]="400"
+          class="qd-textarea"
+        ></textarea>
+      </div>
+
+      <!-- Status -->
+      <div class="qd-field">
+        <span class="qd-label">Status</span>
+        <div class="qd-status-row">
+          <input
+            type="checkbox"
+            id="qd-isActive"
+            [formControl]="f['isActive']"
+            class="qd-checkbox"
+          />
+          <label
+            for="qd-isActive"
+            class="qd-status-lbl"
+            [class.qd-active]="isActiveValue()"
+          >
+            Active
+          </label>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Audit info bar — edit mode only -->
+    @if (isEditMode() && queue(); as q) {
+      <div class="qd-info-bar">
+        <div class="qd-info-row">
+          <span>
+            <span class="qd-info-key">Created by:</span>
+            {{ q.createdBy ?? '—' }} on {{ q.createdDate | date : 'yyyy-MM-dd' }}
+          </span>
+        </div>
+      </div>
+    }
+
+    <!-- Footer -->
+    <div class="qd-footer">
+      <button
+        type="button"
+        class="qd-btn qd-btn-cancel"
+        [disabled]="saving()"
+        (click)="close()"
+      >
+        Cancel
+      </button>
+      <button
+        type="button"
+        class="qd-btn qd-btn-save"
+        [disabled]="saving()"
+        (click)="submit()"
+      >
+        @if (saving()) {
+          <i class="pi pi-spin pi-spinner"></i>
+        }
+        {{ saving() ? 'Saving…' : 'Save Changes' }}
+      </button>
+    </div>
+
+  </div>
+</p-dialog>

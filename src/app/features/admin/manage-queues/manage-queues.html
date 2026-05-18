@@ -1,0 +1,103 @@
+<div class="mq-page">
+
+  <!-- ── Page Header ──────────────────────────────────────────────────────── -->
+  <div class="mq-title-row">
+    <div class="mq-title-left">
+      <h1 class="mq-title">Manage Queues</h1>
+      <p class="mq-subtitle">View and Manage all Queues</p>
+    </div>
+    @if (!loading() && queues().length > 0) {
+      <span class="mq-count-badge">{{ queues().length }} queues</span>
+    }
+  </div>
+
+  <!-- ── Results Table ────────────────────────────────────────────────────── -->
+  <div class="results-card">
+    <div class="results-header">
+      <div class="results-title">
+        <i class="pi pi-list"></i>
+        <span>All Queues</span>
+        <span class="results-badge">{{ queues().length }}</span>
+      </div>
+    </div>
+
+    <p-table
+      [value]="queues()"
+      [rowHover]="true"
+      [loading]="loading()"
+      [paginator]="true"
+      [rows]="10"
+      [rowsPerPageOptions]="[10, 25, 50]"
+      [showCurrentPageReport]="true"
+      currentPageReportTemplate="Showing {first} to {last} of {totalRecords} records"
+      scrollHeight="480px"
+      [tableStyle]="{ 'min-width': '60rem' }"
+    >
+      <ng-template #header>
+        <tr>
+          <th style="width: 52px"></th>
+          <th pSortableColumn="queueName" style="width: 180px">
+            Queue Name <p-sortIcon field="queueName" />
+          </th>
+          <th pSortableColumn="description" style="width: 260px">
+            Description <p-sortIcon field="description" />
+          </th>
+          <th pSortableColumn="isActive" style="width: 110px">
+            Is Active <p-sortIcon field="isActive" />
+          </th>
+          <th pSortableColumn="createdBy" style="width: 150px">
+            Created By <p-sortIcon field="createdBy" />
+          </th>
+          <th pSortableColumn="createdDate" style="width: 160px">
+            Created Date <p-sortIcon field="createdDate" />
+          </th>
+        </tr>
+      </ng-template>
+
+      <ng-template #body let-row>
+        <tr>
+          <td class="cell-actions">
+            <button
+              type="button"
+              class="action-btn"
+              title="Edit queue"
+              (click)="onEdit(row)"
+            >
+              <i class="pi pi-pencil"></i>
+            </button>
+          </td>
+          <td><span class="cell-name">{{ row.queueName ?? '—' }}</span></td>
+          <td class="cell-trunc">{{ row.description ?? '—' }}</td>
+          <td>
+            <span
+              class="status-chip"
+              [attr.data-status]="row.isActive ? 'active' : 'inactive'"
+            >
+              {{ row.isActive ? 'Active' : 'Inactive' }}
+            </span>
+          </td>
+          <td>{{ row.createdBy ?? '—' }}</td>
+          <td>{{ row.createdDate | date : 'MM/dd/yyyy' }}</td>
+        </tr>
+      </ng-template>
+
+      <ng-template #emptymessage>
+        <tr>
+          <td colspan="6" class="cell-empty">
+            <i class="pi pi-inbox"></i>
+            No queues found.
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+
+</div>
+
+<!-- ── Edit / Add Queue Dialog ──────────────────────────────────────────────── -->
+<app-queue-dialog
+  [(visible)]="dialogVisible"
+  [queue]="selectedQueue()"
+  [saving]="saving()"
+  (saved)="onSaved($event)"
+/>

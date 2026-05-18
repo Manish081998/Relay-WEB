@@ -1,0 +1,197 @@
+@use 'form-controls' as fc;
+@use 'theme' as t;
+
+// ── Page-local colour tokens ───────────────────────────────────────────────────
+$neutral-100: #eef2f6;
+$neutral-200: #dde3ea;
+$neutral-300: #c4ccd6;
+$neutral-400: #eef2f6;
+$fg-1:        #1a2029;
+$fg-2:        #2a323d;
+$fg-3:        #5c6773;
+
+// ── Host / page shell ─────────────────────────────────────────────────────────
+:host {
+  display: block;
+  font-family: t.$font-sans;
+}
+
+.mq-page {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+// ── Page header ───────────────────────────────────────────────────────────────
+.mq-title-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding-bottom: 10px;
+  border-bottom: 1px solid $neutral-200;
+}
+
+.mq-title-left {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.mq-title {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+  color: $fg-1;
+  letter-spacing: -0.01em;
+}
+
+.mq-subtitle {
+  margin: 0;
+  font-size: 12px;
+  color: $fg-3;
+}
+
+.mq-count-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: 12px;
+  background: #e7f0fa;
+  color: #1a5fb4;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+  align-self: center;
+}
+
+// ── Results card ──────────────────────────────────────────────────────────────
+.results-card {
+  @include fc.results-card;
+}
+
+.results-header {
+  @include fc.results-header;
+}
+
+.results-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  > i {
+    font-size: 0.78rem;
+    color: #4b5563;
+  }
+
+  > span:first-of-type {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+    color: #4b5563;
+  }
+}
+
+.results-badge {
+  @include fc.count-badge;
+}
+
+// ── p-table overrides ─────────────────────────────────────────────────────────
+:host ::ng-deep {
+  .p-datatable-thead > tr > th {
+    font-size: 13px;
+    font-weight: 700;
+    color: $fg-1;
+    background: $neutral-100;
+    padding: 7px 10px;
+    border-top: 1px solid $neutral-300;
+    border-bottom: 2px solid $neutral-300;
+    white-space: nowrap;
+    font-family: t.$font-sans;
+  }
+
+  .p-datatable-tbody > tr > td {
+    font-size: 13px;
+    color: $fg-2;
+    padding: 6px 10px;
+    border-bottom: 1px solid $neutral-400;
+    vertical-align: middle;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-family: t.$font-sans;
+  }
+
+  .p-datatable-tbody > tr:hover > td {
+    background: #e7f0fa;
+  }
+
+  .p-datatable-emptymessage > td {
+    text-align: center;
+  }
+}
+
+// ── Cell styles ───────────────────────────────────────────────────────────────
+.cell-name {
+  font-weight: 600;
+  color: $fg-1;
+}
+
+td.cell-trunc { max-width: 0; }
+
+td.cell-empty {
+  padding: 36px 16px;
+  color: $fg-3;
+  font-size: 12px;
+  font-style: italic;
+  white-space: normal;
+  text-align: center;
+
+  i {
+    display: block;
+    font-size: 1.5rem;
+    opacity: 0.35;
+    margin-bottom: 6px;
+  }
+}
+
+// ── Row action button ─────────────────────────────────────────────────────────
+.action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 4px;
+  border: 1px solid $neutral-300;
+  background: #fff;
+  color: #1a5fb4;
+  cursor: pointer;
+  transition: background 80ms, border-color 80ms, color 80ms;
+
+  i { font-size: 0.75rem; }
+
+  &:hover { background: #e7f0fa; border-color: #1a5fb4; color: #154d93; }
+}
+
+td.cell-actions {
+  overflow: visible;
+  text-align: center;
+}
+
+// ── Status chip ───────────────────────────────────────────────────────────────
+.status-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: 3px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background: #e2e6eb;
+  color: #3f4956;
+
+  &[data-status='active']   { background: #d6e6f6; color: #0c4a8a; }
+  &[data-status='inactive'] { background: #f0f0f0; color: #6b7280; }
+}
