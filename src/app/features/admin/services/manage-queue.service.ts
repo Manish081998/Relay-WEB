@@ -2,7 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiService } from '../../../core/services/api.service';
 import { ENVIRONMENT } from '../../../core/tokens/environment.token';
-import { QueueDto, UpdateQueueRequest } from '../models/queue.model';
+import { CreateQueueRequest, QueueDto, UpdateQueueRequest } from '../models/queue.model';
 
 @Injectable()
 export class ManageQueueService {
@@ -15,5 +15,13 @@ export class ManageQueueService {
 
   update(body: UpdateQueueRequest): Observable<number> {
     return this.api.put<number>(`${this.env.apiBaseUrl}/api/documentum/queues`, body);
+  }
+
+  create(body: CreateQueueRequest): Observable<number> {
+    return this.api.post<number>(`${this.env.apiBaseUrl}/api/documentum/queues`, body);
+  }
+
+  delete(queueId: number): Observable<void> {
+    return this.api.delete<void>(`${this.env.apiBaseUrl}/api/documentum/queues/${queueId}`);
   }
 }
