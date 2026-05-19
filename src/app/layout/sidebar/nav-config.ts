@@ -48,7 +48,7 @@ export const NAV_GROUPS: NavGroup[] = [
     ],
   },
   {
-    label: 'Settings',
+    label: 'Administration',
     icon: NAV_ICONS.settings,
     roles: 'all',
     children: [

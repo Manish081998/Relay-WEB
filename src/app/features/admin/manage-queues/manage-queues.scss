@@ -96,6 +96,13 @@ $fg-3:        #5c6773;
   @include fc.count-badge;
 }
 
+.btn-add-queue {
+  @include fc.btn-primary;
+  height: 32px;
+  font-size: 12px;
+  gap: 6px;
+}
+
 // ── p-table overrides ─────────────────────────────────────────────────────────
 :host ::ng-deep {
   .p-datatable-thead > tr > th {
@@ -172,6 +179,13 @@ td.cell-empty {
   i { font-size: 0.75rem; }
 
   &:hover { background: #e7f0fa; border-color: #1a5fb4; color: #154d93; }
+
+  &--danger {
+    color: #dc2626;
+    border-color: #fca5a5;
+
+    &:hover { background: #fef2f2; border-color: #dc2626; color: #b91c1c; }
+  }
 }
 
 td.cell-actions {

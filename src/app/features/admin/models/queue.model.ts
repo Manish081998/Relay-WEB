@@ -15,3 +15,10 @@ export interface UpdateQueueRequest {
   isActive: boolean;
   modifiedBy: string;
 }
+
+export interface CreateQueueRequest {
+  queueName: string;
+  description: string;
+  isActive: boolean;
+  createdBy: string;
+}
