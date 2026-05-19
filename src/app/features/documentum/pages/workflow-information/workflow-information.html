@@ -302,22 +302,40 @@
 
     <!-- ═══ Tab: Orders Documents ═══ -->
     @if (activeTab() === 'documents') {
-      <!-- Sales Order -->
+
+      <!-- Hidden file inputs -->
+      <input #salesOrderFileInput type="file" hidden accept=".pdf,.png,.jpg,.jpeg,.gif,.bmp,.tiff,.tif,.svg,.doc,.docx,.xls,.xlsx,.txt" (change)="onFileSelected($event, false)" />
+      <input #supportDocFileInput type="file" hidden accept=".pdf,.png,.jpg,.jpeg,.gif,.bmp,.tiff,.tif,.svg,.doc,.docx,.xls,.xlsx,.txt" (change)="onFileSelected($event, true)" />
+      <input #versionFileInput type="file" hidden accept=".pdf,.png,.jpg,.jpeg,.gif,.bmp,.tiff,.tif,.svg,.doc,.docx,.xls,.xlsx,.txt" (change)="onVersionFileSelected($event)" />
+
+      <!-- Upload status bar -->
+      @if (isUploading()) {
+        <div class="od-upload-bar">
+          <span class="od-upload-bar__spinner"></span>
+          Uploading document...
+        </div>
+      }
+
+      @if (uploadError(); as err) {
+        <div class="od-upload-alert">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+          </svg>
+          {{ err }}
+          <button class="od-upload-alert__close" (click)="uploadError.set(null)">&times;</button>
+        </div>
+      }
+
+      <!-- Sales Order Documents -->
       <div class="od-doc-section">
         <div class="od-doc-header">
           <h3 class="od-tbl-heading">Sales Order</h3>
           <div class="od-doc-toolbar">
-            <button class="od-btn od-btn--primary od-btn--sm">
+            <button class="od-btn od-btn--primary od-btn--sm" (click)="triggerUpload(false)" [disabled]="isUploading()">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
-              </svg>
-              View Sales Order
-            </button>
-            <button class="od-btn od-btn--outline-sm" disabled>
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
               </svg>
-              Import New Version
+              Import Sales Order
             </button>
           </div>
         </div>
@@ -325,16 +343,39 @@
           <thead>
             <tr>
               <th>Name</th>
-              <th>Created on</th>
-              <th>Created by</th>
+              <th>Type</th>
+              <th>Size</th>
+              <th>Version</th>
+              <th>Created On</th>
+              <th>Created By</th>
+              <th class="od-actions-col">Actions</th>
             </tr>
           </thead>
           <tbody>
-            @for (doc of salesOrders; track doc.name) {
+            @for (doc of salesOrderDocs(); track doc.documentId) {
               <tr>
-                <td class="od-link">{{ doc.name }}</td>
-                <td>{{ doc.createdOn }}</td>
+                <td class="od-link" (click)="previewDocument(doc)">{{ doc.documentName }}</td>
+                <td>{{ doc.contentType }}</td>
+                <td>{{ formatFileSize(doc.sizeBytes) }}</td>
+                <td><span class="od-version-badge">v{{ doc.currentVersion }}</span></td>
+                <td>{{ doc.createdDate }}</td>
                 <td>{{ doc.createdBy }}</td>
+                <td class="od-actions-cell">
+                  <button class="od-icon-btn" title="Preview" (click)="previewDocument(doc)">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+                    </svg>
+                  </button>
+                  <button class="od-icon-btn" title="Version History" (click)="showVersions(doc)">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+                    </svg>
+                  </button>
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="7" class="od-empty-row">No sales order documents found.</td>
               </tr>
             }
           </tbody>
@@ -346,28 +387,134 @@
         <div class="od-doc-header">
           <h3 class="od-tbl-heading">Support Documents</h3>
           <div class="od-doc-toolbar">
-            <button class="od-btn od-btn--outline-sm" disabled>View Selected</button>
-            <button class="od-btn od-btn--outline-sm" disabled>Import Support Doc</button>
+            <button class="od-btn od-btn--primary od-btn--sm" (click)="triggerUpload(true)" [disabled]="isUploading()">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
+              </svg>
+              Import Support Doc
+            </button>
           </div>
         </div>
         <table class="od-data-tbl">
           <thead>
             <tr>
               <th>Name</th>
+              <th>Type</th>
+              <th>Size</th>
+              <th>Version</th>
               <th>Created On</th>
               <th>Created By</th>
+              <th class="od-actions-col">Actions</th>
             </tr>
           </thead>
           <tbody>
-            @if (supportDocuments.length === 0) {
+            @for (doc of supportDocs(); track doc.documentId) {
               <tr>
-                <td colspan="3" class="od-empty-row">No support documents found.</td>
+                <td class="od-link" (click)="previewDocument(doc)">{{ doc.documentName }}</td>
+                <td>{{ doc.contentType }}</td>
+                <td>{{ formatFileSize(doc.sizeBytes) }}</td>
+                <td><span class="od-version-badge">v{{ doc.currentVersion }}</span></td>
+                <td>{{ doc.createdDate }}</td>
+                <td>{{ doc.createdBy }}</td>
+                <td class="od-actions-cell">
+                  <button class="od-icon-btn" title="Preview" (click)="previewDocument(doc)">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+                    </svg>
+                  </button>
+                  <button class="od-icon-btn" title="Version History" (click)="showVersions(doc)">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+                    </svg>
+                  </button>
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="7" class="od-empty-row">No support documents found.</td>
               </tr>
             }
           </tbody>
         </table>
       </div>
+
+      <!-- ═══ Version History Dialog ═══ -->
+      <p-dialog
+        [visible]="showVersionPanel()"
+        (visibleChange)="showVersionPanel.set($event)"
+        [header]="'Version History — ' + versionPanelDocName()"
+        [modal]="true"
+        [draggable]="false"
+        [resizable]="false"
+        [closable]="true"
+        [style]="{ width: '75vw', 'max-width': '1100px' }"
+        [contentStyle]="{ padding: '0' }"
+        styleClass="od-version-dialog"
+        (onHide)="closeVersionPanel()"
+      >
+        @if (isLoadingVersions()) {
+          <div class="od-pkg-loading" style="padding: 2rem; text-align: center;">Loading versions...</div>
+        } @else {
+          <table class="od-data-tbl">
+            <thead>
+              <tr>
+                <th>Version</th>
+                <th>Type</th>
+                <th>Size</th>
+                <th>Comment</th>
+                <th>Created On</th>
+                <th>Created By</th>
+                <th class="od-actions-col">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (ver of documentVersions(); track ver.salesOrderDocumentVersionId) {
+                <tr>
+                  <td><span class="od-version-badge">v{{ ver.versionNumber }}</span></td>
+                  <td>{{ ver.contentType }}</td>
+                  <td>{{ formatFileSize(ver.sizeBytes) }}</td>
+                  <td>{{ ver.comment || '—' }}</td>
+                  <td>{{ ver.createdDate }}</td>
+                  <td>{{ ver.createdBy }}</td>
+                  <td class="od-actions-cell">
+                    <button class="od-icon-btn" title="Preview Version" (click)="previewVersion(ver)">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+                      </svg>
+                    </button>
+                  </td>
+                </tr>
+              } @empty {
+                <tr>
+                  <td colspan="7" class="od-empty-row">No versions found.</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        }
+
+        <ng-template pTemplate="footer">
+          <div style="display: flex; justify-content: flex-end; gap: 0.5rem;">
+            <button class="od-btn od-btn--primary od-btn--sm" (click)="triggerVersionUpload()" [disabled]="isUploading()">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
+              </svg>
+              Upload New Version
+            </button>
+            <button class="od-btn od-btn--ghost" (click)="closeVersionPanel()">Close</button>
+          </div>
+        </ng-template>
+      </p-dialog>
     }
+
+    <!-- ═══ Annotation Dialog (outside tab blocks so it overlays) ═══ -->
+    <app-annotation-dialog
+      [(visible)]="showAnnotationDialog"
+      [title]="annotationDocName()"
+      [file]="annotationFile()"
+      [mode]="annotationMode()"
+      (saveBlob)="onSaveAsNewVersion($event)"
+    />
 
     <!-- ═══ Tab: Order History ═══ -->
     @if (activeTab() === 'history') {

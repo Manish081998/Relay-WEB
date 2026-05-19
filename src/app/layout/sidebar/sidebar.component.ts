@@ -46,31 +46,37 @@ export class SidebarComponent {
   readonly allAdmin  = ADMIN_NAV;
   readonly userNav   = USER_NAV;
 
-  private readonly currentUrl = toSignal(
-    this.router.events.pipe(
-      filter(e => e instanceof NavigationEnd),
-      map(e => (e as NavigationEnd).urlAfterRedirects),
-      startWith(this.router.url),
-    ),
-    { initialValue: this.router.url },
-  );
+  private readonly currentUrl;
 
   private readonly _manualToggles = signal<Map<string, boolean>>(new Map());
 
-  readonly openGroupLabels = computed(() => {
-    const url    = this.currentUrl() ?? '';
-    const manual = this._manualToggles();
-    return new Set(
-      NAV_GROUPS
-        .filter(g => {
-          const override = manual.get(g.label);
-          return override !== undefined
-            ? override
-            : true;
-        })
-        .map(g => g.label),
+  readonly openGroupLabels;
+
+  constructor() {
+    this.currentUrl = toSignal(
+      this.router.events.pipe(
+        filter(e => e instanceof NavigationEnd),
+        map(e => (e as NavigationEnd).urlAfterRedirects),
+        startWith(this.router.url),
+      ),
+      { initialValue: this.router.url },
     );
-  });
+
+    this.openGroupLabels = computed(() => {
+      const url    = this.currentUrl() ?? '';
+      const manual = this._manualToggles();
+      return new Set(
+        NAV_GROUPS
+          .filter(g => {
+            const override = manual.get(g.label);
+            return override !== undefined
+              ? override
+              : true;
+          })
+          .map(g => g.label),
+      );
+    });
+  }
 
   readonly visibleGroups = computed<NavGroup[]>(() =>
     this.allGroups.filter(g =>

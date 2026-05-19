@@ -99,6 +99,11 @@ export class AnnotationViewerComponent implements AfterViewInit, OnDestroy {
 
   @Output() annotationsChange = new EventEmitter<ReadonlyArray<Annotation>>();
   @Output() saveComplete = new EventEmitter<void>();
+  /** Emits the annotated blob when the toolbar Save button is clicked (instead of downloading). */
+  @Output() saveRequested = new EventEmitter<{ blob: Blob; filename: string }>();
+
+  /** When true, the toolbar Save button emits saveRequested instead of triggering a browser download. */
+  @Input() emitSaveOnly = false;
 
   // ── ViewChild refs ──────────────────────────────────────────────────────────
 
@@ -646,6 +651,16 @@ private async renderPage(pageNumber: number) {
     if (!type || !this.blobUrl) return;
 
     try {
+      // If emitSaveOnly is true, get the blob and emit it instead of downloading
+      if (this.emitSaveOnly) {
+        const result = await this.getAnnotatedBlob();
+        if (result) {
+          this.saveRequested.emit(result);
+          this.flashSaved();
+        }
+        return;
+      }
+
       switch (type) {
         case 'pdf':
           await this.savePdf();
@@ -660,6 +675,45 @@ private async renderPage(pageNumber: number) {
       this.flashSaved();
     } catch (err) {
       console.error('[AnnotationViewer] save failed:', err);
+    }
+  }
+
+  /** Returns the annotated file as a Blob + filename without triggering a download. */
+  async getAnnotatedBlob(): Promise<{ blob: Blob; filename: string } | null> {
+    const type = this.contentType();
+    if (!type || !this.blobUrl) return null;
+
+    switch (type) {
+      case 'pdf': {
+        const annotations = this.annotator?.engine.store.getAll() ?? [];
+        const response = await fetch(this.blobUrl!);
+        const bytes = await response.arrayBuffer();
+        const out = await flattenAnnotationsToPdf(bytes, annotations);
+        return {
+          blob: new Blob([out as Uint8Array<ArrayBuffer>], { type: 'application/pdf' }),
+          filename: this.currentFile?.name ?? 'document.pdf',
+        };
+      }
+      case 'image': {
+        const img = this.imgElRef?.nativeElement;
+        if (!img) return null;
+        const annotations = this.annotator?.engine.store.getAll() ?? [];
+        const blob = await flattenAnnotationsToImage(img, annotations);
+        return {
+          blob,
+          filename: this.currentFile?.name ?? 'document.png',
+        };
+      }
+      case 'email': {
+        const annotations = this.annotator?.engine.store.getAll() ?? [];
+        const json = JSON.stringify({ file: this.currentFile?.name, annotations }, null, 2);
+        return {
+          blob: new Blob([json], { type: 'application/json' }),
+          filename: this.baseName() + '-annotations.json',
+        };
+      }
+      default:
+        return null;
     }
   }
 

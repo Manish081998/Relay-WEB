@@ -15,10 +15,13 @@
   @if (visible()) {
     <annot-viewer
       #viewer
-      [fileUrl]="mode() === 'view' ? fileUrl() : null"
+      [file]="file()"
+      [fileUrl]="fileUrl()"
       [author]="author()"
+      [emitSaveOnly]="true"
       (annotationsChange)="onAnnotationsChange($event)"
       (saveComplete)="onSaveComplete()"
+      (saveRequested)="onSaveRequested($event)"
       style="width: 100%; height: 100%"
     ></annot-viewer>
   }
@@ -42,6 +45,7 @@
           (click)="triggerUpload()"
         ></button>
       }
+
     </div>
   </ng-template>
 </p-dialog>
