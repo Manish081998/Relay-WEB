@@ -78,6 +78,68 @@ html, body {
   &.p-tooltip-right  .p-tooltip-arrow { border-right-color:  #1e293b; }
 }
 
+// ── Version History Dialog — backdrop blur + premium shell ───────────────────
+.p-dialog-mask:has(.od-version-dialog) {
+  backdrop-filter: blur(12px) saturate(130%);
+  background: rgba(10, 14, 30, 0.55) !important;
+  transition: backdrop-filter 0.3s ease, background 0.3s ease;
+}
+
+.od-version-dialog {
+  border-radius: 16px !important;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.06),
+    0 24px 64px rgba(0, 0, 0, 0.28),
+    0 8px 20px rgba(0, 0, 0, 0.16) !important;
+
+  .p-dialog-header {
+    background: linear-gradient(135deg, #2a5298 0%, #1e3a5f 100%) !important;
+    padding: 20px 24px !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07) !important;
+    position: relative;
+    overflow: hidden;
+
+    &::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 90% 25%, rgba(255, 255, 255, 0.07) 0%, transparent 55%),
+        radial-gradient(circle at 10% 75%, rgba(255, 255, 255, 0.03) 0%, transparent 45%);
+      pointer-events: none;
+    }
+
+    .p-dialog-header-actions {
+      position: relative;
+      z-index: 1;
+    }
+
+    .p-dialog-close-button {
+      color: rgba(255, 255, 255, 0.6) !important;
+      border-radius: 8px !important;
+      transition: color 0.15s ease, background 0.15s ease !important;
+
+      &:hover {
+        color: #fff !important;
+        background: rgba(255, 255, 255, 0.12) !important;
+      }
+    }
+  }
+
+  .p-dialog-content {
+    padding: 0 !important;
+    background: #ffffff !important;
+  }
+
+  .p-dialog-footer {
+    padding: 16px 24px !important;
+    background: #f8fafc !important;
+    border-top: 1px solid #e5e7eb !important;
+  }
+}
+
 // ── PrimeNG Toast overrides ───────────────────────────────────────────────────
 .p-toast {
   .p-toast-message {

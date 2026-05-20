@@ -110,6 +110,7 @@ export class WorkflowInformation {
   private annotationDocId: number | null = null;
   private annotationOriginalName = '';
   private annotationMimeType = '';
+  private annotationIsSupportDoc = false;
 
   constructor() {
     const nav = this.router.getCurrentNavigation();
@@ -235,6 +236,18 @@ export class WorkflowInformation {
     input?.click();
   }
 
+  openAnnotationForNewUpload(isSupportDoc: boolean): void {
+    this.annotationDocId = null;
+    this.annotationOriginalName = '';
+    this.annotationMimeType = '';
+    this.annotationIsSupportDoc = isSupportDoc;
+    this.annotationFile.set(null);
+    this.annotationFileUrl.set(null);
+    this.annotationDocName.set(isSupportDoc ? 'Import Support Document' : 'Import Sales Order');
+    this.annotationMode.set('upload');
+    this.showAnnotationDialog.set(true);
+  }
+
   onFileSelected(event: Event, isSupportDoc: boolean): void {
     const input = event.target as HTMLInputElement;
     const file = input.files?.[0];
@@ -315,8 +328,9 @@ export class WorkflowInformation {
 
   /** Called when the user clicks Save in the annotation dialog */
   onSaveAsNewVersion(event: { blob: Blob; filename: string }): void {
-    if (!this.annotationDocId) {
-      console.error('No document ID set for versioning');
+    debugger
+    if (this.annotationDocId === null) {
+      this.uploadFromAnnotationEditor(event);
       return;
     }
 
@@ -332,10 +346,39 @@ export class WorkflowInformation {
       .subscribe({
         next: () => {
           this.showAnnotationDialog.set(false);
-          // Refresh the document list to show the new version
           this.loadDocuments();
         },
         error: (err) => console.error('Failed to save new version:', err),
+      });
+  }
+
+  private uploadFromAnnotationEditor(event: { blob: Blob; filename: string }): void {
+    const o = this.order();
+    if (!o) return;
+
+    const isSupportDoc = this.annotationIsSupportDoc;
+    const file = new File([event.blob], event.filename, { type: event.blob.type });
+
+    this.isUploading.set(true);
+    this.uploadError.set(null);
+
+    this.docService.upload(o.orderSeq, file, isSupportDoc, o.repPO, o.brand)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () => {
+          this.isUploading.set(false);
+          this.showAnnotationDialog.set(false);
+          this.loadDocuments();
+          this.notify.success('Document uploaded successfully.', 'Upload Complete');
+        },
+        error: (err) => {
+          console.error('Upload error:', err);
+          this.isUploading.set(false);
+          const body = err?.error;
+          const msg = typeof body === 'string' ? body
+            : body?.message ?? body?.title ?? err?.message ?? 'Upload failed.';
+          this.uploadError.set(msg);
+        },
       });
   }
 

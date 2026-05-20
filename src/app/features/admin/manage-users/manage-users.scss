@@ -402,10 +402,17 @@ td.cell-empty {
   cursor: pointer;
   transition: background 80ms, border-color 80ms, color 80ms;
 
+  & + .action-btn { margin-left: 4px; }
   i { font-size: 0.75rem; }
 
   &:hover { background: $blue-50; border-color: $blue; color: $blue-hover; }
   &:active { background: color.scale($blue-50, $lightness: -5%); }
+
+  &--danger {
+    color: #c0392b;
+    &:hover { background: #fdecea; border-color: #e74c3c; color: #a93226; }
+    &:active { background: color.scale(#fdecea, $lightness: -5%); }
+  }
 }
 
 // ── Responsive ────────────────────────────────────────────────────────────────

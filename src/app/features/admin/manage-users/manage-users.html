@@ -133,7 +133,7 @@
           } @else {
             <i class="pi pi-save"></i>
           }
-          Save
+          {{ isEditMode() ? 'Edit' : 'Save' }}
         </button>
 
       </div>
@@ -186,6 +186,7 @@
           <th pSortableColumn="actionByFullName" style="width: 150px">
             Action By <p-sortIcon field="actionByFullName" />
           </th>
+          <th style="width: 80px; text-align: center">Actions</th>
         </tr>
       </ng-template>
 
@@ -198,12 +199,20 @@
           <td>{{ row.queueName ?? '—' }}</td>
           <td>{{ row.roleName ?? '—' }}</td>
           <td class="cell-trunc">{{ row.actionByFullName ?? '—' }}</td>
+          <td class="cell-actions">
+            <button type="button" class="action-btn" title="Edit" (click)="onEditRow(row)">
+              <i class="pi pi-pencil"></i>
+            </button>
+            <button type="button" class="action-btn action-btn--danger" title="Delete" (click)="onDeleteRow(row)">
+              <i class="pi pi-trash"></i>
+            </button>
+          </td>
         </tr>
       </ng-template>
 
       <ng-template #emptymessage>
         <tr>
-          <td colspan="7" class="cell-empty">
+          <td colspan="8" class="cell-empty">
             <i class="pi pi-inbox"></i>
             No records found.
           </td>

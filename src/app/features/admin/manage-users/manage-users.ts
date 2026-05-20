@@ -20,7 +20,7 @@ import { BrandDto, DocumentumUserDto } from '../../documentum/models/documentum-
 import { invalidateCache } from 'src/app/core/interceptors/cache.interceptor';
 import { NOTIFICATION_MESSAGES as NM } from 'src/app/core/constants/notification-messages';
 import { ManageUserService } from '../services/manage-user-service';
-import { AdUserDto, CreateUserRequest } from '../models/ad-user.model';
+import { AdUserDto, CreateUserRequest, UpdateUserRequest } from '../models/ad-user.model';
 import { BrandQueueMappingDto, QueueUserMappingDto, RoleDto } from '../models/brand-mapping.model';
 import { InitialsPipe } from 'src/app/shared/pipes/initials.pipe';
 import { AuthStore } from 'src/app/core/auth/auth.store';
@@ -56,6 +56,8 @@ export class ManageUsers implements OnInit {
   readonly searchedUser = signal<AdUserDto | null>(null);
   readonly searching = signal(false);
   readonly saveAttempted = signal(false);
+  readonly editingRow = signal<QueueUserMappingDto | null>(null);
+  readonly isEditMode = computed(() => this.editingRow() !== null);
 
   private readonly _brandOverride = signal<number | null>(null);
   private readonly _queueOverride = signal<number | null>(null);
@@ -86,6 +88,7 @@ export class ManageUsers implements OnInit {
     this.globalIdValue.set(value);
     this.searchedUser.set(null);
     this.saveAttempted.set(false);
+    this.editingRow.set(null);
   }
 
   async onSearch(): Promise<void> {
@@ -115,43 +118,97 @@ export class ManageUsers implements OnInit {
   onSaveUser(): void {
     this.saveAttempted.set(true);
     if (!this.canSave()) return;
-
     const user = this.searchedUser();
     if (!user) return;
 
-    const req: CreateUserRequest = {
-      globalId: this.globalIdValue(),
-      firstName: user.firstName,
-      lastName: user.lastName,
-      emailId: user.emailId,
-      brandId: this.selectedBrandId(),
-      queueId: this.selectedQueueId(),
-      roleId: this.selectedRoleId(),
-      createdBy: this.authStore.currentUser()?.globalId ?? '',
-    };
-
     this.saving.set(true);
+
+    if (this.isEditMode()) {
+      const req: UpdateUserRequest = {
+        globalId: this.globalIdValue(),
+        brandId: this.selectedBrandId()!,
+        queueId: this.selectedQueueId()!,
+        roleId: this.selectedRoleId()!,
+        updatedBy: this.authStore.currentUser()?.globalId ?? '',
+      };
+      this.usersService
+        .updateUser(req)
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe({
+          next: () => {
+            this.notify.success(NM.INTRANET.USER.UPDATE_SUCCESS, 'Intranet');
+            this.resetForm();
+          },
+          error: () => {
+            this.saving.set(false);
+            this.notify.error(NM.INTRANET.USER.UPDATE_FAILED, 'Intranet');
+          },
+        });
+    } else {
+      const req: CreateUserRequest = {
+        globalId: this.globalIdValue(),
+        firstName: user.firstName,
+        lastName: user.lastName,
+        emailId: user.emailId,
+        brandId: this.selectedBrandId(),
+        queueId: this.selectedQueueId(),
+        roleId: this.selectedRoleId(),
+        createdBy: this.authStore.currentUser()?.globalId ?? '',
+      };
+      this.usersService
+        .createUser(req)
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe({
+          next: () => {
+            this.notify.success(NM.INTRANET.USER.CREATE_SUCCESS, 'Intranet');
+            this.resetForm();
+          },
+          error: () => {
+            this.saving.set(false);
+            this.notify.error(NM.INTRANET.USER.CREATE_FAILED, 'Intranet');
+          },
+        });
+    }
+  }
+
+  onEditRow(row: QueueUserMappingDto): void {
+    const [firstName = '', ...rest] = (row.fullName ?? '').split(' ');
+    const role = this.roles().find(r => r.roleName === row.roleName);
+
+    this.globalIdValue.set(row.globalId ?? '');
+    this.searchedUser.set({ firstName, lastName: rest.join(' '), emailId: row.emailId ?? '' });
+    this._brandOverride.set(row.brandId ?? null);
+    this._queueOverride.set(row.queueId ?? null);
+    this._roleOverride.set(role?.roleMasterId ?? null);
+    this.editingRow.set(row);
+    this.saveAttempted.set(false);
+  }
+
+  onDeleteRow(row: QueueUserMappingDto): void {
     this.usersService
-      .createUser(req)
+      .deleteUser(row.globalId!, row.queueId!)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => {
-          this.saving.set(false);
-          this.notify.success(NM.INTRANET.USER.CREATE_SUCCESS, 'Intranet');
-          this.searchedUser.set(null);
-          this.globalIdValue.set('');
-          this.saveAttempted.set(false);
-          this._brandOverride.set(null);
-          this._queueOverride.set(null);
-          this._roleOverride.set(null);
-          invalidateCache();
-          this.loadBrandAndQueuesAndMapping();
+          this.notify.success(NM.INTRANET.USER.DELETE_SUCCESS, 'Intranet');
+          if (this.editingRow()?.globalId === row.globalId) this.resetForm();
+          else { invalidateCache(); this.loadBrandAndQueuesAndMapping(); }
         },
-        error: () => {
-          this.saving.set(false);
-          this.notify.error(NM.INTRANET.USER.CREATE_FAILED, 'Intranet');
-        },
+        error: () => this.notify.error(NM.INTRANET.USER.DELETE_FAILED, 'Intranet'),
       });
+  }
+
+  private resetForm(): void {
+    this.saving.set(false);
+    this.searchedUser.set(null);
+    this.globalIdValue.set('');
+    this.saveAttempted.set(false);
+    this._brandOverride.set(null);
+    this._queueOverride.set(null);
+    this._roleOverride.set(null);
+    this.editingRow.set(null);
+    invalidateCache();
+    this.loadBrandAndQueuesAndMapping();
   }
 
   onBrandChange(id: number | null): void {

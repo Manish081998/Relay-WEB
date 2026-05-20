@@ -71,6 +71,8 @@ export const NOTIFICATION_MESSAGES = {
       CREATE_FAILED: 'Failed to create user.',
       UPDATE_SUCCESS: 'User updated successfully.',
       UPDATE_FAILED: 'Failed to update user.',
+      DELETE_SUCCESS: 'User removed successfully.',
+      DELETE_FAILED: 'Failed to remove user.',
     },
     EDGE_ORDER: {
       LOAD_FAILED: 'Failed to load edge orders.',

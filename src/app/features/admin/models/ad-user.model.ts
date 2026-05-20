@@ -18,3 +18,11 @@ export interface CreateUserRequest {
   roleId: number | null;
   createdBy: string;
 }
+
+export interface UpdateUserRequest {
+  globalId: string;
+  brandId: number;
+  queueId: number;
+  roleId: number;
+  updatedBy: string;
+}

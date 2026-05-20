@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { ApiService } from '../../../core/services/api.service';
 import { ENVIRONMENT } from '../../../core/tokens/environment.token';
 import { BrandDto, DocumentumUserDto, UpdateDocumentumUserRequest } from '../../documentum/models/documentum-user.model';
-import { AdUserDto, CreateUserRequest } from '../models/ad-user.model';
+import { AdUserDto, CreateUserRequest, UpdateUserRequest } from '../models/ad-user.model';
 import { BrandAndQueuesAndMappingDto } from '../models/brand-mapping.model';
 
 @Injectable()
@@ -20,6 +20,18 @@ export class ManageUserService {
 
   createUser(body: CreateUserRequest): Observable<void> {
     return this.api.post<void>(`${this.env.apiBaseUrl}/api/users/CreateUser`, body);
+  }
+
+  updateUser(body: UpdateUserRequest): Observable<void> {
+    return this.api.put<void>(`${this.env.apiBaseUrl}/api/users/UpdateUser`, body);
+  }
+
+  deleteUser(globalId: string, queueId: number): Observable<void> {
+    return this.api.delete<void>(
+      `${this.env.apiBaseUrl}/api/users/DeleteUser`,
+      undefined,
+      { params: { globalId, queueId } },
+    );
   }
 
   getById(id: number): Observable<DocumentumUserDto> {
