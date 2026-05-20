@@ -1,0 +1,104 @@
+<div class="bqm-page">
+
+  <!-- ── Page Header ──────────────────────────────────────────────────────── -->
+  <div class="bqm-title-row">
+    <div class="bqm-title-left">
+      <h1 class="bqm-title">BrandQueue Mapping</h1>
+      <p class="bqm-subtitle">Map workflow queues to a brand. Add/Remove saves immediately.</p>
+    </div>
+  </div>
+
+  <!-- ── Brand Selector Card ──────────────────────────────────────────────── -->
+  <div class="brand-card">
+    <div class="field">
+      <label class="field-label">Brand <span class="required">*</span></label>
+      <p-select
+        [options]="brands()"
+        [ngModel]="selectedBrandId()"
+        (ngModelChange)="onBrandChange($event)"
+        optionLabel="brandName"
+        optionValue="brandId"
+        placeholder="Select a brand..."
+        [disabled]="loading() && brands().length === 0"
+        styleClass="brand-select"
+      />
+    </div>
+  </div>
+
+  <!-- ── Queue Mapping Card ───────────────────────────────────────────────── -->
+  <div class="mapping-card">
+    <div class="mapping-body">
+
+      <!-- Left: Available Queues -->
+      <div class="queue-panel">
+        <div class="panel-header">
+          <span class="panel-title">Available Queues</span>
+          <span class="panel-count">{{ availableQueues().length }}</span>
+        </div>
+        <div class="queue-list">
+          @if (loading()) {
+            <div class="queue-placeholder">Loading...</div>
+          } @else if (!selectedBrandId()) {
+            <div class="queue-placeholder">Select a brand to view queues.</div>
+          } @else if (availableQueues().length === 0) {
+            <div class="queue-placeholder">No available queues.</div>
+          } @else {
+            @for (queue of availableQueues(); track queue.queueId) {
+              <div
+                class="queue-item"
+                [class.is-selected]="isAvailableSelected(queue.queueId)"
+                (click)="onAvailableClick($event, queue)"
+                (dblclick)="$event.preventDefault()"
+              >{{ queue.queueName }}</div>
+            }
+          }
+        </div>
+      </div>
+
+      <!-- Center: Action Buttons -->
+      <div class="actions-col">
+        <button type="button" class="btn-transfer" (click)="onAdd()">Add ›</button>
+        <button type="button" class="btn-transfer" (click)="onRemove()">‹ Remove</button>
+      </div>
+
+      <!-- Right: Selected Queues -->
+      <div class="queue-panel">
+        <div class="panel-header">
+          <span class="panel-title">
+            Selected Queues
+            @if (selectedBrandName()) {
+              <span class="panel-for">· for {{ selectedBrandName() }}</span>
+            }
+          </span>
+          <span class="panel-count">{{ selectedQueues().length }}</span>
+        </div>
+        <div class="queue-list">
+          @if (loading()) {
+            <div class="queue-placeholder">Loading...</div>
+          } @else if (!selectedBrandId()) {
+            <div class="queue-placeholder">Select a brand to view mappings.</div>
+          } @else if (selectedQueues().length === 0) {
+            <div class="queue-placeholder">No queues mapped to this brand.</div>
+          } @else {
+            @for (queue of selectedQueues(); track queue.queueId) {
+              <div
+                class="queue-item"
+                [class.is-selected]="isMappedSelected(queue.queueId)"
+                (click)="onMappedClick($event, queue)"
+                (dblclick)="$event.preventDefault()"
+              >{{ queue.queueName }}</div>
+            }
+          }
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ── Card Footer: Tips ─────────────────────────────────────────────── -->
+    <div class="mapping-footer">
+      <span class="tip-text">Tip: Ctrl/⌘-click for multi-select.</span>
+      <span class="tip-auto">Changes save automatically.</span>
+    </div>
+  </div>
+
+</div>

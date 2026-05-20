@@ -1,5 +1,16 @@
 import { BrandDto } from '../../documentum/models/documentum-user.model';
 
+export interface QueueSummaryDto {
+  queueId: number;
+  queueName: string;
+}
+
+export interface BrandQueueMappingApiResponse {
+  brands: BrandDto[];
+  availableQueues: QueueSummaryDto[];
+  selectedQueues: BrandQueueMappingDto[];
+}
+
 export interface BrandQueueMappingDto {
   brandId: number;
   brandName: string;

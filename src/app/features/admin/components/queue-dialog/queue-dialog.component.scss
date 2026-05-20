@@ -4,6 +4,15 @@
   $fc-primary-glow:  rgba(26, 95, 180, 0.22)
 );
 
+// ── PrimeNG dialog header padding ────────────────────────────────────────────
+:host ::ng-deep .qd-modal .p-dialog-header {
+  padding: 18px 24px 16px;
+}
+
+:host ::ng-deep .qd-modal .p-dialog-content {
+  padding: 0;
+}
+
 // ── Dialog body wrapper ───────────────────────────────────────────────────────
 .qd-body {
   display: flex;
@@ -14,27 +23,30 @@
 .qd-form {
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  padding: 20px 20px 16px;
+  gap: 20px;
+  padding: 12px 24px 20px;
 }
 
-// ── Field ─────────────────────────────────────────────────────────────────────
+// ── Field (label + control stack) ────────────────────────────────────────────
 .qd-field {
-  @include fc.dialog-field;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
 
+// Override any mixin label colour so all labels are consistently dark
+.qd-field label,
 .qd-label {
   font-size: 13px;
   font-weight: 600;
   color: #374151;
-  line-height: 1;
+  line-height: 1.2;
 }
 
 .qd-label-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 0;
 }
 
 .qd-char-count {
@@ -43,18 +55,20 @@
   font-variant-numeric: tabular-nums;
 }
 
-// pInputText ──────────────────────────────────────────────────────────────────
+// ── Text input ────────────────────────────────────────────────────────────────
 .qd-field input[pInputText] {
   @include fc.input;
 }
 
-// Textarea ────────────────────────────────────────────────────────────────────
+// ── Textarea ──────────────────────────────────────────────────────────────────
 .qd-textarea {
   width: 100%;
+  min-height: 100px;
   resize: vertical;
   font-family: inherit;
   font-size: 13px;
-  padding: 8px 10px;
+  line-height: 1.5;
+  padding: 9px 11px;
   border-radius: 6px;
   border: 1px solid fc.$fc-input-border-raw;
   background: fc.$fc-input-bg;
@@ -80,6 +94,7 @@
   box-shadow:   0 0 0 3px fc.$fc-input-error-glow !important;
 }
 
+.qd-field--err label,
 .qd-field--err .qd-label { color: fc.$fc-danger; }
 
 .qd-err { @include fc.field-error; }
@@ -88,8 +103,8 @@
 .qd-status-row {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding-top: 4px;
+  gap: 9px;
+  padding-top: 2px;
 }
 
 .qd-checkbox { @include fc.checkbox; }
@@ -109,18 +124,19 @@
 }
 
 // ── Audit info bar ────────────────────────────────────────────────────────────
-.qd-info-bar { @include fc.info-bar; }
+.qd-info-bar {
+  @include fc.info-bar;
+  padding: 10px 24px;
+}
 
 .qd-info-row {
   display: flex;
   gap: 24px;
-  font-size: 11px;
+  font-size: 11.5px;
   color: #6b7280;
   line-height: 1.6;
   flex-wrap: wrap;
 }
-
-.qd-info-id-row { margin-top: 2px; }
 
 .qd-info-key {
   font-weight: 600;
@@ -128,21 +144,15 @@
   margin-right: 3px;
 }
 
-.qd-info-id {
-  font-family: ui-monospace, 'Cascadia Mono', 'Segoe UI Mono', Consolas, monospace;
-  font-size: 11px;
-  color: #2563eb;
-}
-
 // ── Footer ────────────────────────────────────────────────────────────────────
 .qd-footer { @include fc.dialog-footer; }
 
 .qd-btn-cancel {
   @include fc.btn-secondary;
-  padding: 0 18px;
+  padding: 0 20px;
 }
 
 .qd-btn-save {
   @include fc.btn-primary;
-  padding: 0 18px;
+  padding: 0 20px;
 }
