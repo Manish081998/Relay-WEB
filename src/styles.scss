@@ -52,6 +52,39 @@ html, body {
   }
 }
 
+// ── BrandQueue Mapping — brand select panel ───────────────────────────────────
+.bqm-brand-panel.p-select-overlay {
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  background: #fff;
+  margin-top: 4px;
+  overflow: hidden;
+
+  .p-select-list {
+    padding: 4px 0;
+  }
+
+  .p-select-option {
+    padding: 9px 14px;
+    font-size: 13px;
+    font-family: 'Inter', system-ui, sans-serif;
+    color: #1e293b;
+    transition: background 100ms;
+
+    &.p-select-option-selected {
+      background: #dbeafe;
+      color: #1d4ed8;
+      font-weight: 600;
+    }
+
+    &:not(.p-select-option-selected).p-focus {
+      background: #f0f7ff;
+      color: #1e40af;
+    }
+  }
+}
+
 // ── PrimeNG Tooltip overrides ────────────────────────────────────────────────
 .p-tooltip {
   max-width: 320px;

@@ -54,7 +54,7 @@ export const NAV_GROUPS: NavGroup[] = [
     children: [
       { label: 'Manage Queue', route: '/admin/manage-queue', icon: NAV_ICONS.manageQueue },
       { label: 'Manage Users', route: '/admin/manage-users', icon: NAV_ICONS.manageUsers },
-      { label: 'BrandQueue Mapping', route: '/admin/brand-queue-mapping', icon: NAV_ICONS.brandQueueMapping },
+      { label: 'Brand - Queue Mapping', route: '/admin/brand-queue-mapping', icon: NAV_ICONS.brandQueueMapping },
     ],
   },
 ];

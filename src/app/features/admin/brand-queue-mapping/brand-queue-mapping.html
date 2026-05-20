@@ -3,7 +3,7 @@
   <!-- ── Page Header ──────────────────────────────────────────────────────── -->
   <div class="bqm-title-row">
     <div class="bqm-title-left">
-      <h1 class="bqm-title">BrandQueue Mapping</h1>
+      <h1 class="bqm-title">Brand - Queue Mapping</h1>
       <p class="bqm-subtitle">Map workflow queues to a brand. Add/Remove saves immediately.</p>
     </div>
   </div>
@@ -21,6 +21,7 @@
         placeholder="Select a brand..."
         [disabled]="loading() && brands().length === 0"
         styleClass="brand-select"
+        panelStyleClass="bqm-brand-panel"
       />
     </div>
   </div>
@@ -57,15 +58,19 @@
 
       <!-- Center: Action Buttons -->
       <div class="actions-col">
-        <button type="button" class="btn-transfer" (click)="onAdd()">Add ›</button>
-        <button type="button" class="btn-transfer" (click)="onRemove()">‹ Remove</button>
+        <button type="button" class="btn-transfer" [disabled]="!selectedBrandId()" (click)="onAdd()">
+          Add <i class="pi pi-angle-right"></i>
+        </button>
+        <button type="button" class="btn-transfer" [disabled]="!selectedBrandId()" (click)="onRemove()">
+          <i class="pi pi-angle-left"></i> Remove
+        </button>
       </div>
 
       <!-- Right: Selected Queues -->
       <div class="queue-panel">
         <div class="panel-header">
           <span class="panel-title">
-            Selected Queues
+            Assigned Queues
             @if (selectedBrandName()) {
               <span class="panel-for">· for {{ selectedBrandName() }}</span>
             }

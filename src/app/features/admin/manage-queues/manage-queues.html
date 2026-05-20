@@ -36,7 +36,6 @@
     >
       <ng-template #header>
         <tr>
-          <th style="width: 52px"></th>
           <th pSortableColumn="queueName" style="width: 180px">
             Queue Name <p-sortIcon field="queueName" />
           </th>
@@ -58,16 +57,6 @@
 
       <ng-template #body let-row>
         <tr>
-          <td class="cell-actions">
-            <button
-              type="button"
-              class="action-btn"
-              title="Edit queue"
-              (click)="onEdit(row)"
-            >
-              <i class="pi pi-pencil"></i>
-            </button>
-          </td>
           <td><span class="cell-name">{{ row.queueName ?? '—' }}</span></td>
           <td class="cell-trunc">{{ row.description ?? '—' }}</td>
           <td>
@@ -83,11 +72,11 @@
           <td class="cell-actions">
             <button
               type="button"
-              class="action-btn action-btn--danger"
-              title="Delete queue"
-              (click)="onDeleteClick(row)"
+              class="action-btn"
+              title="Edit queue"
+              (click)="onEdit(row)"
             >
-              <i class="pi pi-times"></i>
+              <i class="pi pi-pencil"></i>
             </button>
           </td>
         </tr>
@@ -95,7 +84,7 @@
 
       <ng-template #emptymessage>
         <tr>
-          <td colspan="7" class="cell-empty">
+          <td colspan="6" class="cell-empty">
             <i class="pi pi-inbox"></i>
             No queues found.
           </td>
