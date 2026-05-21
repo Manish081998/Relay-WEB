@@ -68,6 +68,10 @@ export class Search {
   // ── Column filters (server-side) ──────────────────────────────────────────
   readonly colFilters = signal<Record<string, string>>({});
 
+  // ── Column sorting ────────────────────────────────────────────────────────
+  readonly sortField     = signal<string>('');
+  readonly sortDirection = signal<'asc' | 'desc' | ''>('');
+
   readonly totalPages = computed(() =>
     Math.max(1, Math.ceil(this.totalCount() / this.pageSize())),
   );
@@ -92,11 +96,17 @@ export class Search {
       )
       .subscribe({
         next: res => {
-          this.orders.set(res.items ?? []);
+          const items = res.items ?? [];
+          this.unsortedOrders = [...items];
+          this.orders.set(items);
           this.totalCount.set(res.totalCount ?? 0);
           this.loading.set(false);
           this.searched.set(true);
           this.selectedRows.set(new Set());
+          // Re-apply active sort to new data
+          if (this.sortField()) {
+            this.applySortLocally();
+          }
         },
         error: () => {
           this.loading.set(false);
@@ -146,6 +156,8 @@ export class Search {
     this.selectedQueueName.set('');
     this.selectedRows.set(new Set());
     this.colFilters.set({});
+    this.sortField.set('');
+    this.sortDirection.set('');
   }
 
   goToPage(page: number): void {
@@ -157,7 +169,7 @@ export class Search {
   openOrder(order: OrderItem): void {
     this.router.navigate(
       ['/documentum/order-detail', order.orderGuid],
-      { queryParams: { so: order.orderSeq } },
+      { queryParams: { orderSeq: order.orderSeq } },
     );
   }
 
@@ -183,6 +195,104 @@ export class Search {
 
   isRowSelected(guid: string): boolean {
     return this.selectedRows().has(guid);
+  }
+
+  // ── Sort helpers ──────────────────────────────────────────────────────────
+  onSort(field: string): void {
+    if (this.sortField() === field) {
+      this.sortDirection.set(this.sortDirection() === 'asc' ? 'desc' : 'asc');
+    } else {
+      this.sortField.set(field);
+      this.sortDirection.set('asc');
+    }
+    this.applySortLocally();
+  }
+
+  clearSort(): void {
+    this.sortField.set('');
+    this.sortDirection.set('');
+    // Restore original order from last API response
+    if (this.unsortedOrders.length) {
+      this.orders.set([...this.unsortedOrders]);
+    }
+  }
+
+  private unsortedOrders: OrderItem[] = [];
+
+  private applySortLocally(): void {
+    const field = this.sortField() as keyof OrderItem;
+    const dir   = this.sortDirection();
+    if (!field || !dir) return;
+
+    const sorted = [...this.orders()].sort((a, b) => {
+      const valA = a[field];
+      const valB = b[field];
+
+      // Handle nulls — push them to the end
+      if (valA == null && valB == null) return 0;
+      if (valA == null) return 1;
+      if (valB == null) return -1;
+
+      // Date fields
+      if (field === 'createdDate' || field === 'orderDate' || field === 'completionDate' || field === 'orderRecdDate') {
+        const da = new Date(valA as string).getTime();
+        const db = new Date(valB as string).getTime();
+        return dir === 'asc' ? da - db : db - da;
+      }
+
+      // Numeric fields
+      if (field === 'orderSeq' || field === 'priority') {
+        const na = Number(valA) || 0;
+        const nb = Number(valB) || 0;
+        return dir === 'asc' ? na - nb : nb - na;
+      }
+
+      // String fields
+      const sa = String(valA).toLowerCase();
+      const sb = String(valB).toLowerCase();
+      const cmp = sa.localeCompare(sb);
+      return dir === 'asc' ? cmp : -cmp;
+    });
+
+    this.orders.set(sorted);
+  }
+
+  get hasActiveSort(): boolean {
+    return this.sortField() !== '';
+  }
+
+  // ── Column resize ────────────────────────────────────────────────────────
+  private resizingCol: HTMLTableCellElement | null = null;
+  private resizeStartX = 0;
+  private resizeStartW = 0;
+
+  onResizeStart(event: MouseEvent, th: HTMLTableCellElement): void {
+    event.preventDefault();
+    event.stopPropagation();
+    this.resizingCol = th;
+    this.resizeStartX = event.clientX;
+    this.resizeStartW = th.offsetWidth;
+
+    const onMouseMove = (e: MouseEvent) => {
+      if (!this.resizingCol) return;
+      const diff = e.clientX - this.resizeStartX;
+      const newWidth = Math.max(40, this.resizeStartW + diff);
+      this.resizingCol.style.width = `${newWidth}px`;
+      this.resizingCol.style.minWidth = `${newWidth}px`;
+    };
+
+    const onMouseUp = () => {
+      this.resizingCol = null;
+      document.removeEventListener('mousemove', onMouseMove);
+      document.removeEventListener('mouseup', onMouseUp);
+      document.body.style.cursor = '';
+      document.body.style.userSelect = '';
+    };
+
+    document.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('mouseup', onMouseUp);
+    document.body.style.cursor = 'col-resize';
+    document.body.style.userSelect = 'none';
   }
 
   // ── Filter helpers ────────────────────────────────────────────────────────

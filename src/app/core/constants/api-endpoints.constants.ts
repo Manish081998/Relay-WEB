@@ -5,8 +5,6 @@ export const API_ENDPOINTS = {
     LOGOUT: '/api/auth/logout',
   },
   DOCUMENTUM: {
-    DOCUMENTS: '/api/documents',
-    ANNOTATIONS: '/api/annotations',
     ORDERS_SEARCH: '/api/documentum/orders/search',
     QUEUES: '/api/documentum/queues',
     BRAND_QUEUE_MAPPING: '/api/documentum/queues/brand-queue-mapping',

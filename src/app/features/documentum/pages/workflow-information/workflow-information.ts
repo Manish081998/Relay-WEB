@@ -9,11 +9,13 @@ import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { catchError, map, of, timeout } from 'rxjs';
 import { OrdersService } from '../../services/orders.service';
 import { SalesOrderDocumentService } from '../../services/sales-order-document.service';
+import { SalesOrderNoteService } from '../../services/sales-order-note.service';
 import { DropdownOption, OrderItem } from '../../models/order.model';
 import {
   SalesOrderDocumentDto,
   SalesOrderDocumentVersionDto,
 } from '../../models/document.model';
+import { SalesOrderNoteDto } from '../../models/note.model';
 import { AnnotationDialogComponent } from '../../components/annotation-dialog/annotation-dialog.component';
 import { Dialog } from 'primeng/dialog';
 import { NotificationService } from '../../../../core/services/notification.service';
@@ -26,13 +28,14 @@ import { invalidateCache } from '../../../../core/interceptors/cache.interceptor
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './workflow-information.html',
   styleUrl: './workflow-information.scss',
-  providers: [SalesOrderDocumentService],
+  providers: [SalesOrderDocumentService, SalesOrderNoteService],
 })
 export class WorkflowInformation {
   private readonly router = inject(Router);
   private readonly route  = inject(ActivatedRoute);
   private readonly ordersService = inject(OrdersService);
   private readonly docService = inject(SalesOrderDocumentService);
+  private readonly noteService = inject(SalesOrderNoteService);
   private readonly notify = inject(NotificationService);
   private readonly destroyRef = inject(DestroyRef);
 
@@ -40,7 +43,7 @@ export class WorkflowInformation {
   readonly activeTab = signal<'info' | 'documents' | 'history'>('info');
 
   readonly orderSeq = toSignal(
-    this.route.queryParamMap.pipe(map(p => Number(p.get('so')) || 0)),
+    this.route.queryParamMap.pipe(map(p => Number(p.get('orderSeq')) || 0)),
     { initialValue: 0 },
   );
 
@@ -69,19 +72,15 @@ export class WorkflowInformation {
     { activityName: 'Release to Production', comments: 'ccarfwja acquired task for final production release', userName: 'ccarfwja', timestamp: '12/22/25 06:42 pm', eventType: 'Acquire', orderStatus: '' },
   ];
 
-  readonly salesOrderHistory = [
-    { name: '18T109JB3G 1-14-2020_093800.pdf', createdOn: '01/14/20 09:38 pm', createdBy: 'asc_order_load', versionLabel: 'CURRENT' },
-  ];
+  // salesOrderHistory — now uses salesOrderDocs() from API
 
-  readonly notes = signal([
-    { createdOn: '12/22/25 06:42 pm', userName: 'ccarfwja', note: '113.62 1' },
-  ]);
+  readonly notes = signal<SalesOrderNoteDto[]>([]);
+  readonly isLoadingNotes = signal(false);
 
-  // ── Add Note panel ────────────────────────────────────────────────────────
-  readonly showNotePanel = signal(false);
+  // ── Add Note dialog ────────────────────────────────────────────────────────
+  readonly showAddNoteDialog = signal(false);
   readonly newNoteText = signal('');
   readonly isSavingNote = signal(false);
-  readonly noteTextarea = viewChild<ElementRef<HTMLTextAreaElement>>('noteTextarea');
 
   // ── Document Management ───────────────────────────────────────────────────
   readonly salesOrderDocs = signal<SalesOrderDocumentDto[]>([]);
@@ -121,6 +120,7 @@ export class WorkflowInformation {
       this.isLoadingOrder.set(false);
       this.loadRouteToDepartment(stateOrder.brand);
       this.loadDocuments(stateOrder.orderSeq);
+      this.loadNotes(stateOrder.orderSeq);
     } else {
       const seq = this.orderSeq();
       if (seq > 0) {
@@ -132,6 +132,7 @@ export class WorkflowInformation {
               this.isLoadingOrder.set(false);
               this.loadRouteToDepartment(order.brand);
               this.loadDocuments(order.orderSeq);
+              this.loadNotes(order.orderSeq);
             },
             error: () => {
               this.isLoadingOrder.set(false);
@@ -161,46 +162,58 @@ export class WorkflowInformation {
 
   // ── Notes methods ─────────────────────────────────────────────────────────
 
-  toggleNotePanel(): void {
-    const opening = !this.showNotePanel();
-    this.showNotePanel.set(opening);
-    if (opening) {
-      this.newNoteText.set('');
-      setTimeout(() => this.noteTextarea()?.nativeElement.focus(), 50);
-    }
+  openAddNoteDialog(): void {
+    this.newNoteText.set('');
+    this.showAddNoteDialog.set(true);
+  }
+
+  closeAddNoteDialog(): void {
+    this.showAddNoteDialog.set(false);
+    this.newNoteText.set('');
   }
 
   saveNote(): void {
     const text = this.newNoteText().trim();
-    if (!text) return;
+    const seq = this.order()?.orderSeq;
+    if (!text || !seq) return;
 
     this.isSavingNote.set(true);
 
-    const now = new Date();
-    const month = String(now.getMonth() + 1).padStart(2, '0');
-    const day = String(now.getDate()).padStart(2, '0');
-    const year = String(now.getFullYear()).slice(-2);
-    const hours = now.getHours();
-    const minutes = String(now.getMinutes()).padStart(2, '0');
-    const ampm = hours >= 12 ? 'pm' : 'am';
-    const h12 = hours % 12 || 12;
-    const timestamp = `${month}/${day}/${year} ${String(h12).padStart(2, '0')}:${minutes} ${ampm}`;
-
-    const newNote = {
-      createdOn: timestamp,
-      userName: 'current_user',
-      note: text,
-    };
-
-    this.notes.update(prev => [newNote, ...prev]);
-    this.newNoteText.set('');
-    this.isSavingNote.set(false);
-    this.showNotePanel.set(false);
+    this.noteService.add({ orderSeq: seq, notesDescription: text })
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () => {
+          this.isSavingNote.set(false);
+          this.newNoteText.set('');
+          this.showAddNoteDialog.set(false);
+          this.loadNotes(seq);
+          this.notify.success('Note saved successfully.', 'Note Added');
+        },
+        error: (err) => {
+          console.error('Save note error:', err);
+          this.isSavingNote.set(false);
+        },
+      });
   }
 
-  cancelNote(): void {
-    this.newNoteText.set('');
-    this.showNotePanel.set(false);
+  // ── Notes loading ─────────────────────────────────────────────────────────
+
+  loadNotes(orderSeq?: number): void {
+    const seq = orderSeq ?? this.order()?.orderSeq;
+    if (!seq || seq <= 0) return;
+
+    this.isLoadingNotes.set(true);
+
+    this.noteService.getByOrderSeq(seq)
+      .pipe(
+        timeout(15000),
+        catchError(() => of([] as SalesOrderNoteDto[])),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe(notes => {
+        this.notes.set(notes);
+        this.isLoadingNotes.set(false);
+      });
   }
 
   // ── Document methods ──────────────────────────────────────────────────────
@@ -444,6 +457,16 @@ export class WorkflowInformation {
     const sizes = ['B', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+  }
+
+  getFileTypeClass(contentType: string): string {
+    const t = (contentType || '').toLowerCase();
+    if (t === 'pdf') return 'pdf';
+    if (t === 'word' || t === 'doc' || t === 'docx') return 'word';
+    if (t === 'excel' || t === 'xls' || t === 'xlsx') return 'excel';
+    if (['png', 'jpg', 'jpeg', 'gif', 'bmp', 'svg', 'tiff', 'tif', 'image'].includes(t)) return 'image';
+    if (t === 'txt' || t === 'text') return 'text';
+    return 'generic';
   }
 
   goBack(): void {

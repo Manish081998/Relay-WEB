@@ -45,6 +45,8 @@ export interface OrderSearchRequest {
   queueName?: string;
   packageOwner?: string;
   repName?: string;
+  sortField?: string;
+  sortDirection?: 'asc' | 'desc';
   pageNumber: number;
   pageSize: number;
 }

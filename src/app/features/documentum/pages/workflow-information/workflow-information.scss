@@ -6,56 +6,49 @@
 $amber:       #f59e0b;
 $amber-bg:    rgba(245, 158, 11, 0.10);
 $amber-bdr:   rgba(245, 158, 11, 0.30);
-$info-blue:   #3b82f6;
-$info-bg:     rgba(59, 130, 246, 0.08);
-$info-bdr:    rgba(59, 130, 246, 0.25);
 
 :host { @extend %host-base; }
 
 .od-page {
   @extend %page-base;
-  gap: 0;
-  padding: 0 0 32px;
+  gap: 24px;
+  padding: 0 0 40px;
 }
 
 // ═════════════════════════════════════════════════════════════════════════════
-// WORKFLOW CARD — Hero header
+// WORKFLOW CARD — Branded gradient header (standalone card)
 // ═════════════════════════════════════════════════════════════════════════════
 .od-card {
   @extend %card;
   margin-bottom: 0;
-  border-radius: t.$radius-lg t.$radius-lg 0 0;
-  border-bottom: none;
+  border-radius: t.$radius-lg;
+  overflow: visible;
+}
+
+// ═════════════════════════════════════════════════════════════════════════════
+// TABS CARD — Wrapper that groups tabs + content as one visual block
+// ═════════════════════════════════════════════════════════════════════════════
+.od-tabs-card {
+  display: flex;
+  flex-direction: column;
+  border-radius: t.$radius-lg;
+  box-shadow: t.$shadow-sm;
   overflow: visible;
 }
 
 .od-card__bar {
   @extend %card-bar;
   padding: 16px 28px;
-  background:
-    linear-gradient(135deg, ds.$brand 0%, ds.$brand-dark 60%, color.adjust(ds.$brand-dark, $lightness: -4%) 100%);
+  background: linear-gradient(135deg, ds.$brand 0%, ds.$brand-dark 100%);
   position: relative;
   overflow: hidden;
 
-  // Subtle geometric pattern overlay
   &::before {
     content: '';
     position: absolute;
     inset: 0;
-    background:
-      radial-gradient(circle at 90% 20%, rgba(255,255,255,0.06) 0%, transparent 50%),
-      radial-gradient(circle at 10% 80%, rgba(255,255,255,0.03) 0%, transparent 40%);
+    background: radial-gradient(circle at 85% 30%, rgba(255,255,255,0.06) 0%, transparent 50%);
     pointer-events: none;
-  }
-
-  &::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15) 30%, rgba(255,255,255,0.15) 70%, transparent);
   }
 }
 
@@ -71,13 +64,11 @@ $info-bdr:    rgba(59, 130, 246, 0.25);
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 36px;
-  height: 36px;
-  background: rgba(255, 255, 255, 0.12);
+  width: 34px;
+  height: 34px;
+  background: rgba(255, 255, 255, 0.15);
   border-radius: t.$radius-md;
   color: rgba(255, 255, 255, 0.9);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(8px);
 }
 
 .od-card__heading {
@@ -92,54 +83,47 @@ $info-bdr:    rgba(59, 130, 246, 0.25);
   @extend %btn-base;
   position: relative;
   z-index: 1;
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.12);
   color: #fff;
   border: 1px solid rgba(255, 255, 255, 0.25);
-  font-size: t.$font-size-sm;
-  padding: 8px 20px;
-  backdrop-filter: blur(8px);
+  font-size: t.$font-size-xs;
+  padding: 7px 18px;
   gap: 6px;
 
   &:hover {
-    background: rgba(255, 255, 255, 0.2);
-    border-color: rgba(255, 255, 255, 0.45);
-    transform: translateY(-1px);
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
-  }
-
-  &:active {
-    transform: translateY(0);
-    background: rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.22);
+    border-color: rgba(255, 255, 255, 0.4);
   }
 }
 
+// ── Workflow body ────────────────────────────────────────────────────────────
 .od-card__body {
-  @extend %card-body;
-  padding: 20px 28px 22px;
+  padding: 24px 28px;
   background: ds.$surface;
-  border-left: 1px solid ds.$border;
-  border-right: 1px solid ds.$border;
+  border: 1px solid ds.$border;
+  border-top: none;
+  border-radius: 0 0 t.$radius-lg t.$radius-lg;
 }
 
 .od-wf-row {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
-  gap: 0 56px;
+  gap: 0 48px;
 }
 
 .od-wf-field {
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  padding: 8px 0;
+  gap: 6px;
+  padding: 10px 0;
 }
 
 .od-wf-label {
-  font-size: t.$font-size-xs;
+  font-size: 11px;
   color: ds.$text-muted;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
-  font-weight: t.$font-weight-semibold;
+  letter-spacing: 0.07em;
+  font-weight: t.$font-weight-medium;
 }
 
 .od-wf-value {
@@ -159,190 +143,234 @@ $info-bdr:    rgba(59, 130, 246, 0.25);
   height: 8px;
   border-radius: 50%;
   background: $amber;
-  box-shadow: 0 0 8px rgba($amber, 0.5);
+  box-shadow: 0 0 6px rgba($amber, 0.5);
   animation: statePulse 2s ease-in-out infinite;
 }
 
 @keyframes statePulse {
-  0%, 100% { box-shadow: 0 0 4px rgba($amber, 0.3); }
-  50%      { box-shadow: 0 0 12px rgba($amber, 0.7); }
+  0%, 100% { box-shadow: 0 0 3px rgba($amber, 0.3); }
+  50%      { box-shadow: 0 0 10px rgba($amber, 0.6); }
 }
 
 .od-wf-route {
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  margin-top: 14px;
-  padding-top: 14px;
-  border-top: 1px solid rgba(ds.$border, 0.6);
+  gap: 6px;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid ds.$border;
 }
 
 .od-select { @extend %wf-select; }
 
 // ═════════════════════════════════════════════════════════════════════════════
-// TABS — Attached underline style
+// TABS — Card-style with dark readable font
 // ═════════════════════════════════════════════════════════════════════════════
 .od-tabs-bar {
-  background: ds.$surface;
-  border-left: 1px solid ds.$border;
-  border-right: 1px solid ds.$border;
-  border-bottom: 2px solid ds.$border;
-  padding: 0 28px;
+  background: ds.$surface-alt;
+  border: 1px solid ds.$border;
+  border-bottom: none;
+  border-radius: t.$radius-lg t.$radius-lg 0 0;
+  padding: 14px 12px 0;
+  display: flex;
 }
 
 .od-tabs {
   display: flex;
-  gap: 0;
-  margin: 0;
+  width: 100%;
+  gap: 4px;
 }
 
 .od-tab {
   display: inline-flex;
   align-items: center;
-  gap: 7px;
-  padding: 14px 24px;
-  font-size: t.$font-size-sm;
-  font-weight: t.$font-weight-semibold;
+  justify-content: center;
+  flex: 1;
+  gap: 8px;
+  padding: 0 20px;
+  height: 42px;
+  font-size: 14px;
+  font-weight: t.$font-weight-medium;
   font-family: t.$font-sans;
-  color: ds.$text-muted;
+  color: ds.$text;
   background: transparent;
   border: none;
-  border-bottom: 2px solid transparent;
-  margin-bottom: -2px;
+  border-radius: t.$radius-md t.$radius-md 0 0;
   cursor: pointer;
-  transition: all t.$transition-fast;
+  transition: all 0.15s ease;
+  letter-spacing: 0;
   position: relative;
-  letter-spacing: 0.01em;
 
   &:hover:not(.od-tab--active) {
     color: ds.$brand;
-    background: rgba(ds.$brand, 0.03);
+    background: rgba(255, 255, 255, 0.5);
   }
 
   &--active {
-    color: ds.$brand;
-    border-bottom-color: ds.$brand;
-    background: rgba(ds.$brand, 0.04);
+    color: #fff;
+    font-weight: t.$font-weight-bold;
+    background: linear-gradient(135deg, ds.$brand 0%, ds.$brand-dark 100%);
+    border: 1px solid ds.$brand;
+    border-bottom: none;
+    border-radius: t.$radius-md t.$radius-md 0 0;
+    box-shadow: 0 -4px 12px rgba(ds.$brand, 0.15);
+    z-index: 2;
+    margin-top: -6px;
+    margin-bottom: -1px;
+    height: 48px;
+    padding-bottom: 2px;
   }
 }
 
 .od-tab__icon {
-  opacity: 0.65;
+  opacity: 0.4;
   flex-shrink: 0;
+  transition: opacity 0.15s ease;
 
   .od-tab--active & {
     opacity: 1;
+    color: #fff;
   }
 }
 
 // ═════════════════════════════════════════════════════════════════════════════
-// TAB CONTENT AREA
+// TAB CONTENT
 // ═════════════════════════════════════════════════════════════════════════════
 .od-tab-content {
   display: flex;
   flex-direction: column;
-  gap: 24px;
-  padding-top: 28px;
-}
-
-// ═════════════════════════════════════════════════════════════════════════════
-// PACKAGE INFO — Refined card
-// ═════════════════════════════════════════════════════════════════════════════
-.od-pkg-section {
+  gap: 28px;
+  padding: 28px;
   background: ds.$surface;
   border: 1px solid ds.$border;
-  border-radius: t.$radius-lg;
-  padding: 0;
-  box-shadow: t.$shadow-card;
-  overflow: hidden;
+  border-top: 3px solid ds.$brand;
+  border-radius: 0 0 t.$radius-lg t.$radius-lg;
+  box-shadow: t.$shadow-sm;
 }
 
-.od-pkg-header {
+// ═════════════════════════════════════════════════════════════════════════════
+// SECTION — Light header with accent bar
+// ═════════════════════════════════════════════════════════════════════════════
+.od-section {
+  border: 1px solid ds.$border;
+  border-radius: t.$radius-md;
+  overflow: hidden;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+}
+
+.od-section-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 18px 24px;
-  background: ds.$surface-alt;
+  padding: 14px 20px;
+  background: linear-gradient(180deg, #f0f1f3 0%, ds.$surface-alt 100%);
   border-bottom: 1px solid ds.$border;
 }
 
-.od-pkg-title {
-  margin: 0;
-  font-size: t.$font-size-sm;
-  font-weight: t.$font-weight-bold;
-  color: ds.$text;
-  letter-spacing: 0.03em;
-  text-transform: uppercase;
+.od-section-title {
   display: flex;
   align-items: center;
+  gap: 0;
+  margin: 0;
+  font-size: 12px;
+  font-weight: t.$font-weight-bold;
+  color: ds.$text;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+
+  &::before {
+    content: '';
+    display: inline-block;
+    width: 3px;
+    height: 16px;
+    background: ds.$brand;
+    border-radius: 2px;
+    margin-right: 10px;
+    flex-shrink: 0;
+  }
 }
 
-.od-pkg-bullet {
-  display: inline-block;
-  width: 3px;
-  height: 18px;
-  border-radius: 2px;
-  background: linear-gradient(180deg, ds.$brand, color.adjust(ds.$brand, $lightness: 15%));
-  margin-right: 10px;
-  flex-shrink: 0;
+.od-section-actions {
+  display: flex;
+  gap: 8px;
 }
 
-.od-pkg-loading {
-  padding: 2rem;
-  text-align: center;
-  color: ds.$text-muted;
-  font-size: 0.875rem;
+.od-section-btn {
+  @extend %btn-base;
+  font-size: 11px;
+  padding: 6px 14px;
+  gap: 5px;
+  background: ds.$surface;
+  color: ds.$brand;
+  border: 1px solid rgba(ds.$brand, 0.3);
+  font-weight: t.$font-weight-semibold;
+  letter-spacing: 0.02em;
+
+  &:hover {
+    background: rgba(ds.$brand, 0.06);
+    border-color: ds.$brand;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    color: ds.$text-muted;
+    border-color: ds.$border;
+    &:hover {
+      color: ds.$text-muted;
+      border-color: ds.$border;
+      background: ds.$surface;
+    }
+  }
 }
 
+// ═════════════════════════════════════════════════════════════════════════════
+// PACKAGE INFO
+// ═════════════════════════════════════════════════════════════════════════════
 .od-pkg-grid {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   gap: 0;
-  padding: 8px 0;
 }
 
 .od-pkg-field {
   display: flex;
-  align-items: center;
+  align-items: baseline;
   gap: 12px;
-  padding: 10px 24px;
-  border-bottom: 1px solid rgba(ds.$border, 0.35);
-  min-height: 42px;
+  padding: 12px 20px;
+  border-bottom: 1px solid rgba(ds.$border, 0.5);
 
-  &:nth-last-child(-n+3) {
-    border-bottom: none;
+  // alternating row bands (every group of 3 = one visual row)
+  &:nth-child(6n+4), &:nth-child(6n+5), &:nth-child(6n+6) {
+    background: rgba(0, 0, 0, 0.018);
   }
 
-  // Subtle column separator
-  &:not(:nth-child(3n)) {
-    border-right: 1px solid rgba(ds.$border, 0.25);
-  }
+  &:nth-last-child(-n+3) { border-bottom: none; }
+  &:not(:nth-child(3n)) { border-right: 1px solid rgba(ds.$border, 0.35); }
 }
 
 .od-pkg-label {
-  @extend %pkg-label;
-  min-width: 160px;
-  font-size: t.$font-size-xs;
+  font-size: 11px;
+  color: ds.$text-muted;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
-  font-weight: t.$font-weight-semibold;
+  letter-spacing: 0.05em;
+  font-weight: t.$font-weight-medium;
+  min-width: 140px;
+  flex-shrink: 0;
 }
 
 .od-pkg-value {
-  @extend %pkg-value;
+  font-size: t.$font-size-sm;
+  color: ds.$text;
+  font-weight: t.$font-weight-semibold;
 
   &--mono {
     font-family: 'JetBrains Mono', 'Fira Code', 'SF Mono', monospace;
     font-size: t.$font-size-xs;
-    letter-spacing: 0.03em;
-    background: rgba(ds.$brand, 0.06);
+    letter-spacing: 0.02em;
+    background: rgba(ds.$brand, 0.05);
     padding: 2px 8px;
     border-radius: t.$radius-sm;
-  }
-
-  &--empty {
-    color: ds.$text-faint;
-    font-weight: t.$font-weight-normal;
   }
 
   &--status { @extend %pkg-value-status; }
@@ -352,18 +380,17 @@ $info-bdr:    rgba(59, 130, 246, 0.25);
   display: inline-flex;
   align-items: center;
   font-size: t.$font-size-xs;
-  font-weight: t.$font-weight-bold;
+  font-weight: t.$font-weight-semibold;
   padding: 2px 10px;
   border-radius: t.$radius-full;
-  background: $info-bg;
-  color: $info-blue;
-  border: 1px solid $info-bdr;
-  letter-spacing: 0.04em;
+  background: rgba(ds.$brand, 0.07);
+  color: ds.$brand;
+  border: 1px solid rgba(ds.$brand, 0.2);
 
   &--brand {
-    background: rgba(ds.$brand, 0.08);
+    background: rgba(ds.$brand, 0.07);
     color: ds.$brand;
-    border-color: rgba(ds.$brand, 0.25);
+    border-color: rgba(ds.$brand, 0.2);
   }
 }
 
@@ -381,77 +408,57 @@ $info-bdr:    rgba(59, 130, 246, 0.25);
   border: 1px solid $amber-bdr;
 }
 
-// ═════════════════════════════════════════════════════════════════════════════
-// NOTES SECTION — Modernized
-// ═════════════════════════════════════════════════════════════════════════════
-.od-notes-section {
-  background: ds.$surface;
-  border: 1px solid ds.$border;
-  border-radius: t.$radius-lg;
-  box-shadow: t.$shadow-card;
-  overflow: hidden;
-}
-
-.od-notes-header {
+.od-pkg-loading {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 16px 24px;
-  background: ds.$surface-alt;
-  border-bottom: 1px solid ds.$border;
-}
-
-.od-notes-heading {
-  @extend %section-heading;
-  margin: 0;
-}
-
-.od-notes-toolbar {
-  display: flex;
-  gap: 8px;
-}
-
-.od-notes-tbl {
-  @extend %data-table;
-  border: none;
-  border-radius: 0;
-  box-shadow: none;
-}
-
-.od-notes-user {
-  @extend %link-cell;
-}
-
-.od-notes-date {
-  font-variant-numeric: tabular-nums;
-  font-size: t.$font-size-xs;
+  justify-content: center;
+  gap: 10px;
+  padding: 40px 20px;
   color: ds.$text-muted;
+  font-size: t.$font-size-sm;
+
+  &::before {
+    content: '';
+    display: block;
+    width: 18px;
+    height: 18px;
+    border: 2px solid rgba(ds.$brand, 0.15);
+    border-top-color: ds.$brand;
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+  }
 }
 
-// ═══ Inline Add Note Panel ═══════════════════════════════════════════════════
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+// ═════════════════════════════════════════════════════════════════════════════
+// NOTES — Inline add panel
+// ═════════════════════════════════════════════════════════════════════════════
 .od-note-panel {
   border-bottom: 1px solid ds.$border;
-  background: rgba(ds.$brand, 0.025);
-  animation: noteSlideDown 0.2s ease-out;
+  background: ds.$surface-alt;
+  animation: slideDown 0.2s ease-out;
 }
 
 .od-note-panel__body {
-  padding: 20px 24px;
+  padding: 16px 20px;
 }
 
 .od-note-panel__label {
   display: block;
-  font-size: t.$font-size-xs;
-  font-weight: t.$font-weight-bold;
+  font-size: 11px;
+  font-weight: t.$font-weight-semibold;
   color: ds.$text-muted;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.05em;
   margin-bottom: 8px;
 }
 
 .od-note-panel__textarea {
   width: 100%;
-  min-height: 80px;
+  min-height: 72px;
   max-height: 200px;
   resize: vertical;
   font-size: t.$font-size-sm;
@@ -460,19 +467,12 @@ $info-bdr:    rgba(59, 130, 246, 0.25);
   background: ds.$surface;
   border: 1px solid ds.$border-strong;
   border-radius: t.$radius-md;
-  padding: 12px 14px;
+  padding: 10px 12px;
   outline: none;
-  transition: border-color t.$transition-fast, box-shadow t.$transition-fast;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
   line-height: 1.6;
 
-  &::placeholder {
-    color: ds.$text-faint;
-  }
-
-  &:hover {
-    border-color: ds.$brand;
-  }
-
+  &::placeholder { color: ds.$text-faint; }
   &:focus {
     border-color: ds.$brand;
     box-shadow: ds.$shadow-focus;
@@ -483,7 +483,7 @@ $info-bdr:    rgba(59, 130, 246, 0.25);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-top: 12px;
+  margin-top: 10px;
 }
 
 .od-note-panel__char-count {
@@ -504,53 +504,204 @@ $info-bdr:    rgba(59, 130, 246, 0.25);
   border: 2px solid rgba(255, 255, 255, 0.3);
   border-top-color: #fff;
   border-radius: 50%;
-  animation: noteSpin 0.6s linear infinite;
+  animation: spin 0.6s linear infinite;
 }
 
-@keyframes noteSlideDown {
-  from { opacity: 0; transform: translateY(-6px); }
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-4px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 
-@keyframes noteSpin {
-  to { transform: rotate(360deg); }
+// ═════════════════════════════════════════════════════════════════════════════
+// DATA TABLES — Airy, minimal, like the reference
+// ═════════════════════════════════════════════════════════════════════════════
+.od-data-tbl {
+  width: 100%;
+  border-collapse: collapse;
+
+  thead th {
+    font-size: 10px;
+    font-weight: t.$font-weight-bold;
+    color: ds.$text-muted;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 12px 20px;
+    border-bottom: 1px solid ds.$border;
+    text-align: left;
+    white-space: nowrap;
+    background: #f8f9fa;
+  }
+
+  tbody td {
+    font-size: t.$font-size-sm;
+    color: ds.$text;
+    padding: 14px 20px;
+    border-bottom: 1px solid rgba(ds.$border, 0.4);
+    vertical-align: middle;
+  }
+
+  tbody tr {
+    transition: background 0.1s ease;
+    &:nth-child(even) { background: rgba(0, 0, 0, 0.015); }
+    &:last-child td { border-bottom: none; }
+    &:hover { background: rgba(ds.$brand, 0.04); }
+  }
 }
 
-// ═════════════════════════════════════════════════════════════════════════════
-// DOCUMENT/HISTORY SECTIONS — Unified card style
-// ═════════════════════════════════════════════════════════════════════════════
-.od-doc-section {
-  background: ds.$surface;
-  border: 1px solid ds.$border;
-  border-radius: t.$radius-lg;
-  box-shadow: t.$shadow-card;
-  overflow: hidden;
-}
-
-.od-doc-header {
+// ── Two-line document name cell ──────────────────────────────────────────────
+.od-doc-name {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 16px 24px;
-  background: ds.$surface-alt;
-  border-bottom: 1px solid ds.$border;
+  gap: 12px;
+  cursor: pointer;
+
+  &:hover .od-doc-name__text { color: ds.$brand; }
 }
 
-.od-doc-toolbar {
+.od-doc-name__icon {
   display: flex;
-  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: t.$radius-md;
+  flex-shrink: 0;
+
+  // Default PDF
+  background: transparent;
+
+  &--pdf, &--word, &--excel, &--image, &--text, &--generic {
+    background: transparent;
+  }
+  &--image { background: rgba(#8b5cf6, 0.08); color: #8b5cf6; }
+  &--other { background: rgba(ds.$text-muted, 0.08); color: ds.$text-muted; }
 }
 
-.od-tbl-heading { @extend %section-heading; margin: 0; }
-.od-data-tbl {
-  @extend %data-table;
-  border: none;
-  border-radius: 0;
-  box-shadow: none;
+.od-doc-name__info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
 }
-.od-link { @extend %link-cell; }
-.od-status-text { @extend %status-cell; }
-.od-empty-row { @extend %empty-row; }
+
+.od-doc-name__text {
+  font-size: t.$font-size-sm;
+  font-weight: t.$font-weight-semibold;
+  color: ds.$text;
+  transition: color 0.15s ease;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.od-doc-name__meta {
+  font-size: 11px;
+  color: ds.$text-faint;
+  font-weight: t.$font-weight-normal;
+}
+
+// ── File type badges ─────────────────────────────────────────────────────────
+.od-type-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: t.$font-weight-bold;
+  padding: 3px 12px;
+  border-radius: t.$radius-full;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+
+  // Default / fallback
+  background: rgba(ds.$text-muted, 0.08);
+  color: ds.$text-muted;
+  border: 1px solid rgba(ds.$text-muted, 0.15);
+
+  // PDF — orange
+  &[data-type="pdf"] {
+    background: rgba(#e67e22, 0.08);
+    color: #c0651a;
+    border: 1px solid rgba(#e67e22, 0.20);
+  }
+
+  // Word / DOC / DOCX — blue
+  &[data-type="word"],
+  &[data-type="doc"],
+  &[data-type="docx"] {
+    background: rgba(#3b82f6, 0.08);
+    color: #2563eb;
+    border: 1px solid rgba(#3b82f6, 0.20);
+  }
+
+  // Excel / XLS / XLSX — green
+  &[data-type="excel"],
+  &[data-type="xls"],
+  &[data-type="xlsx"] {
+    background: rgba(#10b981, 0.08);
+    color: #059669;
+    border: 1px solid rgba(#10b981, 0.20);
+  }
+
+  // Images — purple
+  &[data-type="png"],
+  &[data-type="jpg"],
+  &[data-type="jpeg"],
+  &[data-type="gif"],
+  &[data-type="bmp"],
+  &[data-type="svg"],
+  &[data-type="tiff"],
+  &[data-type="tif"],
+  &[data-type="image"] {
+    background: rgba(#8b5cf6, 0.08);
+    color: #7c3aed;
+    border: 1px solid rgba(#8b5cf6, 0.20);
+  }
+
+  // Text / TXT — amber
+  &[data-type="txt"],
+  &[data-type="text"] {
+    background: rgba(#f59e0b, 0.08);
+    color: #d97706;
+    border: 1px solid rgba(#f59e0b, 0.20);
+  }
+}
+
+// ── Badges ───────────────────────────────────────────────────────────────────
+.od-link {
+  color: ds.$brand;
+  cursor: pointer;
+  font-weight: t.$font-weight-medium;
+  &:hover { text-decoration: underline; }
+}
+
+.od-status-text {
+  color: #065f46;
+  font-weight: t.$font-weight-semibold;
+  font-size: t.$font-size-xs;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 2px 10px;
+  background: t.$color-success-bg;
+  border-radius: t.$radius-full;
+  border: 1px solid t.$color-success-border;
+}
+
+.od-empty-row {
+  color: ds.$text-faint;
+  font-style: italic;
+  text-align: center;
+  padding: 40px 20px !important;
+}
+
+.od-notes-user { @extend .od-link; }
+
+.od-notes-date {
+  font-variant-numeric: tabular-nums;
+  font-size: t.$font-size-xs;
+  color: ds.$text-muted;
+  white-space: nowrap;
+}
 
 .od-event-badge {
   display: inline-flex;
@@ -559,120 +710,28 @@ $info-bdr:    rgba(59, 130, 246, 0.25);
   font-weight: t.$font-weight-semibold;
   padding: 3px 10px;
   border-radius: t.$radius-full;
-  background: $info-bg;
-  color: $info-blue;
-  border: 1px solid $info-bdr;
-  letter-spacing: 0.02em;
+  background: rgba(ds.$brand, 0.06);
+  color: ds.$brand;
+  border: 1px solid rgba(ds.$brand, 0.18);
 }
 
 .od-version-badge {
   display: inline-flex;
   align-items: center;
-  font-size: t.$font-size-xs;
+  justify-content: center;
+  font-size: 11px;
   font-weight: t.$font-weight-bold;
-  padding: 3px 12px;
+  min-width: 28px;
+  height: 28px;
+  padding: 0 8px;
   border-radius: t.$radius-full;
   background: t.$color-success-bg;
   color: #065f46;
   border: 1px solid t.$color-success-border;
-  letter-spacing: 0.04em;
 }
 
 // ═════════════════════════════════════════════════════════════════════════════
-// BUTTONS
-// ═════════════════════════════════════════════════════════════════════════════
-.od-btn {
-  @extend %btn-base;
-
-  &--primary { @extend %btn-primary; }
-
-  &--sm {
-    font-size: t.$font-size-xs;
-    padding: 7px 16px;
-  }
-
-  &--outline-sm {
-    @extend %btn-outline;
-    font-size: t.$font-size-xs;
-    padding: 7px 16px;
-  }
-
-  &--ghost {
-    background: transparent;
-    color: ds.$text-muted;
-    border-color: transparent;
-    padding: 7px 16px;
-    font-size: t.$font-size-xs;
-
-    &:hover {
-      background: rgba(ds.$border, 0.4);
-      color: ds.$text;
-    }
-  }
-
-  &--back { @extend %btn-back; }
-
-  &--block { min-width: 160px; width: auto; }
-
-  &--disabled, &:disabled {
-    @extend %btn-disabled;
-  }
-}
-
-// ═════════════════════════════════════════════════════════════════════════════
-// UPLOAD STATUS BAR & ALERT
-// ═════════════════════════════════════════════════════════════════════════════
-.od-upload-bar {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 12px 20px;
-  background: $info-bg;
-  border: 1px solid $info-bdr;
-  border-radius: t.$radius-md;
-  color: $info-blue;
-  font-size: t.$font-size-sm;
-  font-weight: t.$font-weight-semibold;
-}
-
-.od-upload-bar__spinner {
-  display: inline-block;
-  width: 16px;
-  height: 16px;
-  border: 2px solid rgba($info-blue, 0.25);
-  border-top-color: $info-blue;
-  border-radius: 50%;
-  animation: noteSpin 0.6s linear infinite;
-}
-
-.od-upload-alert {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 12px 20px;
-  background: rgba(#ef4444, 0.06);
-  border: 1px solid rgba(#ef4444, 0.25);
-  border-radius: t.$radius-md;
-  color: #dc2626;
-  font-size: t.$font-size-sm;
-  font-weight: t.$font-weight-medium;
-}
-
-.od-upload-alert__close {
-  margin-left: auto;
-  background: none;
-  border: none;
-  color: #dc2626;
-  font-size: 18px;
-  cursor: pointer;
-  padding: 0 4px;
-  line-height: 1;
-
-  &:hover { opacity: 0.7; }
-}
-
-// ═════════════════════════════════════════════════════════════════════════════
-// DOCUMENT ACTION BUTTONS (icon-only cells)
+// ACTION ICONS — Clean icon-only buttons in a row
 // ═════════════════════════════════════════════════════════════════════════════
 .od-actions-col {
   width: 90px;
@@ -692,36 +751,120 @@ $info-bdr:    rgba(59, 130, 246, 0.25);
   justify-content: center;
   width: 32px;
   height: 32px;
-  border-radius: t.$radius-md;
-  border: 1px solid transparent;
+  border-radius: 50%;
+  border: none;
   background: transparent;
   color: ds.$text-muted;
   cursor: pointer;
-  transition: all t.$transition-fast;
+  transition: all 0.15s ease;
 
   &:hover {
     background: rgba(ds.$brand, 0.08);
     color: ds.$brand;
-    border-color: rgba(ds.$brand, 0.2);
   }
 
-  &:active {
-    background: rgba(ds.$brand, 0.14);
-  }
+  // Specific icon colors on hover
+  &--preview:hover { color: #3b82f6; background: rgba(#3b82f6, 0.08); }
+  &--history:hover { color: #8b5cf6; background: rgba(#8b5cf6, 0.08); }
 }
 
 // ═════════════════════════════════════════════════════════════════════════════
-// VERSION HISTORY DIALOG — projected content styles
+// BUTTONS
 // ═════════════════════════════════════════════════════════════════════════════
+.od-btn {
+  @extend %btn-base;
 
-// ── Header (inside ng-template pTemplate="header") ────────────────────────────
+  &--primary {
+    background: ds.$brand;
+    color: #fff;
+    border-color: ds.$brand;
+    &:hover { background: ds.$brand-dark; border-color: ds.$brand-dark; }
+  }
+
+  &--sm { font-size: t.$font-size-xs; padding: 7px 16px; }
+
+  &--ghost {
+    background: transparent;
+    color: ds.$text-muted;
+    border-color: transparent;
+    padding: 7px 14px;
+    font-size: t.$font-size-xs;
+    &:hover { background: ds.$surface-alt; color: ds.$text; }
+  }
+
+  &--back {
+    background: ds.$surface;
+    color: ds.$text-muted;
+    border: 1px solid ds.$border;
+    padding: 9px 20px;
+    &:hover { color: ds.$brand; border-color: ds.$brand; background: rgba(ds.$brand, 0.03); }
+  }
+
+  &--disabled, &:disabled { @extend %btn-disabled; }
+}
+
+// ═════════════════════════════════════════════════════════════════════════════
+// UPLOAD STATUS BAR & ALERT
+// ═════════════════════════════════════════════════════════════════════════════
+.od-upload-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  background: rgba(ds.$brand, 0.04);
+  border: 1px solid rgba(ds.$brand, 0.15);
+  border-radius: t.$radius-md;
+  color: ds.$brand;
+  font-size: t.$font-size-sm;
+  font-weight: t.$font-weight-medium;
+}
+
+.od-upload-bar__spinner {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(ds.$brand, 0.2);
+  border-top-color: ds.$brand;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
+
+.od-upload-alert {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  background: rgba(#e67e22, 0.04);
+  border: 1px solid rgba(#e67e22, 0.2);
+  border-radius: t.$radius-md;
+  color: #dc2626;
+  font-size: t.$font-size-sm;
+}
+
+.od-upload-alert__close {
+  margin-left: auto;
+  background: none;
+  border: none;
+  color: #dc2626;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 0 4px;
+  line-height: 1;
+  opacity: 0.6;
+  &:hover { opacity: 1; }
+}
+
+// ═════════════════════════════════════════════════════════════════════════════
+// VERSION HISTORY DIALOG
+// ═════════════════════════════════════════════════════════════════════════════
 .vd-header {
   display: flex;
   align-items: center;
   gap: 14px;
   flex: 1;
   min-width: 0;
-  padding: 2px 0;
+  position: relative;
+  z-index: 1;
 }
 
 .vd-header__icon {
@@ -730,9 +873,9 @@ $info-bdr:    rgba(59, 130, 246, 0.25);
   justify-content: center;
   width: 40px;
   height: 40px;
-  border-radius: 50%;
+  border-radius: 12px;
   background: rgba(255, 255, 255, 0.15);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(4px);
   color: #fff;
   flex-shrink: 0;
 }
@@ -745,17 +888,16 @@ $info-bdr:    rgba(59, 130, 246, 0.25);
 }
 
 .vd-header__title {
-  font-size: t.$font-size-base;
-  font-weight: t.$font-weight-bold;
+  font-size: 16px;
+  font-weight: 700;
   color: #fff;
-  letter-spacing: -0.01em;
   line-height: 1.2;
+  letter-spacing: -0.01em;
 }
 
 .vd-header__doc {
   font-size: t.$font-size-xs;
-  color: rgba(255, 255, 255, 0.6);
-  font-weight: t.$font-weight-normal;
+  color: rgba(255, 255, 255, 0.65);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -767,17 +909,16 @@ $info-bdr:    rgba(59, 130, 246, 0.25);
   align-items: center;
   padding: 4px 14px;
   border-radius: t.$radius-full;
-  font-size: t.$font-size-xs;
-  font-weight: t.$font-weight-semibold;
-  background: rgba(255, 255, 255, 0.12);
-  color: rgba(255, 255, 255, 0.9);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  letter-spacing: 0.04em;
+  font-size: 11px;
+  font-weight: t.$font-weight-bold;
+  background: rgba(255, 255, 255, 0.14);
+  color: #fff;
   white-space: nowrap;
-  margin-right: 12px;
+  margin-left: auto;
+  margin-right: 8px;
+  letter-spacing: 0.02em;
 }
 
-// ── Loading state ─────────────────────────────────────────────────────────────
 .vd-loading {
   display: flex;
   flex-direction: column;
@@ -791,19 +932,18 @@ $info-bdr:    rgba(59, 130, 246, 0.25);
 
 .vd-spinner {
   display: inline-block;
-  width: 36px;
-  height: 36px;
-  border: 3px solid rgba(ds.$brand, 0.12);
+  width: 32px;
+  height: 32px;
+  border: 3px solid rgba(ds.$brand, 0.10);
   border-top-color: ds.$brand;
   border-radius: 50%;
-  animation: vdSpin 0.65s linear infinite;
+  animation: spin 0.6s linear infinite;
 }
 
-@keyframes vdSpin {
+@keyframes spin {
   to { transform: rotate(360deg); }
 }
 
-// ── Empty state ───────────────────────────────────────────────────────────────
 .vd-empty {
   display: flex;
   flex-direction: column;
@@ -813,24 +953,11 @@ $info-bdr:    rgba(59, 130, 246, 0.25);
   padding: 64px 24px;
   text-align: center;
 
-  &__icon {
-    color: ds.$text-faint;
-    margin-bottom: 6px;
-  }
-
-  &__title {
-    font-size: t.$font-size-base;
-    font-weight: t.$font-weight-semibold;
-    color: ds.$text-muted;
-  }
-
-  &__sub {
-    font-size: t.$font-size-sm;
-    color: ds.$text-faint;
-  }
+  &__icon { color: ds.$text-faint; }
+  &__title { font-size: t.$font-size-sm; font-weight: t.$font-weight-semibold; color: ds.$text-muted; }
+  &__sub { font-size: t.$font-size-xs; color: ds.$text-faint; }
 }
 
-// ── Table ─────────────────────────────────────────────────────────────────────
 .vd-table-wrap {
   overflow: auto;
   max-height: 58vh;
@@ -844,14 +971,14 @@ $info-bdr:    rgba(59, 130, 246, 0.25);
     position: sticky;
     top: 0;
     z-index: 2;
-    font-size: t.$font-size-xs;
+    font-size: 10px;
     font-weight: t.$font-weight-bold;
     color: ds.$text-muted;
     text-transform: uppercase;
-    letter-spacing: 0.06em;
-    background: ds.$surface-alt;
-    padding: 13px 20px;
-    border-bottom: 2px solid ds.$border;
+    letter-spacing: 0.08em;
+    background: linear-gradient(180deg, #f8f9fb 0%, #f3f4f6 100%);
+    padding: 14px 22px;
+    border-bottom: 2px solid #e5e7eb;
     text-align: left;
     white-space: nowrap;
   }
@@ -859,49 +986,39 @@ $info-bdr:    rgba(59, 130, 246, 0.25);
   tbody td {
     font-size: t.$font-size-sm;
     color: ds.$text;
-    padding: 15px 20px;
-    border-bottom: 1px solid rgba(ds.$border, 0.45);
+    padding: 16px 22px;
+    border-bottom: 1px solid rgba(ds.$border, 0.35);
     vertical-align: middle;
   }
 
   tbody tr {
-    transition: background t.$transition-fast;
-
+    transition: background 0.12s ease;
     &:last-child td { border-bottom: none; }
-
-    &:not(.vd-row--current):hover td {
-      background: rgba(ds.$brand, 0.03);
-    }
+    &:nth-child(even):not(.vd-row--current) td { background: #fafbfc; }
+    &:not(.vd-row--current):hover td { background: rgba(ds.$brand, 0.03); }
 
     &.vd-row--current {
       td { background: rgba(t.$color-success, 0.04); }
-
-      td:first-child {
-        box-shadow: inset 3px 0 0 t.$color-success;
-      }
-
-      &:hover td { background: rgba(t.$color-success, 0.07); }
+      td:first-child { box-shadow: inset 3px 0 0 t.$color-success; }
     }
   }
 }
 
-.vd-ver-cell {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
+.vd-ver-cell { display: flex; align-items: center; gap: 10px; }
 
 .vd-ver-pill {
   display: inline-flex;
   align-items: center;
-  padding: 3px 12px;
+  justify-content: center;
+  min-width: 32px;
+  height: 30px;
+  padding: 0 10px;
   border-radius: t.$radius-full;
-  font-size: t.$font-size-xs;
+  font-size: 11px;
   font-weight: t.$font-weight-bold;
-  letter-spacing: 0.04em;
-  background: rgba(ds.$brand, 0.07);
+  background: rgba(ds.$brand, 0.06);
   color: ds.$brand;
-  border: 1px solid rgba(ds.$brand, 0.18);
+  border: 1px solid rgba(ds.$brand, 0.15);
 
   &--current {
     background: t.$color-success-bg;
@@ -914,109 +1031,168 @@ $info-bdr:    rgba(59, 130, 246, 0.25);
   font-size: 10px;
   font-weight: t.$font-weight-bold;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.05em;
   color: t.$color-success;
   background: t.$color-success-bg;
   border: 1px solid t.$color-success-border;
-  padding: 2px 8px;
+  padding: 2px 9px;
   border-radius: t.$radius-full;
 }
 
-.vd-type-cell {
-  color: ds.$text-muted;
-  font-size: t.$font-size-xs !important;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-}
+.vd-mono { font-variant-numeric: tabular-nums; color: ds.$text-muted; }
+.vd-comment { color: ds.$text-muted; font-style: italic; }
+.vd-date { font-variant-numeric: tabular-nums; white-space: nowrap; }
+.vd-author { color: ds.$brand; font-weight: t.$font-weight-medium; }
 
-.vd-mono {
-  font-family: 'JetBrains Mono', 'Fira Code', 'SF Mono', monospace;
-  font-size: t.$font-size-xs !important;
-  color: ds.$text-muted;
-  letter-spacing: 0.02em;
-}
-
-.vd-comment {
-  color: ds.$text-muted;
-  font-style: italic;
-  max-width: 180px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.vd-date {
-  color: ds.$text-muted;
-  font-size: t.$font-size-xs !important;
-  font-variant-numeric: tabular-nums;
-  white-space: nowrap;
-}
-
-.vd-author {
-  font-weight: t.$font-weight-medium;
-  color: ds.$text;
-}
-
-.vd-actions-col {
-  width: 110px;
-  text-align: center;
-}
-
-.vd-actions-cell {
-  text-align: center;
-}
+.vd-actions-col { width: 120px; text-align: center; }
+.vd-actions-cell { text-align: center; }
 
 .vd-action-btn {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 6px 12px;
-  border-radius: t.$radius-md;
+  padding: 7px 14px;
+  border-radius: 8px;
   border: 1px solid transparent;
-  background: transparent;
-  color: ds.$text-muted;
+  background: rgba(ds.$brand, 0.04);
+  color: ds.$brand;
   font-size: t.$font-size-xs;
-  font-weight: t.$font-weight-medium;
+  font-weight: t.$font-weight-semibold;
   font-family: t.$font-sans;
   cursor: pointer;
-  transition: all t.$transition-fast;
-  white-space: nowrap;
+  transition: all 0.15s ease;
 
   &:hover {
-    background: rgba(ds.$brand, 0.06);
-    color: ds.$brand;
-    border-color: rgba(ds.$brand, 0.18);
-  }
-
-  &:active {
-    background: rgba(ds.$brand, 0.12);
+    background: rgba(ds.$brand, 0.10);
+    border-color: rgba(ds.$brand, 0.15);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 6px rgba(ds.$brand, 0.12);
   }
 }
 
-// ── Footer ────────────────────────────────────────────────────────────────────
 .vd-footer {
   display: flex;
   align-items: center;
   justify-content: space-between;
   width: 100%;
 
-  &__info {
-    font-size: t.$font-size-xs;
-    color: ds.$text-faint;
-    font-variant-numeric: tabular-nums;
-  }
+  &__info { font-size: t.$font-size-xs; color: ds.$text-faint; font-variant-numeric: tabular-nums; }
+}
 
-  &__actions {
-    display: flex;
-    gap: 8px;
+.vd-close-btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 22px;
+  border-radius: 8px;
+  border: 1px solid #fca5a5;
+  background: #fef2f2;
+  color: #dc2626;
+  font-size: t.$font-size-sm;
+  font-weight: t.$font-weight-semibold;
+  font-family: t.$font-sans;
+  cursor: pointer;
+  transition: all 0.15s ease;
+
+  &:hover {
+    background: #fee2e2;
+    border-color: #f87171;
+    color: #b91c1c;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(220, 38, 38, 0.15);
   }
+}
+
+// ═════════════════════════════════════════════════════════════════════════════
+// ADD NOTE DIALOG
+// ═════════════════════════════════════════════════════════════════════════════
+.note-dialog-body {
+  padding: 0;
+}
+
+.note-dialog-label {
+  display: block;
+  font-size: t.$font-size-sm;
+  font-weight: t.$font-weight-semibold;
+  color: ds.$text;
+  margin-bottom: 10px;
+}
+
+.note-dialog-textarea {
+  display: block;
+  width: 100%;
+  padding: 14px 16px;
+  font-family: t.$font-sans;
+  font-size: t.$font-size-sm;
+  line-height: 1.6;
+  color: ds.$text;
+  background: #f8fafc;
+  border: 1.5px solid ds.$border;
+  border-radius: 10px;
+  resize: vertical;
+  min-height: 130px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+
+  &::placeholder { color: ds.$text-faint; }
+  &:focus {
+    outline: none;
+    background: #fff;
+    border-color: ds.$brand;
+    box-shadow: 0 0 0 3px rgba(ds.$brand, 0.10);
+  }
+}
+
+.note-dialog-char-count {
+  margin-top: 8px;
+  font-size: 11px;
+  color: ds.$text-faint;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.note-dialog-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  width: 100%;
+  margin-top: 20px;
+  padding-top: 18px;
+  border-top: 1px solid #eef0f2;
+}
+
+.note-dialog-spinner {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(#fff, 0.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+  margin-right: 4px;
 }
 
 // ═════════════════════════════════════════════════════════════════════════════
 // FOOTER
 // ═════════════════════════════════════════════════════════════════════════════
 .od-footer {
-  @extend %footer;
   margin-top: 32px;
   padding-top: 24px;
+  border-top: 1px solid rgba(ds.$border, 0.5);
+}
+
+// ═════════════════════════════════════════════════════════════════════════════
+// RESPONSIVE
+// ═════════════════════════════════════════════════════════════════════════════
+@media (max-width: 1024px) {
+  .od-wf-row { grid-template-columns: 1fr 1fr; }
+  .od-pkg-grid { grid-template-columns: 1fr 1fr; }
+  .od-pkg-field:not(:nth-child(3n)) { border-right: none; }
+  .od-pkg-field:not(:nth-child(2n)) { border-right: 1px solid rgba(ds.$border, 0.35); }
+}
+
+@media (max-width: 640px) {
+  .od-wf-row, .od-pkg-grid { grid-template-columns: 1fr; }
+  .od-pkg-field { border-right: none !important; }
+  .od-tab-content { padding: 16px; }
+  .od-card__body { padding: 16px; }
 }

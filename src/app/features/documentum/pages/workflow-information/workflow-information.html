@@ -5,7 +5,7 @@
     <div class="od-card__bar">
       <div class="od-card__bar-left">
         <span class="od-card__icon">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/>
             <polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/>
             <line x1="4" y1="4" x2="9" y2="9"/>
@@ -14,7 +14,7 @@
         <h2 class="od-card__heading">Workflow Information</h2>
       </div>
       <button class="od-card__bar-btn">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
           <path d="M12 5v14M5 12h14"/>
         </svg>
         Acquire
@@ -50,60 +50,62 @@
     </div>
   </div>
 
-  <!-- ═══ Tabs ═══ -->
-  <div class="od-tabs-bar">
-    <div class="od-tabs">
-      <button
-        class="od-tab"
-        [class.od-tab--active]="activeTab() === 'info'"
-        (click)="setTab('info')"
-      >
-        <svg class="od-tab__icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/>
-        </svg>
-        Order Info
-      </button>
-      <button
-        class="od-tab"
-        [class.od-tab--active]="activeTab() === 'documents'"
-        (click)="setTab('documents')"
-      >
-        <svg class="od-tab__icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>
-        </svg>
-        Orders Documents
-      </button>
-      <button
-        class="od-tab"
-        [class.od-tab--active]="activeTab() === 'history'"
-        (click)="setTab('history')"
-      >
-        <svg class="od-tab__icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
-        </svg>
-        Order History
-      </button>
+  <!-- ═══ Tabs + Content (unified card) ═══ -->
+  <div class="od-tabs-card">
+    <div class="od-tabs-bar">
+      <div class="od-tabs">
+        <button
+          class="od-tab"
+          [class.od-tab--active]="activeTab() === 'info'"
+          (click)="setTab('info')"
+        >
+          <svg class="od-tab__icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/>
+          </svg>
+          Order Info
+        </button>
+        <button
+          class="od-tab"
+          [class.od-tab--active]="activeTab() === 'documents'"
+          (click)="setTab('documents')"
+        >
+          <svg class="od-tab__icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>
+          </svg>
+          Order Documents
+        </button>
+        <button
+          class="od-tab"
+          [class.od-tab--active]="activeTab() === 'history'"
+          (click)="setTab('history')"
+        >
+          <svg class="od-tab__icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+          </svg>
+          Order History
+        </button>
+      </div>
     </div>
-  </div>
 
-  <!-- ═══ Tab Content Wrapper ═══ -->
-  <div class="od-tab-content">
+    <!-- ═══ Tab Content ═══ -->
+    <div class="od-tab-content">
 
     <!-- ═══ Tab: Order Info ═══ -->
     @if (activeTab() === 'info') {
-      <div class="od-pkg-section">
-        <div class="od-pkg-header">
-          <h2 class="od-pkg-title">
-            <span class="od-pkg-bullet"></span>
-            Sales Order Package Information
-          </h2>
-          <button class="od-btn od-btn--outline-sm">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
-              <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
-            </svg>
-            Edit Package Info
-          </button>
+
+      <!-- Package Information -->
+      <div class="od-section">
+        <div class="od-section-header">
+          <h2 class="od-section-title">Sales Order Package Information</h2>
+          <div class="od-section-actions">
+            <button class="od-section-btn">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+              </svg>
+              Edit Package Info
+            </button>
+          </div>
         </div>
 
         @if (isLoadingOrder()) {
@@ -112,20 +114,20 @@
           <div class="od-pkg-grid">
             <div class="od-pkg-field">
               <span class="od-pkg-label">Sales Order Number</span>
-              <span class="od-pkg-value od-pkg-value--mono">{{ o.salesOrderNumber || '&mdash;' }}</span>
+              <span class="od-pkg-value od-pkg-value--mono">{{ o.salesOrderNumber || '—' }}</span>
             </div>
             <div class="od-pkg-field">
               <span class="od-pkg-label">Product Type</span>
-              <span class="od-pkg-value">{{ o.productType || '&mdash;' }}</span>
+              <span class="od-pkg-value">{{ o.productType || '—' }}</span>
             </div>
             <div class="od-pkg-field">
               <span class="od-pkg-label">Capture Date</span>
-              <span class="od-pkg-value">{{ o.createdDate || '&mdash;' }}</span>
+              <span class="od-pkg-value">{{ o.createdDate || '—' }}</span>
             </div>
 
             <div class="od-pkg-field">
               <span class="od-pkg-label">Purchase Order Number</span>
-              <span class="od-pkg-value od-pkg-value--mono">{{ o.repPO || '&mdash;' }}</span>
+              <span class="od-pkg-value od-pkg-value--mono">{{ o.repPO || '—' }}</span>
             </div>
             <div class="od-pkg-field">
               <span class="od-pkg-label">Region</span>
@@ -133,43 +135,43 @@
                 @if (o.region) {
                   <span class="od-pkg-tag">{{ o.region }}</span>
                 } @else {
-                  &mdash;
+                  —
                 }
               </span>
             </div>
             <div class="od-pkg-field">
               <span class="od-pkg-label">Completion Date</span>
-              <span class="od-pkg-value">{{ o.completionDate || '&mdash;' }}</span>
+              <span class="od-pkg-value">{{ o.completionDate || '—' }}</span>
             </div>
 
             <div class="od-pkg-field">
               <span class="od-pkg-label">Account Number</span>
-              <span class="od-pkg-value od-pkg-value--mono">{{ o.accountNumber || '&mdash;' }}</span>
+              <span class="od-pkg-value od-pkg-value--mono">{{ o.accountNumber || '—' }}</span>
             </div>
             <div class="od-pkg-field">
               <span class="od-pkg-label">Rep Name</span>
-              <span class="od-pkg-value">{{ o.repName || '&mdash;' }}</span>
+              <span class="od-pkg-value">{{ o.repName || '—' }}</span>
             </div>
             <div class="od-pkg-field">
               <span class="od-pkg-label">Status</span>
               @if (o.status) {
                 <span class="od-pkg-value od-pkg-value--status">{{ o.status }}</span>
               } @else {
-                <span class="od-pkg-value">&mdash;</span>
+                <span class="od-pkg-value">—</span>
               }
             </div>
 
             <div class="od-pkg-field">
               <span class="od-pkg-label">Job Name</span>
-              <span class="od-pkg-value">{{ o.jobName || '&mdash;' }}</span>
+              <span class="od-pkg-value">{{ o.jobName || '—' }}</span>
             </div>
             <div class="od-pkg-field">
               <span class="od-pkg-label">Sub Brand</span>
-              <span class="od-pkg-value">&mdash;</span>
+              <span class="od-pkg-value">—</span>
             </div>
             <div class="od-pkg-field">
               <span class="od-pkg-label">Task Owner</span>
-              <span class="od-pkg-value">{{ o.packageOwner || '&mdash;' }}</span>
+              <span class="od-pkg-value">{{ o.packageOwner || '—' }}</span>
             </div>
 
             <div class="od-pkg-field">
@@ -178,7 +180,7 @@
                 @if (o.brand) {
                   <span class="od-pkg-tag od-pkg-tag--brand">{{ o.brand }}</span>
                 } @else {
-                  &mdash;
+                  —
                 }
               </span>
             </div>
@@ -188,7 +190,7 @@
                 @if (o.priority) {
                   <span class="od-priority-badge">{{ o.priority }}</span>
                 } @else {
-                  &mdash;
+                  —
                 }
               </span>
             </div>
@@ -199,28 +201,19 @@
         }
       </div>
 
-      <!-- Sales Order Notes (Order Info tab only) -->
-      <div class="od-notes-section">
-        <div class="od-notes-header">
-          <h2 class="od-notes-heading">Sales Order Notes</h2>
-          <div class="od-notes-toolbar">
-            <button
-              class="od-btn od-btn--primary od-btn--sm"
-              (click)="toggleNotePanel()"
-            >
-              @if (!showNotePanel()) {
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M12 5v14M5 12h14"/>
-                </svg>
-              } @else {
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                  <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
-                </svg>
-              }
-              {{ showNotePanel() ? 'Close' : 'Add Note' }}
+      <!-- Sales Order Notes -->
+      <div class="od-section">
+        <div class="od-section-header">
+          <h2 class="od-section-title">Sales Order Notes</h2>
+          <div class="od-section-actions">
+            <button class="od-section-btn" (click)="openAddNoteDialog()">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 5v14M5 12h14"/>
+              </svg>
+              Add Note
             </button>
-            <button class="od-btn od-btn--outline-sm">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <button class="od-section-btn">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
                 <polyline points="22,6 12,13 2,6"/>
               </svg>
@@ -229,48 +222,7 @@
           </div>
         </div>
 
-        <!-- ── Inline Add Note Panel ── -->
-        @if (showNotePanel()) {
-          <div class="od-note-panel">
-            <div class="od-note-panel__body">
-              <label class="od-note-panel__label">New Note</label>
-              <textarea
-                #noteTextarea
-                class="od-note-panel__textarea"
-                placeholder="Type your note here..."
-                [ngModel]="newNoteText()"
-                (ngModelChange)="newNoteText.set($event)"
-                rows="3"
-              ></textarea>
-              <div class="od-note-panel__footer">
-                <span class="od-note-panel__char-count">
-                  {{ newNoteText().length }} characters
-                </span>
-                <div class="od-note-panel__actions">
-                  <button
-                    class="od-btn od-btn--ghost"
-                    (click)="cancelNote()"
-                  >Cancel</button>
-                  <button
-                    class="od-btn od-btn--primary od-btn--sm"
-                    [disabled]="!newNoteText().trim()"
-                    (click)="saveNote()"
-                  >
-                    @if (isSavingNote()) {
-                      <span class="od-note-panel__spinner"></span>
-                    }
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                      <polyline points="20 6 9 17 4 12"/>
-                    </svg>
-                    Save Note
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        }
-
-        <table class="od-notes-tbl">
+        <table class="od-data-tbl">
           <thead>
             <tr>
               <th>Created on</th>
@@ -279,15 +231,15 @@
             </tr>
           </thead>
           <tbody>
-            @for (note of notes(); track note.createdOn) {
+            @for (note of notes(); track note.salesOrderNoteId) {
               <tr>
                 <td>
-                  <span class="od-notes-date">{{ note.createdOn }}</span>
+                  <span class="od-notes-date">{{ note.createdDate | date:'MM/dd/yy hh:mm a' }}</span>
                 </td>
                 <td>
-                  <span class="od-notes-user">{{ note.userName }}</span>
+                  <span class="od-notes-user">{{ note.createdBy }}</span>
                 </td>
-                <td>{{ note.note }}</td>
+                <td>{{ note.notesDescription }}</td>
               </tr>
             }
             @if (notes().length === 0) {
@@ -300,7 +252,7 @@
       </div>
     }
 
-    <!-- ═══ Tab: Orders Documents ═══ -->
+    <!-- ═══ Tab: Order Documents ═══ -->
     @if (activeTab() === 'documents') {
 
       <!-- Hidden file inputs -->
@@ -308,7 +260,6 @@
       <input #supportDocFileInput type="file" hidden accept=".pdf,.png,.jpg,.jpeg,.gif,.bmp,.tiff,.tif,.svg,.doc,.docx,.xls,.xlsx,.txt" (change)="onFileSelected($event, true)" />
       <input #versionFileInput type="file" hidden accept=".pdf,.png,.jpg,.jpeg,.gif,.bmp,.tiff,.tif,.svg,.doc,.docx,.xls,.xlsx,.txt" (change)="onVersionFileSelected($event)" />
 
-      <!-- Upload status bar -->
       @if (isUploading()) {
         <div class="od-upload-bar">
           <span class="od-upload-bar__spinner"></span>
@@ -318,7 +269,7 @@
 
       @if (uploadError(); as err) {
         <div class="od-upload-alert">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
           </svg>
           {{ err }}
@@ -327,12 +278,12 @@
       }
 
       <!-- Sales Order Documents -->
-      <div class="od-doc-section">
-        <div class="od-doc-header">
-          <h3 class="od-tbl-heading">Sales Order</h3>
-          <div class="od-doc-toolbar">
-            <button class="od-btn od-btn--primary od-btn--sm" (click)="openAnnotationForNewUpload(false)" [disabled]="isUploading()">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <div class="od-section">
+        <div class="od-section-header">
+          <h3 class="od-section-title">Sales Order</h3>
+          <div class="od-section-actions">
+            <button class="od-section-btn" (click)="openAnnotationForNewUpload(false)" [disabled]="isUploading()">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
               </svg>
               Import Sales Order
@@ -342,32 +293,76 @@
         <table class="od-data-tbl">
           <thead>
             <tr>
-              <th>Name</th>
+              <th>Document Name</th>
               <th>Type</th>
-              <th>Size</th>
-              <th>Version</th>
-              <th>Created On</th>
+              <th>Date Modified</th>
               <th>Created By</th>
+              <th>Ver</th>
               <th class="od-actions-col">Actions</th>
             </tr>
           </thead>
           <tbody>
             @for (doc of salesOrderDocs(); track doc.documentId) {
               <tr>
-                <td class="od-link" (click)="previewDocument(doc)">{{ doc.documentName }}</td>
-                <td>{{ doc.contentType }}</td>
-                <td>{{ formatFileSize(doc.sizeBytes) }}</td>
-                <td><span class="od-version-badge">v{{ doc.currentVersion }}</span></td>
+                <td>
+                  <div class="od-doc-name" (click)="previewDocument(doc)">
+                    <span class="od-doc-name__icon" [ngClass]="'od-doc-name__icon--' + getFileTypeClass(doc.contentType)">
+                      @switch (getFileTypeClass(doc.contentType)) {
+                        @case ('pdf') {
+                          <svg width="28" height="32" viewBox="0 0 28 32" fill="none">
+                            <path d="M2 0h16l8 8v22a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2z" fill="#E5734A"/>
+                            <path d="M18 0l8 8h-6a2 2 0 0 1-2-2V0z" fill="#CC5A33"/>
+                            <text x="14" y="22" text-anchor="middle" font-size="8" font-weight="700" fill="#fff" font-family="Arial">PDF</text>
+                          </svg>
+                        }
+                        @case ('word') {
+                          <svg width="28" height="32" viewBox="0 0 28 32" fill="none">
+                            <path d="M2 0h16l8 8v22a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2z" fill="#4285F4"/>
+                            <path d="M18 0l8 8h-6a2 2 0 0 1-2-2V0z" fill="#3367D6"/>
+                            <text x="14" y="22" text-anchor="middle" font-size="7" font-weight="700" fill="#fff" font-family="Arial">DOC</text>
+                          </svg>
+                        }
+                        @case ('excel') {
+                          <svg width="28" height="32" viewBox="0 0 28 32" fill="none">
+                            <path d="M2 0h16l8 8v22a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2z" fill="#0F9D58"/>
+                            <path d="M18 0l8 8h-6a2 2 0 0 1-2-2V0z" fill="#0B8043"/>
+                            <text x="14" y="22" text-anchor="middle" font-size="7" font-weight="700" fill="#fff" font-family="Arial">XLS</text>
+                          </svg>
+                        }
+                        @case ('image') {
+                          <svg width="28" height="32" viewBox="0 0 28 32" fill="none">
+                            <path d="M2 0h16l8 8v22a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2z" fill="#7C3AED"/>
+                            <path d="M18 0l8 8h-6a2 2 0 0 1-2-2V0z" fill="#6D28D9"/>
+                            <text x="14" y="22" text-anchor="middle" font-size="7" font-weight="700" fill="#fff" font-family="Arial">IMG</text>
+                          </svg>
+                        }
+                        @default {
+                          <svg width="28" height="32" viewBox="0 0 28 32" fill="none">
+                            <path d="M2 0h16l8 8v22a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2z" fill="#6B7280"/>
+                            <path d="M18 0l8 8h-6a2 2 0 0 1-2-2V0z" fill="#4B5563"/>
+                            <text x="14" y="22" text-anchor="middle" font-size="7" font-weight="700" fill="#fff" font-family="Arial">FILE</text>
+                          </svg>
+                        }
+                      }
+                    </span>
+                    <div class="od-doc-name__info">
+                      <span class="od-doc-name__text">{{ doc.documentName }}</span>
+                      <span class="od-doc-name__meta">{{ formatFileSize(doc.sizeBytes) }} · {{ doc.contentType }}</span>
+                    </div>
+                  </div>
+                </td>
+                <td><span class="od-type-badge" [attr.data-type]="doc.contentType?.toLowerCase()">{{ doc.contentType }}</span></td>
                 <td>{{ doc.createdDate }}</td>
                 <td>{{ doc.createdBy }}</td>
+                <td><span class="od-version-badge">v{{ doc.currentVersion }}</span></td>
                 <td class="od-actions-cell">
-                  <button class="od-icon-btn" title="Preview" (click)="previewDocument(doc)">
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <button class="od-icon-btn od-icon-btn--preview" title="Preview" (click)="previewDocument(doc)">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                       <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
                     </svg>
                   </button>
-                  <button class="od-icon-btn" title="Version History" (click)="showVersions(doc)">
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <button class="od-icon-btn od-icon-btn--history" title="Version History" (click)="showVersions(doc)">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                       <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
                     </svg>
                   </button>
@@ -375,7 +370,7 @@
               </tr>
             } @empty {
               <tr>
-                <td colspan="7" class="od-empty-row">No sales order documents found.</td>
+                <td colspan="6" class="od-empty-row">No sales order documents found.</td>
               </tr>
             }
           </tbody>
@@ -383,12 +378,12 @@
       </div>
 
       <!-- Support Documents -->
-      <div class="od-doc-section">
-        <div class="od-doc-header">
-          <h3 class="od-tbl-heading">Support Documents</h3>
-          <div class="od-doc-toolbar">
-            <button class="od-btn od-btn--primary od-btn--sm" (click)="openAnnotationForNewUpload(true)" [disabled]="isUploading()">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <div class="od-section">
+        <div class="od-section-header">
+          <h3 class="od-section-title">Support Documents</h3>
+          <div class="od-section-actions">
+            <button class="od-section-btn" (click)="openAnnotationForNewUpload(true)" [disabled]="isUploading()">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
               </svg>
               Import Support Doc
@@ -398,32 +393,76 @@
         <table class="od-data-tbl">
           <thead>
             <tr>
-              <th>Name</th>
+              <th>Document Name</th>
               <th>Type</th>
-              <th>Size</th>
-              <th>Version</th>
-              <th>Created On</th>
+              <th>Date Modified</th>
               <th>Created By</th>
+              <th>Ver</th>
               <th class="od-actions-col">Actions</th>
             </tr>
           </thead>
           <tbody>
             @for (doc of supportDocs(); track doc.documentId) {
               <tr>
-                <td class="od-link" (click)="previewDocument(doc)">{{ doc.documentName }}</td>
-                <td>{{ doc.contentType }}</td>
-                <td>{{ formatFileSize(doc.sizeBytes) }}</td>
-                <td><span class="od-version-badge">v{{ doc.currentVersion }}</span></td>
+                <td>
+                  <div class="od-doc-name" (click)="previewDocument(doc)">
+                    <span class="od-doc-name__icon" [ngClass]="'od-doc-name__icon--' + getFileTypeClass(doc.contentType)">
+                      @switch (getFileTypeClass(doc.contentType)) {
+                        @case ('pdf') {
+                          <svg width="28" height="32" viewBox="0 0 28 32" fill="none">
+                            <path d="M2 0h16l8 8v22a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2z" fill="#E5734A"/>
+                            <path d="M18 0l8 8h-6a2 2 0 0 1-2-2V0z" fill="#CC5A33"/>
+                            <text x="14" y="22" text-anchor="middle" font-size="8" font-weight="700" fill="#fff" font-family="Arial">PDF</text>
+                          </svg>
+                        }
+                        @case ('word') {
+                          <svg width="28" height="32" viewBox="0 0 28 32" fill="none">
+                            <path d="M2 0h16l8 8v22a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2z" fill="#4285F4"/>
+                            <path d="M18 0l8 8h-6a2 2 0 0 1-2-2V0z" fill="#3367D6"/>
+                            <text x="14" y="22" text-anchor="middle" font-size="7" font-weight="700" fill="#fff" font-family="Arial">DOC</text>
+                          </svg>
+                        }
+                        @case ('excel') {
+                          <svg width="28" height="32" viewBox="0 0 28 32" fill="none">
+                            <path d="M2 0h16l8 8v22a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2z" fill="#0F9D58"/>
+                            <path d="M18 0l8 8h-6a2 2 0 0 1-2-2V0z" fill="#0B8043"/>
+                            <text x="14" y="22" text-anchor="middle" font-size="7" font-weight="700" fill="#fff" font-family="Arial">XLS</text>
+                          </svg>
+                        }
+                        @case ('image') {
+                          <svg width="28" height="32" viewBox="0 0 28 32" fill="none">
+                            <path d="M2 0h16l8 8v22a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2z" fill="#7C3AED"/>
+                            <path d="M18 0l8 8h-6a2 2 0 0 1-2-2V0z" fill="#6D28D9"/>
+                            <text x="14" y="22" text-anchor="middle" font-size="7" font-weight="700" fill="#fff" font-family="Arial">IMG</text>
+                          </svg>
+                        }
+                        @default {
+                          <svg width="28" height="32" viewBox="0 0 28 32" fill="none">
+                            <path d="M2 0h16l8 8v22a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2z" fill="#6B7280"/>
+                            <path d="M18 0l8 8h-6a2 2 0 0 1-2-2V0z" fill="#4B5563"/>
+                            <text x="14" y="22" text-anchor="middle" font-size="7" font-weight="700" fill="#fff" font-family="Arial">FILE</text>
+                          </svg>
+                        }
+                      }
+                    </span>
+                    <div class="od-doc-name__info">
+                      <span class="od-doc-name__text">{{ doc.documentName }}</span>
+                      <span class="od-doc-name__meta">{{ formatFileSize(doc.sizeBytes) }} · {{ doc.contentType }}</span>
+                    </div>
+                  </div>
+                </td>
+                <td><span class="od-type-badge" [attr.data-type]="doc.contentType?.toLowerCase()">{{ doc.contentType }}</span></td>
                 <td>{{ doc.createdDate }}</td>
                 <td>{{ doc.createdBy }}</td>
+                <td><span class="od-version-badge">v{{ doc.currentVersion }}</span></td>
                 <td class="od-actions-cell">
-                  <button class="od-icon-btn" title="Preview" (click)="previewDocument(doc)">
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <button class="od-icon-btn od-icon-btn--preview" title="Preview" (click)="previewDocument(doc)">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                       <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
                     </svg>
                   </button>
-                  <button class="od-icon-btn" title="Version History" (click)="showVersions(doc)">
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <button class="od-icon-btn od-icon-btn--history" title="Version History" (click)="showVersions(doc)">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                       <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
                     </svg>
                   </button>
@@ -431,125 +470,16 @@
               </tr>
             } @empty {
               <tr>
-                <td colspan="7" class="od-empty-row">No support documents found.</td>
+                <td colspan="6" class="od-empty-row">No support documents found.</td>
               </tr>
             }
           </tbody>
         </table>
       </div>
 
-      <!-- ═══ Version History Dialog ═══ -->
-      <p-dialog
-        [visible]="showVersionPanel()"
-        (visibleChange)="showVersionPanel.set($event)"
-        [modal]="true"
-        [draggable]="false"
-        [resizable]="false"
-        [closable]="true"
-        [style]="{ width: '72vw', 'max-width': '1000px' }"
-        [contentStyle]="{ padding: '0' }"
-        styleClass="od-version-dialog"
-        (onHide)="closeVersionPanel()"
-      >
-        <ng-template pTemplate="header">
-          <div class="vd-header">
-            <div class="vd-header__icon">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
-              </svg>
-            </div>
-            <div class="vd-header__info">
-              <span class="vd-header__title">Version History</span>
-              <span class="vd-header__doc">{{ versionPanelDocName() }}</span>
-            </div>
-            @if (!isLoadingVersions()) {
-              <span class="vd-header__badge">
-                {{ documentVersions().length }}&nbsp;version{{ documentVersions().length !== 1 ? 's' : '' }}
-              </span>
-            }
-          </div>
-        </ng-template>
-
-        @if (isLoadingVersions()) {
-          <div class="vd-loading">
-            <span class="vd-spinner"></span>
-            <span>Loading versions…</span>
-          </div>
-        } @else if (documentVersions().length === 0) {
-          <div class="vd-empty">
-            <svg class="vd-empty__icon" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><polyline points="13 2 13 9 20 9"/>
-            </svg>
-            <p class="vd-empty__title">No versions found</p>
-            <p class="vd-empty__sub">Upload a new version using the button below.</p>
-          </div>
-        } @else {
-          <div class="vd-table-wrap">
-            <table class="vd-table">
-              <thead>
-                <tr>
-                  <th>Version</th>
-                  <th>Type</th>
-                  <th>Size</th>
-                  <th>Comment</th>
-                  <th>Created On</th>
-                  <th>Created By</th>
-                  <th class="vd-actions-col">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                @for (ver of documentVersions(); track ver.salesOrderDocumentVersionId; let idx = $index) {
-                  <tr [class.vd-row--current]="idx === 0">
-                    <td>
-                      <div class="vd-ver-cell">
-                        <span class="vd-ver-pill" [class.vd-ver-pill--current]="idx === 0">v{{ ver.versionNumber }}</span>
-                        @if (idx === 0) {
-                          <span class="vd-current-tag">Current</span>
-                        }
-                      </div>
-                    </td>
-                    <td class="vd-type-cell">{{ ver.contentType }}</td>
-                    <td class="vd-mono">{{ formatFileSize(ver.sizeBytes) }}</td>
-                    <td class="vd-comment">{{ ver.comment || '—' }}</td>
-                    <td class="vd-date">{{ ver.createdDate }}</td>
-                    <td class="vd-author">{{ ver.createdBy }}</td>
-                    <td class="vd-actions-cell">
-                      <button class="vd-action-btn" title="Preview this version" (click)="previewVersion(ver)">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
-                        </svg>
-                        Preview
-                      </button>
-                    </td>
-                  </tr>
-                }
-              </tbody>
-            </table>
-          </div>
-        }
-
-        <ng-template pTemplate="footer">
-          <div class="vd-footer">
-            <span class="vd-footer__info">
-              @if (!isLoadingVersions()) {
-                {{ documentVersions().length }}&nbsp;version{{ documentVersions().length !== 1 ? 's' : '' }} total
-              }
-            </span>
-            <div class="vd-footer__actions">
-              <button class="od-btn od-btn--ghost" (click)="closeVersionPanel()">Close</button>
-              <button class="od-btn od-btn--primary od-btn--sm" (click)="triggerVersionUpload()" [disabled]="isUploading()">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
-                </svg>
-                Upload New Version
-              </button>
-            </div>
-          </div>
-        </ng-template>
-      </p-dialog>
     }
 
-    <!-- ═══ Annotation Dialog (outside tab blocks so it overlays) ═══ -->
+    <!-- Annotation Dialog -->
     <app-annotation-dialog
       [(visible)]="showAnnotationDialog"
       [title]="annotationDocName()"
@@ -560,20 +490,21 @@
 
     <!-- ═══ Tab: Order History ═══ -->
     @if (activeTab() === 'history') {
+
       <!-- Workflow History -->
-      <div class="od-doc-section">
-        <div class="od-doc-header">
-          <h3 class="od-tbl-heading">Workflow History</h3>
-          <div class="od-doc-toolbar">
-            <button class="od-btn od-btn--outline-sm">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <div class="od-section">
+        <div class="od-section-header">
+          <h3 class="od-section-title">Workflow History</h3>
+          <div class="od-section-actions">
+            <button class="od-section-btn">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
                 <polyline points="22,6 12,13 2,6"/>
               </svg>
               Email Log
             </button>
-            <button class="od-btn od-btn--primary od-btn--sm">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <button class="od-section-btn">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
               </svg>
               Refresh
@@ -613,30 +544,182 @@
       </div>
 
       <!-- Sales Order History -->
-      <div class="od-doc-section">
-        <div class="od-doc-header">
-          <h3 class="od-tbl-heading">Sales Order History</h3>
-          <div class="od-doc-toolbar">
-            <button class="od-btn od-btn--outline-sm" disabled>View Selected Version</button>
-          </div>
+      <div class="od-section">
+        <div class="od-section-header">
+          <h3 class="od-section-title">Sales Order History</h3>
         </div>
         <table class="od-data-tbl">
           <thead>
             <tr>
-              <th>Name</th>
-              <th>Created on</th>
-              <th>Created by</th>
-              <th>Version Label</th>
+              <th>Document Name</th>
+              <th>Type</th>
+              <th>Date Modified</th>
+              <th>Created By</th>
+              <th>Ver</th>
+              <th class="od-actions-col">Actions</th>
             </tr>
           </thead>
           <tbody>
-            @for (row of salesOrderHistory; track row.name) {
+            @for (doc of salesOrderDocs(); track doc.documentId) {
               <tr>
-                <td class="od-link">{{ row.name }}</td>
-                <td>{{ row.createdOn }}</td>
-                <td>{{ row.createdBy }}</td>
                 <td>
-                  <span class="od-version-badge">{{ row.versionLabel }}</span>
+                  <div class="od-doc-name" (click)="previewDocument(doc)">
+                    <span class="od-doc-name__icon" [ngClass]="'od-doc-name__icon--' + getFileTypeClass(doc.contentType)">
+                      @switch (getFileTypeClass(doc.contentType)) {
+                        @case ('pdf') {
+                          <svg width="28" height="32" viewBox="0 0 28 32" fill="none">
+                            <path d="M2 0h16l8 8v22a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2z" fill="#E5734A"/>
+                            <path d="M18 0l8 8h-6a2 2 0 0 1-2-2V0z" fill="#CC5A33"/>
+                            <text x="14" y="22" text-anchor="middle" font-size="8" font-weight="700" fill="#fff" font-family="Arial">PDF</text>
+                          </svg>
+                        }
+                        @case ('word') {
+                          <svg width="28" height="32" viewBox="0 0 28 32" fill="none">
+                            <path d="M2 0h16l8 8v22a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2z" fill="#4285F4"/>
+                            <path d="M18 0l8 8h-6a2 2 0 0 1-2-2V0z" fill="#3367D6"/>
+                            <text x="14" y="22" text-anchor="middle" font-size="7" font-weight="700" fill="#fff" font-family="Arial">DOC</text>
+                          </svg>
+                        }
+                        @case ('excel') {
+                          <svg width="28" height="32" viewBox="0 0 28 32" fill="none">
+                            <path d="M2 0h16l8 8v22a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2z" fill="#0F9D58"/>
+                            <path d="M18 0l8 8h-6a2 2 0 0 1-2-2V0z" fill="#0B8043"/>
+                            <text x="14" y="22" text-anchor="middle" font-size="7" font-weight="700" fill="#fff" font-family="Arial">XLS</text>
+                          </svg>
+                        }
+                        @case ('image') {
+                          <svg width="28" height="32" viewBox="0 0 28 32" fill="none">
+                            <path d="M2 0h16l8 8v22a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2z" fill="#7C3AED"/>
+                            <path d="M18 0l8 8h-6a2 2 0 0 1-2-2V0z" fill="#6D28D9"/>
+                            <text x="14" y="22" text-anchor="middle" font-size="7" font-weight="700" fill="#fff" font-family="Arial">IMG</text>
+                          </svg>
+                        }
+                        @default {
+                          <svg width="28" height="32" viewBox="0 0 28 32" fill="none">
+                            <path d="M2 0h16l8 8v22a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2z" fill="#6B7280"/>
+                            <path d="M18 0l8 8h-6a2 2 0 0 1-2-2V0z" fill="#4B5563"/>
+                            <text x="14" y="22" text-anchor="middle" font-size="7" font-weight="700" fill="#fff" font-family="Arial">FILE</text>
+                          </svg>
+                        }
+                      }
+                    </span>
+                    <div class="od-doc-name__info">
+                      <span class="od-doc-name__text">{{ doc.documentName }}</span>
+                      <span class="od-doc-name__meta">{{ formatFileSize(doc.sizeBytes) }} · {{ doc.contentType }}</span>
+                    </div>
+                  </div>
+                </td>
+                <td><span class="od-type-badge" [attr.data-type]="doc.contentType?.toLowerCase()">{{ doc.contentType }}</span></td>
+                <td>{{ doc.createdDate | date:'MM/dd/yy hh:mm a' }}</td>
+                <td>{{ doc.createdBy }}</td>
+                <td><span class="od-version-badge">v{{ doc.currentVersion }}</span></td>
+                <td class="od-actions-cell">
+                  <button class="od-icon-btn od-icon-btn--preview" title="Preview" (click)="previewDocument(doc)">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+                    </svg>
+                  </button>
+                  <button class="od-icon-btn od-icon-btn--history" title="Version History" (click)="showVersions(doc)">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+                    </svg>
+                  </button>
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="6" class="od-empty-row">No sales order history found.</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+    </div>
+  </div>
+
+  <!-- ═══ Version History Dialog (shared across tabs) ═══ -->
+  <p-dialog
+    [visible]="showVersionPanel()"
+    (visibleChange)="showVersionPanel.set($event)"
+    [modal]="true"
+    [draggable]="false"
+    [resizable]="false"
+    [closable]="true"
+    [style]="{ width: '72vw', 'max-width': '1000px' }"
+    [contentStyle]="{ padding: '0' }"
+    styleClass="od-version-dialog"
+    (onHide)="closeVersionPanel()"
+  >
+    <ng-template #header>
+      <div class="vd-header">
+        <div class="vd-header__icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+          </svg>
+        </div>
+        <div class="vd-header__info">
+          <span class="vd-header__title">Version History</span>
+          <span class="vd-header__doc">{{ versionPanelDocName() }}</span>
+        </div>
+        @if (!isLoadingVersions()) {
+          <span class="vd-header__badge">
+            {{ documentVersions().length }}&nbsp;version{{ documentVersions().length !== 1 ? 's' : '' }}
+          </span>
+        }
+      </div>
+    </ng-template>
+
+    @if (isLoadingVersions()) {
+      <div class="vd-loading">
+        <span class="vd-spinner"></span>
+        <span>Loading versions…</span>
+      </div>
+    } @else if (documentVersions().length === 0) {
+      <div class="vd-empty">
+        <svg class="vd-empty__icon" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><polyline points="13 2 13 9 20 9"/>
+        </svg>
+        <p class="vd-empty__title">No versions found</p>
+        <p class="vd-empty__sub">Upload a new version using the button below.</p>
+      </div>
+    } @else {
+      <div class="vd-table-wrap">
+        <table class="vd-table">
+          <thead>
+            <tr>
+              <th>Version</th>
+              <th>Type</th>
+              <th>Size</th>
+              <th>Comment</th>
+              <th>Created On</th>
+              <th>Created By</th>
+              <th class="vd-actions-col">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (ver of documentVersions(); track ver.salesOrderDocumentVersionId; let idx = $index) {
+              <tr [class.vd-row--current]="idx === 0">
+                <td>
+                  <div class="vd-ver-cell">
+                    <span class="vd-ver-pill" [class.vd-ver-pill--current]="idx === 0">v{{ ver.versionNumber }}</span>
+                    @if (idx === 0) {
+                      <span class="vd-current-tag">Current</span>
+                    }
+                  </div>
+                </td>
+                <td class="vd-type-cell"><span class="od-type-badge" [attr.data-type]="ver.contentType?.toLowerCase()">{{ ver.contentType }}</span></td>
+                <td class="vd-mono">{{ formatFileSize(ver.sizeBytes) }}</td>
+                <td class="vd-comment">{{ ver.comment || '—' }}</td>
+                <td class="vd-date">{{ ver.createdDate | date:'MM/dd/yy hh:mm a' }}</td>
+                <td class="vd-author">{{ ver.createdBy }}</td>
+                <td class="vd-actions-cell">
+                  <button class="vd-action-btn" title="Preview this version" (click)="previewVersion(ver)">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+                    </svg>
+                    Preview
+                  </button>
                 </td>
               </tr>
             }
@@ -644,16 +727,72 @@
         </table>
       </div>
     }
-  </div>
+
+    <ng-template #footer>
+      <div class="vd-footer">
+        <span class="vd-footer__info">
+          @if (!isLoadingVersions()) {
+            {{ documentVersions().length }}&nbsp;version{{ documentVersions().length !== 1 ? 's' : '' }} total
+          }
+        </span>
+        <button class="vd-close-btn" (click)="closeVersionPanel()">Close</button>
+      </div>
+    </ng-template>
+  </p-dialog>
 
   <!-- ═══ Footer ═══ -->
   <div class="od-footer">
     <button class="od-btn od-btn--back" (click)="goBack()">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>
       </svg>
       Back to Queue
     </button>
   </div>
+
+  <!-- ═══ Add Note Dialog ═══ -->
+  @if (showAddNoteDialog()) {
+    <p-dialog
+      header="Add Note"
+      [visible]="showAddNoteDialog()"
+      (visibleChange)="closeAddNoteDialog()"
+      [modal]="true"
+      [closable]="true"
+      [draggable]="false"
+      [resizable]="false"
+      [style]="{ width: '520px' }"
+      styleClass="add-note-dialog"
+    >
+      <div class="note-dialog-body">
+        <label class="note-dialog-label">Note</label>
+        <textarea
+          class="note-dialog-textarea"
+          placeholder="Type your note here..."
+          [ngModel]="newNoteText()"
+          (ngModelChange)="newNoteText.set($event)"
+          rows="5"
+        ></textarea>
+        <div class="note-dialog-char-count">
+          {{ newNoteText().length }} characters
+        </div>
+        <div class="note-dialog-footer">
+          <button class="note-dialog-btn note-dialog-btn--cancel" (click)="closeAddNoteDialog()">Cancel</button>
+          <button
+            class="note-dialog-btn note-dialog-btn--save"
+            [disabled]="!newNoteText().trim() || isSavingNote()"
+            (click)="saveNote()"
+          >
+            @if (isSavingNote()) {
+              <span class="note-dialog-spinner"></span>
+            }
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+            Save Note
+          </button>
+        </div>
+      </div>
+    </p-dialog>
+  }
 
 </div>

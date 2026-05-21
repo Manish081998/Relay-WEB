@@ -28,6 +28,8 @@ export class OrdersService {
     if (request.queueName)        params['queueName']        = request.queueName;
     if (request.packageOwner)     params['packageOwner']     = request.packageOwner;
     if (request.repName)          params['repName']          = request.repName;
+    if (request.sortField)        params['sortField']        = request.sortField;
+    if (request.sortDirection)    params['sortDirection']    = request.sortDirection;
 
     return this.api.get<OrderSearchResponse>(
       `${this.env.apiBaseUrl}/api/documentum/orders/search`,

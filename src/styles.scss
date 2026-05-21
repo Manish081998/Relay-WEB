@@ -128,35 +128,23 @@ html, body {
     0 8px 20px rgba(0, 0, 0, 0.16) !important;
 
   .p-dialog-header {
-    background: linear-gradient(135deg, #2a5298 0%, #1e3a5f 100%) !important;
-    padding: 20px 24px !important;
+    background:
+      radial-gradient(circle at 90% 25%, rgba(255, 255, 255, 0.07) 0%, transparent 55%),
+      radial-gradient(circle at 10% 75%, rgba(255, 255, 255, 0.03) 0%, transparent 45%),
+      linear-gradient(135deg, #2a5298 0%, #1e3a5f 100%) !important;
+    padding: 22px 28px !important;
     border-bottom: 1px solid rgba(255, 255, 255, 0.07) !important;
-    position: relative;
-    overflow: hidden;
-
-    &::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background:
-        radial-gradient(circle at 90% 25%, rgba(255, 255, 255, 0.07) 0%, transparent 55%),
-        radial-gradient(circle at 10% 75%, rgba(255, 255, 255, 0.03) 0%, transparent 45%);
-      pointer-events: none;
-    }
-
-    .p-dialog-header-actions {
-      position: relative;
-      z-index: 1;
-    }
 
     .p-dialog-close-button {
       color: rgba(255, 255, 255, 0.6) !important;
-      border-radius: 8px !important;
+      width: 36px !important;
+      height: 36px !important;
+      border-radius: 10px !important;
       transition: color 0.15s ease, background 0.15s ease !important;
 
       &:hover {
         color: #fff !important;
-        background: rgba(255, 255, 255, 0.12) !important;
+        background: rgba(255, 255, 255, 0.14) !important;
       }
     }
   }
@@ -167,9 +155,105 @@ html, body {
   }
 
   .p-dialog-footer {
-    padding: 16px 24px !important;
+    padding: 16px 28px !important;
     background: #f8fafc !important;
     border-top: 1px solid #e5e7eb !important;
+  }
+}
+
+// ── Add Note Dialog — clean modern popup ──────────────────────────────────────
+.p-dialog-mask:has(.add-note-dialog) {
+  backdrop-filter: blur(8px) saturate(120%);
+  background: rgba(10, 14, 30, 0.45) !important;
+  transition: backdrop-filter 0.3s ease, background 0.3s ease;
+}
+
+.add-note-dialog {
+  border-radius: 14px !important;
+  overflow: hidden;
+  border: 1px solid rgba(0, 0, 0, 0.06) !important;
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.04),
+    0 20px 50px rgba(0, 0, 0, 0.18),
+    0 6px 16px rgba(0, 0, 0, 0.1) !important;
+
+  .p-dialog-header {
+    background:
+      radial-gradient(circle at 85% 30%, rgba(255, 255, 255, 0.08) 0%, transparent 50%),
+      linear-gradient(135deg, #2a5298 0%, #1e3a5f 100%) !important;
+    padding: 18px 24px !important;
+    border-bottom: none !important;
+  }
+
+  .p-dialog-title {
+    color: #fff !important;
+    font-size: 16px !important;
+    font-weight: 700 !important;
+    letter-spacing: -0.01em;
+  }
+
+  .p-dialog-close-button {
+    color: rgba(255, 255, 255, 0.6) !important;
+    border-radius: 8px !important;
+    transition: color 0.15s ease, background 0.15s ease !important;
+
+    &:hover {
+      color: #fff !important;
+      background: rgba(255, 255, 255, 0.12) !important;
+    }
+  }
+
+  .p-dialog-content {
+    padding: 24px 28px 16px !important;
+    background: #ffffff !important;
+  }
+
+  .p-dialog-footer {
+    display: none !important;
+  }
+}
+
+.note-dialog-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 22px;
+  border-radius: 9px;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  border: none;
+
+  &--cancel {
+    background: #fff;
+    color: #64748b;
+    border: 1px solid #e2e8f0;
+
+    &:hover {
+      background: #f1f5f9;
+      color: #334155;
+      border-color: #cbd5e1;
+    }
+  }
+
+  &--save {
+    background: linear-gradient(135deg, #2a5298 0%, #1e3a5f 100%);
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(42, 82, 152, 0.25);
+
+    &:hover:not(:disabled) {
+      box-shadow: 0 4px 14px rgba(42, 82, 152, 0.35);
+      transform: translateY(-1px);
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
   }
 }
 

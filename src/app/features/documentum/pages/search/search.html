@@ -26,12 +26,22 @@
             <i class="pi pi-filter"></i> Filtered
           </span>
         }
+        @if (hasActiveSort) {
+          <span class="filter-badge">
+            <i class="pi pi-sort-alt"></i> Sorted
+          </span>
+        }
       </div>
       <div class="qs-toolbar-actions">
         @if (selectedCount() > 0) {
           <span class="selection-badge">
             <i class="pi pi-check-square"></i> {{ selectedCount() }} selected
           </span>
+        }
+        @if (hasActiveSort) {
+          <button class="btn-clear-filters" (click)="clearSort()">
+            <i class="pi pi-sort-alt-slash"></i> Clear Sort
+          </button>
         }
         @if (hasActiveFilters) {
           <button class="btn-clear-filters" (click)="clearAllFilters()">
@@ -53,26 +63,10 @@
     }
 
     <div class="qs-tbl-scroll">
-      <table class="qs-tbl">
-        <colgroup>
-          <col style="width:36px"  />  <!-- Checkbox         -->
-          <col style="width:120px" />  <!-- Purchase Order    -->
-          <col style="width:90px"  />  <!-- Sales Order       -->
-          <col style="width:50px"  />  <!-- Priority          -->
-          <col style="width:100px" />  <!-- Account Number    -->
-          <col style="width:120px" />  <!-- Rep Name          -->
-          <col style="width:150px" />  <!-- Queue Name        -->
-          <col style="width:65px"  />  <!-- Product           -->
-          <col style="width:65px"  />  <!-- Region            -->
-          <col style="width:100px" />  <!-- Job Name          -->
-          <col style="width:130px" />  <!-- Created Date      -->
-          <col style="width:130px" />  <!-- Date in Queue     -->
-          <col style="width:110px" />  <!-- Package Owner     -->
-          <col style="width:80px"  />  <!-- Brand             -->
-        </colgroup>
+      <table class="qs-tbl resizable">
         <thead>
           <tr>
-            <th class="col-chk">
+            <th class="col-chk" style="width:36px;min-width:36px">
               <label class="chk-wrap">
                 <input type="checkbox"
                        [checked]="isAllSelected()"
@@ -83,19 +77,149 @@
                 </span>
               </label>
             </th>
-            <th>Purchase Order</th>
-            <th>Sales Order</th>
-            <th>Priority</th>
-            <th>Account Number</th>
-            <th>Rep Name</th>
-            <th>Queue Name</th>
-            <th>Product</th>
-            <th>Region</th>
-            <th>Job Name</th>
-            <th>Created Date</th>
-            <th>Date in Queue</th>
-            <th>Package Owner</th>
-            <th>Brand</th>
+            <th class="sortable" [class.sort-active]="sortField() === 'repPO'" style="width:120px;min-width:60px" (click)="onSort('repPO')" #thRepPO>
+              Purchase Order
+              <span class="sort-icon">
+                @if (sortField() === 'repPO') {
+                  <i class="pi" [class.pi-sort-amount-up-alt]="sortDirection() === 'asc'" [class.pi-sort-amount-down]="sortDirection() === 'desc'"></i>
+                } @else {
+                  <i class="pi pi-sort-alt"></i>
+                }
+              </span>
+              <span class="col-resize-handle" (mousedown)="onResizeStart($event, thRepPO)"></span>
+            </th>
+            <th class="sortable" [class.sort-active]="sortField() === 'salesOrderNumber'" style="width:90px;min-width:60px" (click)="onSort('salesOrderNumber')" #thSO>
+              Sales Order
+              <span class="sort-icon">
+                @if (sortField() === 'salesOrderNumber') {
+                  <i class="pi" [class.pi-sort-amount-up-alt]="sortDirection() === 'asc'" [class.pi-sort-amount-down]="sortDirection() === 'desc'"></i>
+                } @else {
+                  <i class="pi pi-sort-alt"></i>
+                }
+              </span>
+              <span class="col-resize-handle" (mousedown)="onResizeStart($event, thSO)"></span>
+            </th>
+            <th class="sortable" [class.sort-active]="sortField() === 'priority'" style="width:50px;min-width:40px" (click)="onSort('priority')" #thPri>
+              Priority
+              <span class="sort-icon">
+                @if (sortField() === 'priority') {
+                  <i class="pi" [class.pi-sort-amount-up-alt]="sortDirection() === 'asc'" [class.pi-sort-amount-down]="sortDirection() === 'desc'"></i>
+                } @else {
+                  <i class="pi pi-sort-alt"></i>
+                }
+              </span>
+              <span class="col-resize-handle" (mousedown)="onResizeStart($event, thPri)"></span>
+            </th>
+            <th class="sortable" [class.sort-active]="sortField() === 'accountNumber'" style="width:100px;min-width:60px" (click)="onSort('accountNumber')" #thAcct>
+              Account Number
+              <span class="sort-icon">
+                @if (sortField() === 'accountNumber') {
+                  <i class="pi" [class.pi-sort-amount-up-alt]="sortDirection() === 'asc'" [class.pi-sort-amount-down]="sortDirection() === 'desc'"></i>
+                } @else {
+                  <i class="pi pi-sort-alt"></i>
+                }
+              </span>
+              <span class="col-resize-handle" (mousedown)="onResizeStart($event, thAcct)"></span>
+            </th>
+            <th class="sortable" [class.sort-active]="sortField() === 'repName'" style="width:120px;min-width:60px" (click)="onSort('repName')" #thRep>
+              Rep Name
+              <span class="sort-icon">
+                @if (sortField() === 'repName') {
+                  <i class="pi" [class.pi-sort-amount-up-alt]="sortDirection() === 'asc'" [class.pi-sort-amount-down]="sortDirection() === 'desc'"></i>
+                } @else {
+                  <i class="pi pi-sort-alt"></i>
+                }
+              </span>
+              <span class="col-resize-handle" (mousedown)="onResizeStart($event, thRep)"></span>
+            </th>
+            <th class="sortable" [class.sort-active]="sortField() === 'queueName'" style="width:150px;min-width:60px" (click)="onSort('queueName')" #thQueue>
+              Queue Name
+              <span class="sort-icon">
+                @if (sortField() === 'queueName') {
+                  <i class="pi" [class.pi-sort-amount-up-alt]="sortDirection() === 'asc'" [class.pi-sort-amount-down]="sortDirection() === 'desc'"></i>
+                } @else {
+                  <i class="pi pi-sort-alt"></i>
+                }
+              </span>
+              <span class="col-resize-handle" (mousedown)="onResizeStart($event, thQueue)"></span>
+            </th>
+            <th class="sortable" [class.sort-active]="sortField() === 'productType'" style="width:65px;min-width:50px" (click)="onSort('productType')" #thProd>
+              Product
+              <span class="sort-icon">
+                @if (sortField() === 'productType') {
+                  <i class="pi" [class.pi-sort-amount-up-alt]="sortDirection() === 'asc'" [class.pi-sort-amount-down]="sortDirection() === 'desc'"></i>
+                } @else {
+                  <i class="pi pi-sort-alt"></i>
+                }
+              </span>
+              <span class="col-resize-handle" (mousedown)="onResizeStart($event, thProd)"></span>
+            </th>
+            <th class="sortable" [class.sort-active]="sortField() === 'region'" style="width:65px;min-width:50px" (click)="onSort('region')" #thReg>
+              Region
+              <span class="sort-icon">
+                @if (sortField() === 'region') {
+                  <i class="pi" [class.pi-sort-amount-up-alt]="sortDirection() === 'asc'" [class.pi-sort-amount-down]="sortDirection() === 'desc'"></i>
+                } @else {
+                  <i class="pi pi-sort-alt"></i>
+                }
+              </span>
+              <span class="col-resize-handle" (mousedown)="onResizeStart($event, thReg)"></span>
+            </th>
+            <th class="sortable" [class.sort-active]="sortField() === 'jobName'" style="width:100px;min-width:60px" (click)="onSort('jobName')" #thJob>
+              Job Name
+              <span class="sort-icon">
+                @if (sortField() === 'jobName') {
+                  <i class="pi" [class.pi-sort-amount-up-alt]="sortDirection() === 'asc'" [class.pi-sort-amount-down]="sortDirection() === 'desc'"></i>
+                } @else {
+                  <i class="pi pi-sort-alt"></i>
+                }
+              </span>
+              <span class="col-resize-handle" (mousedown)="onResizeStart($event, thJob)"></span>
+            </th>
+            <th class="sortable" [class.sort-active]="sortField() === 'createdDate'" style="width:130px;min-width:80px" (click)="onSort('createdDate')" #thCreated>
+              Created Date
+              <span class="sort-icon">
+                @if (sortField() === 'createdDate') {
+                  <i class="pi" [class.pi-sort-amount-up-alt]="sortDirection() === 'asc'" [class.pi-sort-amount-down]="sortDirection() === 'desc'"></i>
+                } @else {
+                  <i class="pi pi-sort-alt"></i>
+                }
+              </span>
+              <span class="col-resize-handle" (mousedown)="onResizeStart($event, thCreated)"></span>
+            </th>
+            <th class="sortable" [class.sort-active]="sortField() === 'orderDate'" style="width:130px;min-width:80px" (click)="onSort('orderDate')" #thDateQ>
+              Date in Queue
+              <span class="sort-icon">
+                @if (sortField() === 'orderDate') {
+                  <i class="pi" [class.pi-sort-amount-up-alt]="sortDirection() === 'asc'" [class.pi-sort-amount-down]="sortDirection() === 'desc'"></i>
+                } @else {
+                  <i class="pi pi-sort-alt"></i>
+                }
+              </span>
+              <span class="col-resize-handle" (mousedown)="onResizeStart($event, thDateQ)"></span>
+            </th>
+            <th class="sortable" [class.sort-active]="sortField() === 'packageOwner'" style="width:110px;min-width:60px" (click)="onSort('packageOwner')" #thOwner>
+              Package Owner
+              <span class="sort-icon">
+                @if (sortField() === 'packageOwner') {
+                  <i class="pi" [class.pi-sort-amount-up-alt]="sortDirection() === 'asc'" [class.pi-sort-amount-down]="sortDirection() === 'desc'"></i>
+                } @else {
+                  <i class="pi pi-sort-alt"></i>
+                }
+              </span>
+              <span class="col-resize-handle" (mousedown)="onResizeStart($event, thOwner)"></span>
+            </th>
+            <th class="sortable" [class.sort-active]="sortField() === 'brand'" style="width:80px;min-width:50px" (click)="onSort('brand')" #thBrand>
+              Brand
+              <span class="sort-icon">
+                @if (sortField() === 'brand') {
+                  <i class="pi" [class.pi-sort-amount-up-alt]="sortDirection() === 'asc'" [class.pi-sort-amount-down]="sortDirection() === 'desc'"></i>
+                } @else {
+                  <i class="pi pi-sort-alt"></i>
+                }
+              </span>
+              <span class="col-resize-handle" (mousedown)="onResizeStart($event, thBrand)"></span>
+            </th>
           </tr>
           <!-- Filter row -->
           <tr class="filter-row">
@@ -129,10 +253,10 @@
                 </label>
               </td>
               <td class="cell-link cell-po" (click)="openOrder(order)">{{ order.repPO }}</td>
-              <td class="cell-seq">{{ order.salesOrderNumber || order.orderSeq }}</td>
+              <td class="cell-seq">{{ order.salesOrderNumber }}</td>
               <td>{{ order.priority }}</td>
               <td>{{ order.accountNumber }}</td>
-              <td class="cell-trunc">{{ order.repName || order.repUserName }}</td>
+              <td class="cell-trunc">{{ order.repName }}</td>
               <td class="cell-trunc">{{ order.queueName }}</td>
               <td>{{ order.productType }}</td>
               <td>{{ order.region }}</td>

@@ -174,12 +174,14 @@ $text-faint:  t.$color-text-subtle;
 
 // ── Dense enterprise table ───────────────────────────────────────────────────
 .qs-tbl {
-  width: 100%;
+  width: max-content;
+  min-width: 100%;
   border-collapse: collapse;
   table-layout: fixed;
 
   // ── Header ─────────────────────────────────────────────────────────────────
   thead th {
+    position: relative;
     font-size: t.$font-size-xs;
     font-weight: t.$font-weight-bold;
     color: $text-muted;
@@ -197,6 +199,79 @@ $text-faint:  t.$color-text-subtle;
     z-index: 1;
 
     &.col-r { text-align: right; }
+
+    // ── Sortable header ──────────────────────────────────────────────────────
+    &.sortable {
+      cursor: pointer;
+      user-select: none;
+      transition: background t.$transition-fast, color t.$transition-fast;
+      padding-right: 14px; // room for resize handle
+
+      &:hover {
+        background: color.mix($primary, $surface-alt, 8%);
+        color: $primary;
+      }
+
+      // Active sorted column
+      &.sort-active {
+        background: rgba($primary, 0.06);
+        color: $primary;
+        border-bottom-color: $primary;
+      }
+    }
+
+    .sort-icon {
+      display: inline-flex;
+      align-items: center;
+      margin-left: 4px;
+      vertical-align: middle;
+
+      i {
+        font-size: 0.65rem;
+        color: $text-faint;
+        transition: color t.$transition-fast;
+      }
+    }
+
+    &.sortable:hover .sort-icon i { color: $primary; }
+    &.sort-active .sort-icon i { color: $primary !important; }
+  }
+
+  // Active sort indicator
+  thead th.sortable .sort-icon i.pi-sort-amount-up-alt,
+  thead th.sortable .sort-icon i.pi-sort-amount-down {
+    color: $primary;
+  }
+
+  // ── Column resize handle ──────────────────────────────────────────────────
+  .col-resize-handle {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 5px;
+    cursor: col-resize;
+    z-index: 2;
+    transition: background 0.15s;
+
+    &::after {
+      content: '';
+      position: absolute;
+      top: 25%;
+      bottom: 25%;
+      right: 1px;
+      width: 1px;
+      background: transparent;
+      transition: background 0.15s;
+    }
+
+    &:hover {
+      background: rgba($primary, 0.12);
+
+      &::after {
+        background: $primary;
+      }
+    }
   }
 
   // ── Filter row ────────────────────────────────────────────────────────────
