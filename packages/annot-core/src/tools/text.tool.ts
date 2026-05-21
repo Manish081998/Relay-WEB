@@ -3,7 +3,8 @@
  * Text annotation tool.
  *
  * Click anywhere → creates a text box at that position.
- * Double-click on existing text annotation → enters edit mode.
+ * Click on existing text annotation → re-opens its editor.
+ * Double-click on existing text annotation → same as single-click.
  *
  * Text editing is delegated to a positioned <textarea> element
  * (created by the renderer layer) because native browser text
@@ -22,35 +23,72 @@ import { buildAnnotation, sanitiseText } from './tool-helpers.js';
 
 const DEFAULT_TEXT_WIDTH = 160;
 const DEFAULT_TEXT_HEIGHT = 40;
-const DEFAULT_FONT_SIZE = 14;
 
 export class TextTool implements Tool {
   readonly id = TOOL_IDS.TEXT;
   readonly name = 'Text';
   readonly cursor: ToolCursor = 'text';
 
-  private editingId: string | null = null;
-  private editingStart: Point | null = null;
   private drawing = false;
   private startPoint: Point | null = null;
   private currentPoint: Point | null = null;
+  /** ID of a text annotation hit-tested in onPointerDown – used in onPointerUp */
+  private _downHitId: string | null = null;
+  /** True while the renderer's textarea editor is visible */
+  private _editorOpen = false;
 
   /** Emit this event so the renderer can position the textarea editor */
-  onRequestTextEdit?: (annotationId: string, docRect: import('../model/annotation.model.js').Rect) => void;
+  onRequestTextEdit?: (annotationId: string) => void;
+  /** Called back by the renderer when the text editor is shown */
+  onTextEditorShown?: () => void;
+  /** Called back by the renderer when the text editor is dismissed */
+  onTextEditorClosed?: () => void;
 
   activate(_ctx: ToolContext): void { this.reset(); }
   deactivate(_ctx: ToolContext): void { this.reset(); }
 
   private reset(): void {
-    this.editingId = null;
-    this.editingStart = null;
     this.drawing = false;
     this.startPoint = null;
     this.currentPoint = null;
+    this._downHitId = null;
+    this._editorOpen = false;
+  }
+
+  /** Called by the renderer when its textarea editor becomes visible */
+  notifyEditorShown(): void {
+    this._editorOpen = true;
+  }
+
+  /** Called by the renderer whenever the text editor is dismissed */
+  notifyEditorClosed(): void {
+    this._editorOpen = false;
   }
 
   onPointerDown(evt: ToolPointerEvent, ctx: ToolContext): Command | null {
-    ctx.setSelectedIds(new Set());
+    // If the editor is currently open this click is dismissing it.
+    // Swallow the pointer cycle so we don't create a new annotation on pointer-up.
+    if (this._editorOpen) {
+      this._editorOpen = false;
+      this.drawing = false;
+      this._downHitId = null;
+      return null;
+    }
+
+    // Pre-detect if the user is clicking on an existing text annotation.
+    // Storing the ID here (on pointer-down) is more reliable than re-running
+    // the hit-test on pointer-up where the coordinates may differ slightly.
+    this._downHitId = null;
+    const tol = 8 / ctx.adapter.getViewportTransform().zoom;
+    const hits = hitTestAll(evt.docPoint, ctx.store.getByPage(evt.pageIndex), tol);
+    const existingText = hits.find(h => h.type === 'text');
+    if (existingText) {
+      this._downHitId = existingText.id;
+      ctx.setSelectedIds(new Set([existingText.id]));
+    } else {
+      ctx.setSelectedIds(new Set());
+    }
+
     this.startPoint = evt.docPoint;
     this.currentPoint = evt.docPoint;
     this.drawing = true;
@@ -72,6 +110,21 @@ export class TextTool implements Tool {
     const dx = Math.abs(evt.docPoint.x - this.startPoint.x);
     const dy = Math.abs(evt.docPoint.y - this.startPoint.y);
     const wasDrag = dx > 8 || dy > 8;
+
+    const hitId = this._downHitId;
+    this._downHitId = null;
+
+    // Single click on an existing text annotation → open its editor
+    if (!wasDrag && hitId) {
+      const existing = ctx.store.getById(hitId);
+      if (existing && existing.geometry.kind === 'rect') {
+        ctx.setSelectedIds(new Set([existing.id]));
+        this.reset();
+        const id = existing.id;
+        setTimeout(() => this.onRequestTextEdit?.(id), 0);
+        return null;
+      }
+    }
 
     const rect = wasDrag
       ? {
@@ -99,7 +152,7 @@ export class TextTool implements Tool {
 
     // Defer so the command is committed to the store before the editor opens
     const id = annotation.id;
-    setTimeout(() => this.onRequestTextEdit?.(id, rect), 0);
+    setTimeout(() => this.onRequestTextEdit?.(id), 0);
     return cmd;
   }
 
@@ -109,8 +162,7 @@ export class TextTool implements Tool {
     const hits = hitTestAll(evt.docPoint, annotations, tol);
     const textAnnotation = hits.find(h => h.type === 'text');
     if (textAnnotation && textAnnotation.geometry.kind === 'rect') {
-      this.editingId = textAnnotation.id;
-      this.onRequestTextEdit?.(textAnnotation.id, textAnnotation.geometry.rect);
+      this.onRequestTextEdit?.(textAnnotation.id);
     }
     return null;
   }
@@ -131,7 +183,6 @@ export class TextTool implements Tool {
 
   /** Called by renderer when user confirms/blurs the text editor */
   commitTextEdit(annotationId: string, text: string, ctx: ToolContext): Command | null {
-    this.editingId = null;
     const safe = sanitiseText(text);
     return new UpdateAnnotationCommand(ctx.store, annotationId, {
       meta: { text: safe },

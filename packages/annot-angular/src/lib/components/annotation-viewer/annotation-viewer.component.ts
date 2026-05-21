@@ -137,6 +137,7 @@ export class AnnotationViewerComponent implements AfterViewInit, OnDestroy {
   readonly pdfPageWidth = signal(595);
   readonly pdfPageHeight = signal(842);
   readonly pageCount = signal(1);
+  readonly currentPage = signal(1);
   // readonly pdfSafeUrl = signal<SafeResourceUrl | null>(null);
   readonly pageWidthPx = signal(595);
   readonly pageHeightPx = signal(842);
@@ -337,62 +338,97 @@ private async initPdf(file: File): Promise<void> {
 
   const loadingTask = pdfjsLib.getDocument({ data: bytes });
   this.pdfDoc = await loadingTask.promise;
+  this.pageCount.set(this.pdfDoc.numPages);
 
-  const page = await this.pdfDoc.getPage(1);
-
-  // Measure native size at scale=1, then fit to container
-  const nativeViewport = page.getViewport({ scale: 1 });
+  // Measure first page to compute fit zoom
+  const firstPage = await this.pdfDoc.getPage(1);
+  const nativeViewport = firstPage.getViewport({ scale: 1 });
   this._pdfNativeW = nativeViewport.width;
   this._pdfNativeH = nativeViewport.height;
 
   const container = this.scrollAreaRef?.nativeElement;
   let fitZ = 1;
-  if (container && nativeViewport.width > 0 && nativeViewport.height > 0) {
+  if (container && nativeViewport.width > 0) {
     const availW = container.clientWidth - 48;
-    const availH = container.clientHeight - 48;
-    if (availW > 0 && availH > 0) {
-      fitZ = Math.max(0.1, Math.min(2, availW / nativeViewport.width, availH / nativeViewport.height));
+    if (availW > 0) {
+      fitZ = Math.max(0.1, Math.min(2, availW / nativeViewport.width));
     }
   }
   this._fitZoom.set(fitZ);
   this.zoom.set(fitZ);
 
-  const viewport = page.getViewport({ scale: fitZ });
-  this.pageWidthPx.set(viewport.width);
-  this.pageHeightPx.set(viewport.height);
-
-  this.pdfAdapter.setPageLayouts([
-    {
-      docWidth:     this._pdfNativeW,
-      docHeight:    this._pdfNativeH,
-      screenX:      0,
-      screenY:      0,
-      screenWidth:  viewport.width,
-      screenHeight: viewport.height,
-    },
-  ]);
-
-  await this.renderPage(1);
+  await this.renderAllPages();
 }
 
-
-private async renderPage(pageNumber: number) {
+private async renderAllPages(): Promise<void> {
   if (!this.pdfDoc) return;
+  const numPages = this.pdfDoc.numPages;
+  const z = this.zoom();
+  const gap = 16;
 
-  const page = await this.pdfDoc.getPage(pageNumber);
+  // Pass 1: measure all pages at current zoom
+  const pages: Array<{ page: any; viewport: any; nativeVp: any }> = [];
+  let maxWidth = 0;
+  let totalHeight = 0;
 
-  const viewport = page.getViewport({ scale: this.zoom() });
+  for (let i = 1; i <= numPages; i++) {
+    const page = await this.pdfDoc.getPage(i);
+    const nativeVp = page.getViewport({ scale: 1 });
+    const viewport = page.getViewport({ scale: z });
+    pages.push({ page, viewport, nativeVp });
+    maxWidth = Math.max(maxWidth, viewport.width);
+    totalHeight += viewport.height + (i < numPages ? gap : 0);
+  }
 
+  this.pageWidthPx.set(maxWidth);
+  this.pageHeightPx.set(totalHeight);
+
+  // Size the single shared canvas
   const canvas = this.pdfCanvasRef.nativeElement;
-  const context = canvas.getContext('2d')!;
+  canvas.width = maxWidth;
+  canvas.height = totalHeight;
+  const ctx = canvas.getContext('2d')!;
+  ctx.clearRect(0, 0, maxWidth, totalHeight);
 
-  canvas.width = viewport.width;
-  canvas.height = viewport.height;
+  // Pass 2: render each page at its Y offset and build adapter layouts
+  const layouts: Array<{
+    docWidth: number; docHeight: number;
+    screenX: number; screenY: number;
+    screenWidth: number; screenHeight: number;
+  }> = [];
+  let y = 0;
 
-  await page.render({
-    canvasContext: context,
-    viewport,
-  }).promise;
+  for (let i = 0; i < pages.length; i++) {
+    const { page, viewport, nativeVp } = pages[i];
+
+    // Render to an offscreen canvas then blit at the correct Y position
+    const offscreen = document.createElement('canvas');
+    offscreen.width = viewport.width;
+    offscreen.height = viewport.height;
+    const offCtx = offscreen.getContext('2d')!;
+    await page.render({ canvasContext: offCtx, viewport }).promise;
+    ctx.drawImage(offscreen, 0, y);
+
+    // Draw a subtle separator between pages
+    if (i < pages.length - 1) {
+      ctx.fillStyle = '#c8c8c8';
+      ctx.fillRect(0, y + viewport.height, maxWidth, gap);
+    }
+
+    layouts.push({
+      docWidth: nativeVp.width,
+      docHeight: nativeVp.height,
+      screenX: 0,
+      screenY: y,
+      screenWidth: viewport.width,
+      screenHeight: viewport.height,
+    });
+
+    y += viewport.height + gap;
+  }
+
+  this.pdfAdapter.setPageLayouts(layouts);
+  this.cdr.markForCheck();
 }
 
   // private updatePdfLayout(): void {
@@ -495,21 +531,7 @@ private async renderPage(pageNumber: number) {
 
     switch (this.contentType()) {
       case 'pdf': {
-        await this.renderPage(1);
-        const page = await this.pdfDoc.getPage(1);
-        const viewport = page.getViewport({ scale: this.zoom() });
-        this.pageWidthPx.set(viewport.width);
-        this.pageHeightPx.set(viewport.height);
-        this.pdfAdapter.setPageLayouts([
-          {
-            docWidth:     this._pdfNativeW,
-            docHeight:    this._pdfNativeH,
-            screenX:      0,
-            screenY:      0,
-            screenWidth:  viewport.width,
-            screenHeight: viewport.height,
-          },
-        ]);
+        await this.renderAllPages();
         break;
       }
       case 'image': {
@@ -534,19 +556,7 @@ private async renderPage(pageNumber: number) {
     this.zoom.set(fit);
     switch (this.contentType()) {
       case 'pdf': {
-        await this.renderPage(1);
-        const page = await this.pdfDoc.getPage(1);
-        const viewport = page.getViewport({ scale: fit });
-        this.pageWidthPx.set(viewport.width);
-        this.pageHeightPx.set(viewport.height);
-        this.pdfAdapter.setPageLayouts([{
-          docWidth:     this._pdfNativeW,
-          docHeight:    this._pdfNativeH,
-          screenX:      0,
-          screenY:      0,
-          screenWidth:  viewport.width,
-          screenHeight: viewport.height,
-        }]);
+        await this.renderAllPages();
         break;
       }
       case 'image': {

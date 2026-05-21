@@ -23,7 +23,7 @@ export const adminRoutes: Routes = [
       },
       {
         path: 'brand-queue-mapping',
-        title: 'BrandQueue Mapping',
+        title: 'Brand - Queue Mapping',
         loadComponent: () =>
           import('./brand-queue-mapping/brand-queue-mapping').then(m => m.BrandQueueMapping),
       },

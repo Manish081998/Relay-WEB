@@ -37,6 +37,11 @@ export class SelectTool implements Tool {
   readonly name = 'Select';
   readonly cursor: ToolCursor = 'default';
 
+  /** Wired by the engine so double-clicking a text annotation re-opens its editor */
+  onRequestTextEdit?: (annotationId: string) => void;
+  /** Wired by the engine so double-clicking a comment annotation re-opens its editor */
+  onRequestCommentEdit?: (annotationId: string) => void;
+
   private mode: SelectMode = 'idle';
   private lassoStart: Point | null = null;
   private lassoRect: Rect | null = null;
@@ -162,6 +167,21 @@ export class SelectTool implements Tool {
     this.mode = 'idle';
     this.dragStart = null;
     ctx.requestRedraw();
+    return null;
+  }
+
+  onDoubleClick(evt: ToolPointerEvent, ctx: ToolContext): Command | null {
+    const annotations = ctx.store.getByPage(evt.pageIndex);
+    const tol = DEFAULT_HIT_TOLERANCE / ctx.adapter.getViewportTransform().zoom;
+    const hits = hitTestAll(evt.docPoint, annotations, tol);
+    if (hits.length === 0) return null;
+
+    const top = hits[0];
+    if (top.type === 'text') {
+      this.onRequestTextEdit?.(top.id);
+    } else if (top.type === 'comment') {
+      this.onRequestCommentEdit?.(top.id);
+    }
     return null;
   }
 

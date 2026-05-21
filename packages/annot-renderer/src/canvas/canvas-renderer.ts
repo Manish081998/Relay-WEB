@@ -45,6 +45,7 @@ import type {
 import {
   selectionBounds,
   DEFAULT_STYLE,
+  desanitiseText,
 } from '@adticorp/annot-core';
 
 export interface RendererOptions {
@@ -87,6 +88,8 @@ export class CanvasRenderer {
 
   // Text editor overlay element
   private textEditorEl: HTMLTextAreaElement | null = null;
+  onTextEditorShown?: () => void;
+  onTextEditorHidden?: () => void;
 
   // Comment editor overlay element
   private commentEditorEl: HTMLDivElement | null = null;
@@ -163,11 +166,13 @@ export class CanvasRenderer {
     const r = a.geometry.rect;
     const sx = r.x * zoom + panX;
     const sy = r.y * zoom + panY;
-    const sw = r.width * zoom;
-    const sh = r.height * zoom;
+    const MIN_W = 160;
+    const MIN_H = 40;
+    const sw = Math.max(r.width * zoom, MIN_W);
+    const sh = Math.max(r.height * zoom, MIN_H);
 
     const ta = document.createElement('textarea');
-    ta.value = a.meta.text ?? '';
+    ta.value = desanitiseText(a.meta.text ?? '');
     ta.style.cssText = `
       position: absolute;
       left: ${sx}px; top: ${sy}px;
@@ -184,6 +189,10 @@ export class CanvasRenderer {
       z-index: 10;
       overflow: hidden;
     `;
+    ta.addEventListener('input', () => {
+      ta.style.height = 'auto';
+      ta.style.height = Math.max(ta.scrollHeight, MIN_H) + 'px';
+    });
 
     const removeIfEmpty = (): void => {
       if (!ta.value.trim() && isNew) {
@@ -215,12 +224,14 @@ export class CanvasRenderer {
     this.textEditorEl = ta;
     ta.focus();
     ta.select();
+    this.onTextEditorShown?.();
   }
 
   hideTextEditor(): void {
     if (this.textEditorEl) {
       this.textEditorEl.remove();
       this.textEditorEl = null;
+      this.onTextEditorHidden?.();
     }
   }
 
@@ -526,9 +537,60 @@ export class CanvasRenderer {
   // ─── Text edit commit ─────────────────────────────────────────────────────
 
   private commitTextEdit(annotationId: string, text: string): void {
-    // Sanitise and update store
     const safe = text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-    this.store.update(annotationId, { meta: { text: safe } });
+
+    const a = this.store.getById(annotationId);
+    if (!a || a.geometry.kind !== 'rect') {
+      this.store.update(annotationId, { meta: { text: safe } });
+      return;
+    }
+
+    // Measure the typed text in doc-space (unzoomed) to build a tight rect.
+    const fontSize   = a.style.fontSize ?? 14;
+    const fontFamily = a.style.fontFamily ?? 'Arial, sans-serif';
+    const padding    = 6;                          // doc-space padding on each side
+    const lineHeight = fontSize * 1.3;
+    const maxWidth   = 400;                        // doc-space max width cap
+    const innerMax   = maxWidth - padding * 2;
+
+    const mc = document.createElement('canvas').getContext('2d')!;
+    mc.font = `${fontSize}px ${fontFamily}`;
+
+    // Word-wrap to compute actual lines
+    const allLines: string[] = [];
+    for (const para of text.split('\n')) {
+      if (!para) { allLines.push(''); continue; }
+      const words = para.split(' ');
+      let current = '';
+      for (const word of words) {
+        const test = current ? `${current} ${word}` : word;
+        if (mc.measureText(test).width <= innerMax) {
+          current = test;
+        } else {
+          if (current) allLines.push(current);
+          current = word;
+        }
+      }
+      if (current) allLines.push(current);
+    }
+    if (allLines.length === 0) allLines.push('');
+
+    const maxLineW  = Math.max(...allLines.map(l => mc.measureText(l).width), 0);
+    const rectWidth  = Math.min(maxLineW + padding * 2, maxWidth);
+    const rectHeight = allLines.length * lineHeight + padding * 2;
+
+    this.store.update(annotationId, {
+      meta: { text: safe },
+      geometry: {
+        kind: 'rect',
+        rect: {
+          x: a.geometry.rect.x,
+          y: a.geometry.rect.y,
+          width:  Math.max(rectWidth,  fontSize * 2),
+          height: Math.max(rectHeight, lineHeight + padding * 2),
+        },
+      },
+    });
   }
 
   private commitCommentEdit(annotationId: string, text: string): void {

@@ -112,12 +112,22 @@ export class AnnotationEngineService implements OnDestroy {
     const textTool = this.tools.get(TOOL_IDS.TEXT) as TextTool;
     if (textTool) {
       textTool.onRequestTextEdit = (id: string) => this.renderer?.showTextEditor(id);
+      this.renderer.onTextEditorShown  = () => textTool.notifyEditorShown();
+      this.renderer.onTextEditorHidden = () => textTool.notifyEditorClosed();
     }
 
     // Wire comment tool's edit callback so it opens the comment popup in the renderer
     const commentTool = this.tools.get(TOOL_IDS.COMMENT) as CommentTool;
     if (commentTool) {
       commentTool.onRequestCommentEdit = (id: string) => this.renderer?.showCommentEditor(id);
+    }
+
+    // Wire select tool double-click so text/comment annotations can be re-edited
+    // without having to switch tools first
+    const selectTool = this.tools.get(TOOL_IDS.SELECT) as SelectTool;
+    if (selectTool) {
+      selectTool.onRequestTextEdit    = (id: string) => this.renderer?.showTextEditor(id);
+      selectTool.onRequestCommentEdit = (id: string) => this.renderer?.showCommentEditor(id);
     }
 
     // Subscribe to store for signals
