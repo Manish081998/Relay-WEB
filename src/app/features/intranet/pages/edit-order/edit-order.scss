@@ -112,6 +112,12 @@ $divider:      rgba(t.$color-border, 0.4);
 // Ship Terms stays in left column
 .shipping-terms-row { grid-column: 1; }
 
+// Spacing before second subsection header
+.shipping-subsection-divider { margin-top: 10px; }
+
+// Shipping Charges fields span full row
+.shipping-full { grid-column: 1 / -1; }
+
 // ── Field — label above input, matches order-search-panel .field ──────────────
 .field-row {
   display: flex;
@@ -220,14 +226,36 @@ input.field-input[pInputText] {
   }
 }
 
-// ── Subsection label (e.g. "SHIPPING METHOD") ─────────────────────────────────
+// ── Subsection header (e.g. "SHIPPING METHOD") ───────────────────────────────
 .subsection-label {
-  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 -16px 10px;
+  padding: 5px 16px;
+  background: rgba($primary, 0.05);
+  border-top: 1px solid rgba($primary, 0.12);
+  border-bottom: 1px solid rgba($primary, 0.12);
   font-size: 0.625rem;
   font-weight: t.$font-weight-bold;
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  color: $text-muted;
+  color: $primary;
+
+  &::before {
+    content: '';
+    display: inline-block;
+    width: 3px;
+    height: 11px;
+    background: $primary;
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+
+  &--first {
+    margin-top: -10px; // flush with card body top padding
+    border-top: none;
+  }
 }
 
 // ── Field input wrapper (select + helper text stacked) ────────────────────────

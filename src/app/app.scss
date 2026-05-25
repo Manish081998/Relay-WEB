@@ -1,108 +1,26 @@
+@use '../styles/theme' as t;
+
 // ── Global loading overlay ────────────────────────────────────────────────────
 .loading-overlay {
   position: fixed;
   inset: 0;
   z-index: 9999;
-  background: rgba(240, 244, 255, 0.72);
-  backdrop-filter: blur(3px);
+  background: rgba(7, 7, 15, 0.55);
+  backdrop-filter: blur(2px);
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-// ── Loader shell (circle container) ──────────────────────────────────────────
-.loader {
-  width: 150px;
-  height: 150px;
-  background-color: #0a4a7a;
+.spinner {
+  width: 52px;
+  height: 52px;
+  border: 4px solid rgba(t.$color-primary, 0.2);
+  border-top-color: t.$color-primary;
   border-radius: 50%;
-  position: relative;
-  overflow: hidden;
-  box-shadow:
-    0 0 30px 4px rgba(0, 0, 0, 0.5) inset,
-    0 8px 32px rgba(10, 74, 122, 0.45),
-    0 2px 8px  rgba(0, 0, 0, 0.2);
+  animation: spin 0.8s linear infinite;
 }
 
-// Rim shading — depth illusion (sits above liquid via z-index)
-.loader::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  box-shadow:
-    inset 0 6px 18px rgba(255, 255, 255, 0.22),
-    inset 0 -6px 18px rgba(0, 0, 0, 0.28);
-  z-index: 3;
-  pointer-events: none;
-}
-
-// Specular highlight — sphere glass feel
-.loader::after {
-  content: '';
-  position: absolute;
-  top: 9%;
-  left: 14%;
-  width: 34%;
-  height: 28%;
-  background: radial-gradient(ellipse at 40% 35%, rgba(255, 255, 255, 0.3) 0%, transparent 70%);
-  border-radius: 50%;
-  z-index: 3;
-  pointer-events: none;
-}
-
-// ── Liquid fill container ─────────────────────────────────────────────────────
-// Handles only vertical position (translateY).
-// Starts at ~5% fill (translateY 135%) → rises to ~95% fill (translateY 45%) → repeats.
-//
-// Why this works:
-//   water-surface-Y = translateY_px + top_pseudo(-40% = -60px)
-//   At 135% → 202.5 - 60 = 142.5px from top  ≈  5% fill
-//   At  45% →  67.5 - 60 =   7.5px from top  ≈ 95% fill
-.liquid {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  animation: fillLevel 7s ease-in-out infinite;
-}
-
-// Primary wave layer — solid, faster
-.liquid::after {
-  content: '';
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  border-radius: 45%;
-  top: -40%;
-  background: rgba(255, 255, 255, 0.92);
-  animation: wave 5s linear infinite;
-}
-
-// Secondary wave layer — translucent, offset phase creates depth
-.liquid::before {
-  content: '';
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  border-radius: 30%;
-  top: -40%;
-  background: rgba(255, 255, 255, 0.45);
-  animation: wave 5s -2.5s linear infinite;
-}
-
-// ── Wave rotation ─────────────────────────────────────────────────────────────
-@keyframes wave {
-  0%   { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-// ── Liquid fill level ─────────────────────────────────────────────────────────
-// 0%–8%    pause at bottom (natural settle)
-// 8%–50%   smooth rise with ease-in-out
-// 50%–58%  pause at top (natural settle)
-// 58%–100% smooth fall with ease-in-out
-@keyframes fillLevel {
-  0%,  8%  { transform: translateY(135%); }
-  50%, 58% { transform: translateY(45%);  }
-  100%     { transform: translateY(135%); }
+@keyframes spin {
+  to { transform: rotate(360deg); }
 }

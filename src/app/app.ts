@@ -18,9 +18,7 @@ import { UiStore } from './store/ui/ui.store';
 
     @if (uiStore.isLoading()) {
       <div class="loading-overlay" role="status" aria-label="Loading">
-        <span class="loader">
-          <span class="liquid"></span>
-        </span>
+        <div class="spinner"></div>
       </div>
     }
   `,

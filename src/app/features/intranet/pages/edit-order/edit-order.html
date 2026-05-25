@@ -214,7 +214,7 @@
       <span class="card-title">Shipping</span>
     </div>
     <div class="card-body">
-      <div class="subsection-label">Shipping Method</div>
+      <div class="subsection-label subsection-label--first">Shipping Method</div>
       <div class="address-col">
         <div class="field-row">
           <label class="field-label">Ship Via</label>
@@ -252,6 +252,20 @@
             />
             <span class="field-helper">Leave Ship Terms blank for standard shipping.</span>
           </div>
+        </div>
+      </div>
+
+      <div class="shipping-subsection-divider"></div>
+
+      <div class="subsection-label">Shipping Charges</div>
+      <div class="address-col">
+        <div class="field-row shipping-full">
+          <label class="field-label">Comments To Factory</label>
+          <input pInputText class="field-input" formControlName="commentsToFactory" autocomplete="off" />
+        </div>
+        <div class="field-row shipping-full">
+          <label class="field-label">Customer Service Request</label>
+          <input pInputText class="field-input" formControlName="customerServiceRequest" autocomplete="off" />
         </div>
       </div>
     </div>
