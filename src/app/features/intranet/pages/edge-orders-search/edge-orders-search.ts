@@ -186,7 +186,11 @@ export class EdgeOrdersSearch implements OnInit {
 
   // ── Edit Order ───────────────────────────────────────────────────────────────
   openEditOrder(row: EdgeOrderDto): void {
-    this.router.navigate(['/intranet/edit-order'], { queryParams: { releaseNumber: row.releaseNumber } });
+    const key = this.storePayload('edit-order', {
+      xml:           row.xmlMacPacOrder,
+      releaseNumber: row.releaseNumber,
+    });
+    this.router.navigate(['/intranet/edit-order'], { queryParams: { key } });
   }
 
   // ── XML / Order Transmittal ───────────────────────────────────────────────────

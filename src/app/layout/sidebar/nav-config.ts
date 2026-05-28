@@ -44,7 +44,6 @@ export const NAV_GROUPS: NavGroup[] = [
     children: [
       { label: 'Search', route: '/documentum/search', icon: NAV_ICONS.search },
       { label: 'Queue Search', route: '/documentum/queue-search', icon: NAV_ICONS.queue },
-      { label: 'Annotation', route: '/documentum/test-annotation', icon: NAV_ICONS.annotation },
     ],
   },
   {
@@ -59,15 +58,7 @@ export const NAV_GROUPS: NavGroup[] = [
   },
 ];
 
-export const ADMIN_NAV: NavStandaloneItem[] = [
-  {
-    label: 'Reports',
-    route: '/reports',
-    icon: NAV_ICONS.reports,
-    roles: [Role.SuperAdmin, Role.Admin],
-  },
-  { label: 'Admin', route: '/admin', icon: NAV_ICONS.admin, roles: [Role.SuperAdmin] },
-];
+export const ADMIN_NAV: NavStandaloneItem[] = [];
 
 export const USER_NAV: NavStandaloneItem[] = [
   { label: 'User Settings', route: '/profile', icon: NAV_ICONS.userSettings, roles: 'all' },
