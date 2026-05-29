@@ -5,6 +5,58 @@
     <h1 class="page-title">Edit Order</h1>
   </div>
 
+  <!-- ── Line Items ────────────────────────────────────────────────────────── -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">Line Items</span>
+    </div>
+    <div class="card-body li-card-body">
+      <div class="li-table-wrap">
+        <table class="li-table">
+          <thead>
+            <tr>
+              <th>Line</th>
+              <th>Plant Code</th>
+              <th>Quantity</th>
+              <th>Model</th>
+              <th>Comment</th>
+              <th>Tag</th>
+              <th>Multiplier</th>
+              <th>Individual Price</th>
+              <th>Total Cost</th>
+              <th>Secondary Plant Code</th>
+              <th>Group Id</th>
+              <th>Made In USA</th>
+            </tr>
+          </thead>
+          <tbody>
+            @if (lineItems().length === 0) {
+              <tr>
+                <td colspan="12" class="li-empty">No line items.</td>
+              </tr>
+            }
+            @for (item of lineItems(); track item.line) {
+              <tr>
+                <td>{{ item.line }}</td>
+                <td>{{ item.plantCode }}</td>
+                <td class="li-num">{{ item.quantity }}</td>
+                <td>{{ item.model }}</td>
+                <td class="li-trunc" [title]="item.comment ?? ''">{{ item.comment }}</td>
+                <td>{{ item.tag }}</td>
+                <td class="li-trunc" [title]="item.multiplier">{{ item.multiplier }}</td>
+                <td class="li-num">{{ item.individualPrice }}</td>
+                <td class="li-num">{{ item.totalCost }}</td>
+                <td>{{ item.secondaryPlantCode }}</td>
+                <td class="li-num">{{ item.groupId }}</td>
+                <td class="li-center">{{ item.madeInUsa ? 'Yes' : 'No' }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
   <!-- ── Address Card ───────────────────────────────────────────────────────── -->
   <div class="card">
     <div class="card-header">
@@ -389,13 +441,7 @@
         <div class="address-col">
           <div class="field-row">
             <label class="field-label">Is Special</label>
-            <p-select
-              formControlName="isSpecial"
-              [options]="isSpecialOptions"
-              styleClass="field-select"
-              panelStyleClass="edit-order-select-panel"
-              appendTo="body"
-            />
+            <input pInputText class="field-input" formControlName="isSpecial" autocomplete="off" />
           </div>
           <div class="field-row">
             <label class="field-label">X Lines</label>

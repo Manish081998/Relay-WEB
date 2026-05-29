@@ -2,7 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiService } from '../../../core/services/api.service';
 import { API_ENDPOINTS } from '../../../core/constants/api-endpoints.constants';
-import { EdgeOrderSearchParams, EdgeOrdersPagedResponse } from '../models/edge-orders.model';
+import { EdgeOrderSearchParams, EdgeOrdersPagedResponse, GetOrderByGuidResponse } from '../models/edge-orders.model';
 
 @Injectable()
 export class EdgeOrdersService {
@@ -20,6 +20,13 @@ export class EdgeOrdersService {
     return this.api.get<EdgeOrdersPagedResponse>(
       API_ENDPOINTS.INTRANET.EDGE_ORDERS_SEARCH,
       { params: httpParams },
+    );
+  }
+
+  getOrderByGuid(orderGuid: string, repPo: string): Observable<GetOrderByGuidResponse> {
+    return this.api.get<GetOrderByGuidResponse>(
+      API_ENDPOINTS.INTRANET.GET_ORDER_BY_GUID,
+      { params: { OrderGuid: orderGuid, RepPo: repPo } },
     );
   }
 }

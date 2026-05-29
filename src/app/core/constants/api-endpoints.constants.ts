@@ -11,7 +11,8 @@ export const API_ENDPOINTS = {
   },
   INTRANET: {
     USERS: '/api/users',
-    EDGE_ORDERS_SEARCH: '/api/intranet/edge-orders/SearchEdgeOrders',
+    EDGE_ORDERS_SEARCH:  '/api/intranet/edge-orders/SearchEdgeOrders',
+    GET_ORDER_BY_GUID:   '/api/intranet/edge-orders/GetOrderByGuid',
   },
   WEBTOOL: {
     SELECTIONS: '/api/selections',

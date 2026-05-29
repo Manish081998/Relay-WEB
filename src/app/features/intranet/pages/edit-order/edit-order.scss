@@ -75,6 +75,67 @@ $divider:      rgba(t.$color-border, 0.4);
   padding: 10px 16px;
 }
 
+// ── Line Items grid ───────────────────────────────────────────────────────────
+.li-card-body { padding: 0; }
+
+.li-table-wrap {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.li-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: t.$font-size-xs;
+  font-family: t.$font-sans;
+
+  thead tr {
+    background: $surface-alt;
+  }
+
+  th {
+    padding: 6px 10px;
+    text-align: left;
+    font-size: 0.6rem;
+    font-weight: t.$font-weight-bold;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: $text-muted;
+    border-bottom: 1px solid $border;
+    white-space: nowrap;
+  }
+
+  td {
+    padding: 5px 10px;
+    color: $text;
+    border-bottom: 1px solid $divider;
+    white-space: nowrap;
+  }
+
+  tbody tr:last-child td { border-bottom: none; }
+
+  tbody tr:nth-child(even) { background: $surface-alt; }
+
+  tbody tr:hover td { background: rgba($primary, 0.06); }
+}
+
+.li-num    { text-align: right; }
+.li-center { text-align: center; }
+
+.li-trunc {
+  max-width: 180px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.li-empty {
+  padding: 20px;
+  text-align: center;
+  color: $text-faint;
+  font-style: italic;
+}
+
 // ── Address sides (Sold To | Ship To side by side) ────────────────────────────
 .address-sides {
   display: grid;

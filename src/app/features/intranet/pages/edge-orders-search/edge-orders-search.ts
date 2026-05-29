@@ -185,12 +185,24 @@ export class EdgeOrdersSearch implements OnInit {
   }
 
   // ── Edit Order ───────────────────────────────────────────────────────────────
-  openEditOrder(row: EdgeOrderDto): void {
-    const key = this.storePayload('edit-order', {
-      xml:           row.xmlMacPacOrder,
-      releaseNumber: row.releaseNumber,
-    });
-    this.router.navigate(['/intranet/edit-order'], { queryParams: { key } });
+  async openEditOrder(row: EdgeOrderDto): Promise<void> {
+    if (!row.orderGuid || row.orderGuid === 'null') {
+      this.notify.error(NM.INTRANET.EDGE_ORDER.LOAD_FAILED, 'Intranet');
+      return;
+    }
+
+    this.loading.set(true);
+    try {
+      const res = await firstValueFrom(this.svc.getOrderByGuid(row.orderGuid, row.repPO));
+      if (res.success && res.data) {
+        const key = this.storePayload('edit-order', res.data);
+        this.router.navigate(['/intranet/edit-order'], { queryParams: { key } });
+      }
+    } catch {
+      this.notify.error(NM.INTRANET.EDGE_ORDER.LOAD_FAILED, 'Intranet');
+    } finally {
+      this.loading.set(false);
+    }
   }
 
   // ── XML / Order Transmittal ───────────────────────────────────────────────────
