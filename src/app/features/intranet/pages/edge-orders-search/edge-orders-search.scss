@@ -21,7 +21,10 @@ $text-faint:   t.$color-text-subtle;
 
 // ── Host ──────────────────────────────────────────────────────────────────────
 :host {
-  display: block;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
   font-family: t.$font-sans;
   -webkit-font-smoothing: antialiased;
 }
@@ -29,6 +32,8 @@ $text-faint:   t.$color-text-subtle;
 .eo-page {
   display: flex;
   flex-direction: column;
+  height: 100%;
+  overflow: hidden;
   gap: 0;
 }
 
@@ -318,6 +323,10 @@ $text-faint:   t.$color-text-subtle;
 
 // ── Grid wrapper ──────────────────────────────────────────────────────────────
 .eo-grid-wrap {
+  flex: 1 1 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
   background: $surface;
   border: 1px solid $border;
   border-radius: t.$radius-lg;
@@ -346,7 +355,11 @@ $text-faint:   t.$color-text-subtle;
 // Overlay uses global .app-loading-overlay from styles.scss
 
 // ── Scrollable table wrapper ──────────────────────────────────────────────────
-.eo-tbl-scroll { overflow-x: auto; }
+.eo-tbl-scroll {
+  flex: 1 1 0;
+  min-height: 0;
+  overflow: auto;
+}
 
 // ── Table ─────────────────────────────────────────────────────────────────────
 .eo-tbl {
