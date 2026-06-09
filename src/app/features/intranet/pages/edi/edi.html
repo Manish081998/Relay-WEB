@@ -21,8 +21,6 @@
       />
       @if (validationMsg()) {
         <span class="validation-msg">{{ validationMsg() }}</span>
-      } @else {
-        <span class="form-hint">Enter the Rep PO Number and click OK to view/edit the order.</span>
       }
     </div>
 
@@ -30,7 +28,43 @@
       <button type="button" class="btn-ok" [disabled]="loading()" (click)="onOk()">
         {{ loading() ? 'Loading…' : 'OK' }}
       </button>
+      <button type="button" class="btn-edi-status" [disabled]="ediLoading()" (click)="onEdiStatus()">
+        {{ ediLoading() ? 'Loading…' : 'Click for EDI Status' }}
+      </button>
     </div>
+
   </div>
+
+  @if (showEdiGrid()) {
+    <div class="edi-status-card">
+      <div class="edi-grid-wrap">
+        <table class="edi-grid">
+          <thead>
+            <tr>
+              <th>PO Number</th>
+              <th>Status</th>
+              <th>User</th>
+              <th>Time Stamp</th>
+            </tr>
+          </thead>
+          <tbody>
+            @if (ediStatusRows().length === 0) {
+              <tr>
+                <td colspan="4" class="edi-grid-empty">No records found.</td>
+              </tr>
+            }
+            @for (row of ediStatusRows(); track $index) {
+              <tr>
+                <td>{{ row.poNumber }}</td>
+                <td>{{ row.status }}</td>
+                <td>{{ row.user }}</td>
+                <td>{{ formatTimestamp(row.timeStamp) }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  }
 
 </div>

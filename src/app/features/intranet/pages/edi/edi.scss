@@ -109,6 +109,76 @@ $primary:    t.$color-primary;
 .form-actions {
   display: flex;
   justify-content: flex-start;
+  gap: 10px;
+}
+
+.btn-edi-status {
+  padding: 0.5rem 1.25rem;
+  background: t.$color-bg-surface;
+  border: 1px solid t.$color-primary;
+  border-radius: t.$radius-md;
+  color: t.$color-primary;
+  font-size: t.$font-size-sm;
+  font-weight: t.$font-weight-bold;
+  cursor: pointer;
+  transition: background t.$transition-fast;
+
+  &:hover { background: t.$color-primary-light; }
+}
+
+// ── EDI Status Card ──────────────────────────────────────────────────────────
+.edi-status-card {
+  border: 1px solid t.$color-border;
+  border-radius: t.$radius-lg;
+  overflow: hidden;
+  background: t.$color-bg-surface;
+  box-shadow: t.$shadow-card;
+}
+
+
+.edi-grid-wrap {
+  overflow-x: auto;
+}
+
+.edi-grid {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: t.$font-size-sm;
+
+  th {
+    padding: 8px 14px;
+    text-align: left;
+    font-size: t.$font-size-xs;
+    font-weight: t.$font-weight-bold;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: $text-muted;
+    background: t.$color-bg-subtle;
+    border-bottom: 1px solid t.$color-border;
+    white-space: nowrap;
+  }
+
+  tbody tr {
+    border-bottom: 1px solid t.$color-border;
+    transition: background t.$transition-fast;
+
+    &:last-child { border-bottom: none; }
+    &:nth-child(even) { background: rgba(t.$color-bg-subtle, 0.5); }
+    &:hover { background: t.$color-primary-light; }
+  }
+
+  td {
+    padding: 8px 14px;
+    color: $text;
+    white-space: nowrap;
+  }
+}
+
+.edi-grid-empty {
+  text-align: center;
+  color: $text-muted;
+  padding: 2rem !important;
+  font-size: t.$font-size-sm;
 }
 
 .btn-ok {

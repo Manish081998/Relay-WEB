@@ -85,6 +85,8 @@ export class HeaderComponent {
       const params = new URLSearchParams(qs ?? '');
       const so = params.get('so');
       if (so) trail.push(so);
+    } else if (page === 'edi') {
+      trail.push('EDI');
     } else if (page) {
       trail.push(page.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase()));
     }

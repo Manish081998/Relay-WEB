@@ -16,6 +16,7 @@ export const API_ENDPOINTS = {
     UPDATE_ORDER_SECTION:  '/api/intranet/edge-orders/UpdateSection',
     UPDATE_PLANT_CODE:     '/api/intranet/edge-orders/UpdatePlantCode',
     SUBMIT_ORDER:          '/api/intranet/edge-orders',
+    GET_EDI_STATUS:        '/api/intranet/edge-orders/GetEDIStatus',
   },
   WEBTOOL: {
     SELECTIONS: '/api/selections',

@@ -160,6 +160,20 @@ export interface UpdatePlantCodeResponse {
   errors:  string[];
 }
 
+export interface EdiStatusItem {
+  poNumber:  string;
+  status:    string;
+  user:      string;
+  timeStamp: string;
+}
+
+export interface EdiStatusResponse {
+  success: boolean;
+  data:    EdiStatusItem[];
+  message: string | null;
+  errors:  string[];
+}
+
 export interface EdgeOrderSearchParams {
   EmailId?:       string;
   ReleaseNumber?: string;

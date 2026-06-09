@@ -2,7 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiService } from '../../../core/services/api.service';
 import { API_ENDPOINTS } from '../../../core/constants/api-endpoints.constants';
-import { EdgeOrderSearchParams, EdgeOrdersPagedResponse, GetOrderByGuidResponse, OrderUpdateSectionRequest, PlantCodeUpdateDto, SubmitOrderResponse, UpdatePlantCodeResponse } from '../models/edge-orders.model';
+import { EdgeOrderSearchParams, EdgeOrdersPagedResponse, EdiStatusResponse, GetOrderByGuidResponse, OrderUpdateSectionRequest, PlantCodeUpdateDto, SubmitOrderResponse, UpdatePlantCodeResponse } from '../models/edge-orders.model';
 
 @Injectable()
 export class EdgeOrdersService {
@@ -53,6 +53,13 @@ export class EdgeOrdersService {
       API_ENDPOINTS.INTRANET.UPDATE_PLANT_CODE,
       dto,
       { params: { orderGuid, po, userId } },
+    );
+  }
+
+  getEdiStatus(po: string): Observable<EdiStatusResponse> {
+    return this.api.get<EdiStatusResponse>(
+      API_ENDPOINTS.INTRANET.GET_EDI_STATUS,
+      { params: { repPo: po } },
     );
   }
 
