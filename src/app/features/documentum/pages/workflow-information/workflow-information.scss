@@ -23,6 +23,7 @@ $amber-bdr:   rgba(245, 158, 11, 0.30);
   margin-bottom: 0;
   border-radius: t.$radius-lg;
   overflow: visible;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.04);
 }
 
 // ═════════════════════════════════════════════════════════════════════════════
@@ -32,7 +33,7 @@ $amber-bdr:   rgba(245, 158, 11, 0.30);
   display: flex;
   flex-direction: column;
   border-radius: t.$radius-lg;
-  box-shadow: t.$shadow-sm;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.03);
   overflow: visible;
 }
 
@@ -134,9 +135,9 @@ $amber-bdr:   rgba(245, 158, 11, 0.30);
 
 // ── Workflow body ────────────────────────────────────────────────────────────
 .od-card__body {
-  padding: 10px 20px;
-  background: #f8fafc;
-  border: 1px solid rgba(ds.$border, 0.35);
+  padding: 12px 20px;
+  background: linear-gradient(180deg, #f4f7fb 0%, #f8fafc 100%);
+  border: 1px solid rgba(ds.$border, 0.30);
   border-top: none;
   border-radius: 0 0 t.$radius-lg t.$radius-lg;
 }
@@ -150,8 +151,8 @@ $amber-bdr:   rgba(245, 158, 11, 0.30);
   background: #fff;
   border: none;
   border-radius: 10px;
-  padding: 8px 0;
-  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.04), 0 1px 4px rgba(0, 0, 0, 0.05);
+  padding: 10px 0;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.04), 0 2px 8px rgba(0, 0, 0, 0.06);
 }
 
 .od-wf-cell {
@@ -355,12 +356,12 @@ $amber-bdr:   rgba(245, 158, 11, 0.30);
   display: flex;
   flex-direction: column;
   gap: 14px;
-  padding: 14px 20px;
-  background: ds.$surface;
-  border: 1px solid rgba(ds.$border, 0.35);
+  padding: 16px 20px;
+  background: linear-gradient(180deg, #ffffff 0%, #fafbfd 100%);
+  border: 1px solid rgba(ds.$border, 0.30);
   border-top: 2px solid ds.$brand;
   border-radius: 0 0 t.$radius-lg t.$radius-lg;
-  box-shadow: t.$shadow-sm;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.02);
   position: relative;
   min-height: 120px;
 }
@@ -371,20 +372,25 @@ $amber-bdr:   rgba(245, 158, 11, 0.30);
 // SECTION — Light header with accent bar
 // ═════════════════════════════════════════════════════════════════════════════
 .od-section {
-  border: 1px solid rgba(ds.$border, 0.35);
+  border: 1px solid rgba(ds.$border, 0.30);
   border-radius: t.$radius-lg;
   overflow: hidden;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.03);
   background: ds.$surface;
+  transition: box-shadow 0.2s ease;
+
+  &:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.04);
+  }
 }
 
 .od-section-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 8px 16px;
-  background: #fff;
-  border-bottom: 1px solid rgba(ds.$border, 0.35);
+  padding: 10px 16px;
+  background: linear-gradient(135deg, #f8fafc 0%, #eef2f7 100%);
+  border-bottom: 1px solid rgba(ds.$border, 0.30);
 }
 
 .od-section-title {
@@ -394,19 +400,20 @@ $amber-bdr:   rgba(245, 158, 11, 0.30);
   margin: 0;
   font-size: 12px;
   font-weight: t.$font-weight-bold;
-  color: ds.$text;
+  color: #1e293b;
   text-transform: uppercase;
   letter-spacing: 0.05em;
 
   &::before {
     content: '';
     display: inline-block;
-    width: 3px;
-    height: 16px;
-    background: ds.$brand;
+    width: 3.5px;
+    height: 18px;
+    background: linear-gradient(180deg, ds.$brand 0%, ds.$brand-dark 100%);
     border-radius: 2px;
     margin-right: 10px;
     flex-shrink: 0;
+    box-shadow: 0 1px 3px rgba(ds.$brand, 0.25);
   }
 }
 
@@ -420,25 +427,30 @@ $amber-bdr:   rgba(245, 158, 11, 0.30);
   font-size: 11px;
   padding: 5px 12px;
   gap: 4px;
-  background: ds.$brand;
+  background: linear-gradient(135deg, ds.$brand 0%, ds.$brand-dark 100%);
   color: #fff;
   border: 1px solid ds.$brand;
   font-weight: t.$font-weight-semibold;
   letter-spacing: 0.02em;
+  box-shadow: 0 1px 3px rgba(ds.$brand, 0.2);
+  transition: all 0.15s ease;
 
   &:hover {
-    background: ds.$brand-dark;
+    background: linear-gradient(135deg, ds.$brand-dark 0%, darken(ds.$brand-dark, 4%) 100%);
     border-color: ds.$brand-dark;
+    box-shadow: 0 2px 6px rgba(ds.$brand, 0.3);
   }
 
   &--secondary {
     background: #fff;
     color: ds.$brand;
     border-color: rgba(ds.$brand, 0.35);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
 
     &:hover {
       background: rgba(ds.$brand, 0.06);
       border-color: ds.$brand;
+      box-shadow: 0 1px 4px rgba(ds.$brand, 0.15);
     }
   }
 
@@ -474,7 +486,7 @@ $amber-bdr:   rgba(245, 158, 11, 0.30);
 
   // alternating row bands (every group of 3 = one visual row)
   &:nth-child(6n+4), &:nth-child(6n+5), &:nth-child(6n+6) {
-    background: rgba(0, 0, 0, 0.014);
+    background: rgba(ds.$brand, 0.018);
   }
 
   &:nth-last-child(-n+3) { border-bottom: none; }
@@ -483,10 +495,10 @@ $amber-bdr:   rgba(245, 158, 11, 0.30);
 
 .od-pkg-label {
   font-size: 11px;
-  color: ds.$text-muted;
+  color: #64748b;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  font-weight: t.$font-weight-medium;
+  font-weight: 600;
   min-width: 140px;
   flex-shrink: 0;
 }
@@ -629,30 +641,30 @@ $amber-bdr:   rgba(245, 158, 11, 0.30);
 
   thead th {
     font-size: 11px;
-    font-weight: 600;
-    color: #6b7280;
+    font-weight: 700;
+    color: #475569;
     text-transform: uppercase;
     letter-spacing: 0.06em;
-    padding: 8px 16px;
-    border-bottom: 1px solid #e5e7eb;
+    padding: 9px 16px;
+    border-bottom: 2px solid rgba(ds.$brand, 0.12);
     text-align: left;
     white-space: nowrap;
-    background: #fafbfc;
+    background: linear-gradient(180deg, #f1f5f9 0%, #e8ecf1 100%);
   }
 
   tbody td {
     font-size: t.$font-size-sm;
     color: ds.$text;
-    padding: 8px 16px;
-    border-bottom: 1px solid rgba(ds.$border, 0.2);
+    padding: 9px 16px;
+    border-bottom: 1px solid rgba(ds.$border, 0.18);
     vertical-align: middle;
   }
 
   tbody tr {
-    transition: background 0.12s ease;
-    &:nth-child(even) { background: rgba(0, 0, 0, 0.012); }
+    transition: background 0.15s ease;
+    &:nth-child(even) { background: rgba(0, 0, 0, 0.015); }
     &:last-child td { border-bottom: none; }
-    &:hover { background: rgba(ds.$brand, 0.035); }
+    &:hover { background: rgba(ds.$brand, 0.045); }
   }
 }
 
@@ -1037,8 +1049,10 @@ $avatar-palette: (
   flex-direction: column;
   align-items: center;
   gap: 6px;
-  padding: 18px 16px;
+  padding: 24px 16px;
   text-align: center;
+  background: linear-gradient(180deg, transparent 0%, rgba(ds.$brand, 0.015) 100%);
+  border-radius: 8px;
 }
 
 .od-empty-state__icon {
@@ -1074,6 +1088,7 @@ $avatar-palette: (
   justify-content: space-between;
   padding: 12px 16px;
   border-top: 1px solid rgba(ds.$border, 0.25);
+  background: linear-gradient(180deg, #fafbfc 0%, #f5f7fa 100%);
 }
 
 .od-history-pagination__info {
@@ -1093,24 +1108,28 @@ $avatar-palette: (
   height: 30px;
   padding: 0;
   font-size: 12px;
-  background: ds.$surface;
+  background: #fff;
   color: ds.$text;
   border: 1px solid ds.$border;
   border-radius: 6px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  transition: all 0.15s ease;
 
   &:hover:not(:disabled) {
     background: rgba(ds.$brand, 0.06);
     border-color: ds.$brand;
     color: ds.$brand;
+    box-shadow: 0 1px 4px rgba(ds.$brand, 0.15);
   }
 
   &:disabled {
     opacity: 0.35;
     cursor: not-allowed;
     pointer-events: none;
+    box-shadow: none;
   }
 }
 
