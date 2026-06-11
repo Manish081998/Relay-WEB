@@ -91,6 +91,10 @@ export class WorkflowInformation {
 
   // ── Computed: button visibility & enable/disable ─────────────────────────
   readonly currentUserGlobalId = computed(() => this.auth.currentUser()?.globalId?.toLowerCase() ?? '');
+  readonly currentUserInitial = computed(() => {
+    const u = this.auth.currentUser();
+    return (u?.displayName || u?.email || '?').charAt(0).toUpperCase();
+  });
 
   readonly isAcquired = computed(() => this.workflowState()?.isAcquired ?? false);
 
@@ -111,6 +115,31 @@ export class WorkflowInformation {
   // Only the acquiring user can annotate/import documents
   readonly canAnnotate = computed(() => this.isAcquiredByMe());
 
+  /** Check if a note was created by the current user */
+  isMyNote(createdBy: string): boolean {
+    return createdBy?.toLowerCase() === this.currentUserGlobalId();
+  }
+
+  /** Assign a consistent color index (0–5) per unique user for note avatars */
+  private readonly userColorMap = new Map<string, number>();
+  private nextColorIndex = 0;
+
+  getNoteColorIndex(createdBy: string): number {
+    const key = (createdBy ?? '').toLowerCase();
+    if (!this.userColorMap.has(key)) {
+      this.userColorMap.set(key, this.nextColorIndex % 6);
+      this.nextColorIndex++;
+    }
+    return this.userColorMap.get(key)!;
+  }
+
+  /** Check if the previous note in the list is from the same user (for grouping) */
+  isSameUserAsPrev(index: number): boolean {
+    const arr = this.notes();
+    if (index === 0) return false;
+    return (arr[index].createdBy ?? '').toLowerCase() === (arr[index - 1].createdBy ?? '').toLowerCase();
+  }
+
   // Derived workflow display values
   readonly workflowQueueName = computed(() => this.workflowState()?.queueName ?? '');
   readonly workflowStateName = computed(() => this.isAcquired() ? WORKFLOW.STATE_ACQUIRED : WORKFLOW.STATE_DORMANT);
@@ -130,6 +159,7 @@ export class WorkflowInformation {
 
   readonly notes = signal<SalesOrderNoteDto[]>([]);
   readonly isLoadingNotes = signal(false);
+  readonly chatMessagesEl = viewChild<ElementRef<HTMLElement>>('chatMessages');
 
   // ── Add Note dialog ────────────────────────────────────────────────────────
   readonly showAddNoteDialog = signal(false);
@@ -140,6 +170,42 @@ export class WorkflowInformation {
   readonly salesOrderDocs = signal<SalesOrderDocumentDto[]>([]);
   readonly supportDocs = signal<SalesOrderDocumentDto[]>([]);
   readonly totalDocCount = computed(() => this.salesOrderDocs().length + this.supportDocs().length);
+
+  // ── Sales Order Docs pagination ───────────────────────────────────────────
+  readonly soDocsPage = signal(1);
+  readonly soDocsPageSize = 5;
+  readonly soDocsTotalPages = computed(() =>
+    Math.max(1, Math.ceil(this.salesOrderDocs().length / this.soDocsPageSize)),
+  );
+  readonly pagedSoDocsDocs = computed(() => {
+    const all = this.salesOrderDocs();
+    const start = (this.soDocsPage() - 1) * this.soDocsPageSize;
+    return all.slice(start, start + this.soDocsPageSize);
+  });
+
+  // ── Support Docs pagination ───────────────────────────────────────────────
+  readonly supportDocsPage = signal(1);
+  readonly supportDocsPageSize = 5;
+  readonly supportDocsTotalPages = computed(() =>
+    Math.max(1, Math.ceil(this.supportDocs().length / this.supportDocsPageSize)),
+  );
+  readonly pagedSupportDocs = computed(() => {
+    const all = this.supportDocs();
+    const start = (this.supportDocsPage() - 1) * this.supportDocsPageSize;
+    return all.slice(start, start + this.supportDocsPageSize);
+  });
+
+  // ── Sales Order History pagination ────────────────────────────────────────
+  readonly soHistoryPage = signal(1);
+  readonly soHistoryPageSize = 5;
+  readonly soHistoryTotalPages = computed(() =>
+    Math.max(1, Math.ceil(this.salesOrderDocs().length / this.soHistoryPageSize)),
+  );
+  readonly pagedSalesOrderDocs = computed(() => {
+    const all = this.salesOrderDocs();
+    const start = (this.soHistoryPage() - 1) * this.soHistoryPageSize;
+    return all.slice(start, start + this.soHistoryPageSize);
+  });
   readonly isUploading = signal(false);
   readonly uploadError = signal<string | null>(null);
 
@@ -356,6 +422,21 @@ export class WorkflowInformation {
     this.historyPage.set(page);
   }
 
+  goToSoDocsPage(page: number): void {
+    if (page < 1 || page > this.soDocsTotalPages()) return;
+    this.soDocsPage.set(page);
+  }
+
+  goToSupportDocsPage(page: number): void {
+    if (page < 1 || page > this.supportDocsTotalPages()) return;
+    this.supportDocsPage.set(page);
+  }
+
+  goToSoHistoryPage(page: number): void {
+    if (page < 1 || page > this.soHistoryTotalPages()) return;
+    this.soHistoryPage.set(page);
+  }
+
   // ── Notes methods ─────────────────────────────────────────────────────────
 
   openAddNoteDialog(): void {
@@ -407,9 +488,21 @@ export class WorkflowInformation {
         takeUntilDestroyed(this.destroyRef),
       )
       .subscribe(notes => {
-        this.notes.set(notes);
+        // Sort oldest → newest (latest at bottom, chat order)
+        const sorted = [...notes].sort((a, b) =>
+          new Date(a.createdDate).getTime() - new Date(b.createdDate).getTime()
+        );
+        this.notes.set(sorted);
         this.isLoadingNotes.set(false);
+        this.scrollChatToBottom();
       });
+  }
+
+  private scrollChatToBottom(): void {
+    setTimeout(() => {
+      const el = this.chatMessagesEl()?.nativeElement;
+      if (el) el.scrollTop = el.scrollHeight;
+    });
   }
 
   // ── Document methods ──────────────────────────────────────────────────────

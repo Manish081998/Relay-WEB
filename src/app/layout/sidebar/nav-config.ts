@@ -11,6 +11,7 @@ export interface NavChild {
 export interface NavGroup {
   label: string;
   icon: string;
+  color?: string;
   roles: Role[] | 'all';
   children: NavChild[];
 }
@@ -33,6 +34,7 @@ export const NAV_GROUPS: NavGroup[] = [
   {
     label: 'Intranet',
     icon: NAV_ICONS.intranet,
+    color: '#60a5fa',
     roles: [Role.SuperAdmin, Role.Admin, Role.User],
     children: [
       {
@@ -47,6 +49,7 @@ export const NAV_GROUPS: NavGroup[] = [
   {
     label: 'Documentum',
     icon: NAV_ICONS.documentum,
+    color: '#34d399',
     roles: [Role.SuperAdmin, Role.Admin, Role.User],
     children: [
       { label: 'Search', route: '/documentum/search', icon: NAV_ICONS.search, color: '#34d399' },
@@ -61,6 +64,7 @@ export const NAV_GROUPS: NavGroup[] = [
   {
     label: 'Administration',
     icon: NAV_ICONS.settings,
+    color: '#f97316',
     roles: 'all',
     children: [
       {

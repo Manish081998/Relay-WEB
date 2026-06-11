@@ -11,8 +11,8 @@ $amber-bdr:   rgba(245, 158, 11, 0.30);
 
 .od-page {
   @extend %page-base;
-  gap: 24px;
-  padding: 0 0 40px;
+  gap: 12px;
+  padding: 0 0 16px;
 }
 
 // ═════════════════════════════════════════════════════════════════════════════
@@ -23,6 +23,7 @@ $amber-bdr:   rgba(245, 158, 11, 0.30);
   margin-bottom: 0;
   border-radius: t.$radius-lg;
   overflow: visible;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.04);
 }
 
 // ═════════════════════════════════════════════════════════════════════════════
@@ -32,13 +33,13 @@ $amber-bdr:   rgba(245, 158, 11, 0.30);
   display: flex;
   flex-direction: column;
   border-radius: t.$radius-lg;
-  box-shadow: t.$shadow-sm;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.03);
   overflow: visible;
 }
 
 .od-card__bar {
   @extend %card-bar;
-  padding: 16px 28px;
+  padding: 10px 20px;
   background: linear-gradient(135deg, ds.$brand 0%, ds.$brand-dark 100%);
   position: relative;
   overflow: hidden;
@@ -64,8 +65,8 @@ $amber-bdr:   rgba(245, 158, 11, 0.30);
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 34px;
-  height: 34px;
+  width: 28px;
+  height: 28px;
   background: rgba(255, 255, 255, 0.15);
   border-radius: t.$radius-md;
   color: rgba(255, 255, 255, 0.9);
@@ -95,8 +96,8 @@ $amber-bdr:   rgba(245, 158, 11, 0.30);
   color: ds.$brand;
   border: 1px solid #fff;
   font-size: t.$font-size-xs;
-  padding: 7px 18px;
-  gap: 6px;
+  padding: 5px 14px;
+  gap: 5px;
   font-weight: t.$font-weight-semibold;
 
   &:hover {
@@ -134,9 +135,9 @@ $amber-bdr:   rgba(245, 158, 11, 0.30);
 
 // ── Workflow body ────────────────────────────────────────────────────────────
 .od-card__body {
-  padding: 20px 28px;
-  background: #f8fafc;
-  border: 1px solid ds.$border;
+  padding: 12px 20px;
+  background: linear-gradient(180deg, #f4f7fb 0%, #f8fafc 100%);
+  border: 1px solid rgba(ds.$border, 0.30);
   border-top: none;
   border-radius: 0 0 t.$radius-lg t.$radius-lg;
 }
@@ -148,16 +149,17 @@ $amber-bdr:   rgba(245, 158, 11, 0.30);
   align-items: center;
   gap: 0;
   background: #fff;
-  border: 1px solid #e8ecf1;
+  border: none;
   border-radius: 10px;
-  padding: 16px 0;
+  padding: 10px 0;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.04), 0 2px 8px rgba(0, 0, 0, 0.06);
 }
 
 .od-wf-cell {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  padding: 0 28px;
+  gap: 4px;
+  padding: 0 18px;
 }
 
 .od-wf-cell__label {
@@ -195,7 +197,7 @@ $amber-bdr:   rgba(245, 158, 11, 0.30);
 
 .od-wf-divider {
   width: 1px;
-  height: 40px;
+  height: 26px;
   background: linear-gradient(180deg, transparent 0%, #e2e8f0 15%, #e2e8f0 85%, transparent 100%);
 }
 
@@ -206,7 +208,7 @@ $amber-bdr:   rgba(245, 158, 11, 0.30);
   gap: 6px;
   font-size: 12px;
   font-weight: 600;
-  padding: 5px 14px;
+  padding: 3px 10px;
   border-radius: 20px;
   width: fit-content;
   letter-spacing: 0.015em;
@@ -262,10 +264,10 @@ $amber-bdr:   rgba(245, 158, 11, 0.30);
 // ═════════════════════════════════════════════════════════════════════════════
 .od-tabs-bar {
   background: ds.$surface-alt;
-  border: 1px solid ds.$border;
+  border: 1px solid rgba(ds.$border, 0.35);
   border-bottom: none;
   border-radius: t.$radius-lg t.$radius-lg 0 0;
-  padding: 14px 12px 0;
+  padding: 6px 10px 0;
   display: flex;
 }
 
@@ -282,8 +284,8 @@ $amber-bdr:   rgba(245, 158, 11, 0.30);
   flex: 1;
   gap: 8px;
   padding: 0 20px;
-  height: 42px;
-  font-size: 14px;
+  height: 34px;
+  font-size: 13px;
   font-weight: t.$font-weight-medium;
   font-family: t.$font-sans;
   color: ds.$text;
@@ -311,7 +313,7 @@ $amber-bdr:   rgba(245, 158, 11, 0.30);
     z-index: 2;
     margin-top: -6px;
     margin-bottom: -1px;
-    height: 48px;
+    height: 38px;
     padding-bottom: 2px;
   }
 }
@@ -353,15 +355,15 @@ $amber-bdr:   rgba(245, 158, 11, 0.30);
 .od-tab-content {
   display: flex;
   flex-direction: column;
-  gap: 28px;
-  padding: 28px;
-  background: ds.$surface;
-  border: 1px solid ds.$border;
-  border-top: 3px solid ds.$brand;
+  gap: 8px;
+  padding: 12px 16px;
+  background: linear-gradient(180deg, #ffffff 0%, #fafbfd 100%);
+  border: 1px solid rgba(ds.$border, 0.30);
+  border-top: 2px solid ds.$brand;
   border-radius: 0 0 t.$radius-lg t.$radius-lg;
-  box-shadow: t.$shadow-sm;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.02);
   position: relative;
-  min-height: 200px;
+  min-height: 120px;
 }
 
 // Overlay uses global .app-loading-overlay from styles.scss
@@ -370,19 +372,34 @@ $amber-bdr:   rgba(245, 158, 11, 0.30);
 // SECTION — Light header with accent bar
 // ═════════════════════════════════════════════════════════════════════════════
 .od-section {
-  border: 1px solid ds.$border;
-  border-radius: t.$radius-md;
+  border: 1px solid rgba(ds.$border, 0.30);
+  border-radius: t.$radius-lg;
   overflow: hidden;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.03);
+  background: ds.$surface;
+  transition: box-shadow 0.2s ease;
+  border-left: 3.5px solid transparent;
+
+  &:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.04);
+  }
+
+  // ── Section color variants (unified brand tones) ───────────────────────
+  &--info    { border-left-color: ds.$brand; }
+  &--notes   { border-left-color: ds.$brand-dark; }
+  &--docs    { border-left-color: ds.$brand; }
+  &--support { border-left-color: ds.$brand-dark; }
+  &--history { border-left-color: ds.$brand; }
+  &--order-history { border-left-color: ds.$brand-dark; }
 }
 
 .od-section-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 14px 20px;
-  background: linear-gradient(180deg, #f0f1f3 0%, ds.$surface-alt 100%);
-  border-bottom: 1px solid ds.$border;
+  padding: 10px 16px;
+  background: linear-gradient(135deg, #f8fafc 0%, #eef2f7 100%);
+  border-bottom: 1px solid rgba(ds.$border, 0.30);
 }
 
 .od-section-title {
@@ -390,21 +407,22 @@ $amber-bdr:   rgba(245, 158, 11, 0.30);
   align-items: center;
   gap: 0;
   margin: 0;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: t.$font-weight-bold;
-  color: ds.$text;
+  color: #1e293b;
   text-transform: uppercase;
   letter-spacing: 0.05em;
 
   &::before {
     content: '';
     display: inline-block;
-    width: 3px;
-    height: 16px;
-    background: ds.$brand;
+    width: 3.5px;
+    height: 18px;
+    background: linear-gradient(180deg, ds.$brand 0%, ds.$brand-dark 100%);
     border-radius: 2px;
     margin-right: 10px;
     flex-shrink: 0;
+    box-shadow: 0 1px 3px rgba(ds.$brand, 0.25);
   }
 }
 
@@ -416,27 +434,32 @@ $amber-bdr:   rgba(245, 158, 11, 0.30);
 .od-section-btn {
   @extend %btn-base;
   font-size: 11px;
-  padding: 6px 14px;
-  gap: 5px;
-  background: ds.$brand;
+  padding: 5px 12px;
+  gap: 4px;
+  background: linear-gradient(135deg, ds.$brand 0%, ds.$brand-dark 100%);
   color: #fff;
   border: 1px solid ds.$brand;
   font-weight: t.$font-weight-semibold;
   letter-spacing: 0.02em;
+  box-shadow: 0 1px 3px rgba(ds.$brand, 0.2);
+  transition: all 0.15s ease;
 
   &:hover {
-    background: ds.$brand-dark;
+    background: linear-gradient(135deg, ds.$brand-dark 0%, darken(ds.$brand-dark, 4%) 100%);
     border-color: ds.$brand-dark;
+    box-shadow: 0 2px 6px rgba(ds.$brand, 0.3);
   }
 
   &--secondary {
     background: #fff;
     color: ds.$brand;
     border-color: rgba(ds.$brand, 0.35);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
 
     &:hover {
       background: rgba(ds.$brand, 0.06);
       border-color: ds.$brand;
+      box-shadow: 0 1px 4px rgba(ds.$brand, 0.15);
     }
   }
 
@@ -467,24 +490,24 @@ $amber-bdr:   rgba(245, 158, 11, 0.30);
   display: flex;
   align-items: baseline;
   gap: 12px;
-  padding: 12px 20px;
-  border-bottom: 1px solid rgba(ds.$border, 0.5);
+  padding: 10px 20px;
+  border-bottom: 1px solid rgba(ds.$border, 0.2);
 
   // alternating row bands (every group of 3 = one visual row)
   &:nth-child(6n+4), &:nth-child(6n+5), &:nth-child(6n+6) {
-    background: rgba(0, 0, 0, 0.018);
+    background: rgba(ds.$brand, 0.018);
   }
 
   &:nth-last-child(-n+3) { border-bottom: none; }
-  &:not(:nth-child(3n)) { border-right: 1px solid rgba(ds.$border, 0.35); }
+  &:not(:nth-child(3n)) { border-right: 1px solid rgba(ds.$border, 0.15); }
 }
 
 .od-pkg-label {
   font-size: 11px;
-  color: ds.$text-muted;
+  color: #64748b;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  font-weight: t.$font-weight-medium;
+  font-weight: 600;
   min-width: 140px;
   flex-shrink: 0;
 }
@@ -549,7 +572,7 @@ $amber-bdr:   rgba(245, 158, 11, 0.30);
 }
 
 .od-note-panel__body {
-  padding: 16px 20px;
+  padding: 12px 20px;
 }
 
 .od-note-panel__label {
@@ -564,7 +587,7 @@ $amber-bdr:   rgba(245, 158, 11, 0.30);
 
 .od-note-panel__textarea {
   width: 100%;
-  min-height: 72px;
+  min-height: 60px;
   max-height: 200px;
   resize: vertical;
   font-size: t.$font-size-sm;
@@ -626,13 +649,13 @@ $amber-bdr:   rgba(245, 158, 11, 0.30);
   border-collapse: collapse;
 
   thead th {
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 700;
-    color: #1e293b;
+    color: #2a5298;
     text-transform: uppercase;
     letter-spacing: 0.06em;
-    padding: 14px 20px;
-    border-bottom: 2px solid #cbd5e1;
+    padding: 9px 16px;
+    border-bottom: 2px solid rgba(ds.$brand, 0.12);
     text-align: left;
     white-space: nowrap;
     background: linear-gradient(180deg, #f1f5f9 0%, #e8ecf1 100%);
@@ -641,16 +664,16 @@ $amber-bdr:   rgba(245, 158, 11, 0.30);
   tbody td {
     font-size: t.$font-size-sm;
     color: ds.$text;
-    padding: 14px 20px;
-    border-bottom: 1px solid rgba(ds.$border, 0.4);
+    padding: 9px 16px;
+    border-bottom: 1px solid rgba(ds.$border, 0.18);
     vertical-align: middle;
   }
 
   tbody tr {
-    transition: background 0.1s ease;
+    transition: background 0.15s ease;
     &:nth-child(even) { background: rgba(0, 0, 0, 0.015); }
     &:last-child td { border-bottom: none; }
-    &:hover { background: rgba(ds.$brand, 0.04); }
+    &:hover { background: rgba(ds.$brand, 0.045); }
   }
 }
 
@@ -668,9 +691,9 @@ $amber-bdr:   rgba(245, 158, 11, 0.30);
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 36px;
-  height: 36px;
-  border-radius: t.$radius-md;
+  width: 24px;
+  height: 24px;
+  border-radius: t.$radius-sm;
   flex-shrink: 0;
 
   // Default PDF
@@ -817,7 +840,250 @@ $amber-bdr:   rgba(245, 158, 11, 0.30);
   color: ds.$text-faint;
   font-style: italic;
   text-align: center;
-  padding: 40px 20px !important;
+  padding: 16px 16px !important;
+}
+
+// ── Empty field values ──────────────────────────────────────────────────────
+.od-pkg-value--empty {
+  color: ds.$text-faint;
+  font-weight: t.$font-weight-normal;
+  font-style: italic;
+  font-size: 12px;
+  letter-spacing: 0;
+}
+
+// ═════════════════════════════════════════════════════════════════════════════
+// CHAT — Bubble-style conversation (Teams / iMessage inspired)
+// ═════════════════════════════════════════════════════════════════════════════
+
+// ── Avatar accent palette ───────────────────────────────────────────────────
+$avatar-palette: (
+  0: #5b6abf,   // Indigo
+  1: #16a34a,   // Green
+  2: #e67c22,   // Orange
+  3: #8b5cf6,   // Purple
+  4: #e74c6f,   // Rose
+  5: #0ea5c8,   // Cyan
+);
+
+.od-chat {
+  display: flex;
+  flex-direction: column;
+}
+
+.od-chat__messages {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 8px 16px 6px;
+  max-height: 380px;
+  overflow-y: auto;
+
+  // Thin modern scrollbar
+  &::-webkit-scrollbar { width: 5px; }
+  &::-webkit-scrollbar-track { background: transparent; }
+  &::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 10px;
+    &:hover { background: #94a3b8; }
+  }
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 transparent;
+}
+
+// ═══ Message row ════════════════════════════════════════════════════════════
+.od-msg {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  max-width: 85%;
+
+  // ── My messages → right aligned ───────────────────────────────────────────
+  &--mine {
+    align-self: flex-end;
+    flex-direction: row-reverse;
+
+    .od-msg__wrapper { align-items: flex-end; }
+    .od-msg__meta { flex-direction: row-reverse; }
+
+    .od-msg__bubble {
+      background: linear-gradient(135deg, ds.$brand 0%, ds.$brand-dark 100%);
+      color: #fff;
+      border-radius: 14px 14px 4px 14px;
+    }
+
+  }
+
+}
+
+// ── Avatar ──────────────────────────────────────────────────────────────────
+.od-msg__avatar {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  @each $i, $color in $avatar-palette {
+    &--c#{$i} { background: $color; }
+  }
+}
+
+// ── Wrapper (name + bubble + time stack) ────────────────────────────────────
+.od-msg__wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+// ── Meta line: Name + Date on one row ───────────────────────────────────────
+.od-msg__meta {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 0 2px;
+}
+
+.od-msg__name {
+  font-size: 12px;
+  font-weight: 700;
+  color: #1e293b;
+  line-height: 1;
+}
+
+.od-msg__time {
+  font-size: 10.5px;
+  color: #94a3b8;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.od-msg__bubble {
+  background: #f0f2f5;
+  color: #1e293b;
+  font-size: 12.5px;
+  line-height: 1.5;
+  padding: 8px 14px;
+  border-radius: 14px 14px 14px 4px;
+  word-break: break-word;
+  white-space: pre-wrap;
+}
+
+
+// ═══ Chat input bar ═════════════════════════════════════════════════════════
+.od-chat__input {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  padding: 10px 16px 12px;
+  border-top: 1px solid #e2e5ea;
+  background: linear-gradient(180deg, #f0f4fa 0%, #fafbfc 100%);
+}
+
+.od-chat__field {
+  flex: 1;
+  min-height: 38px;
+  max-height: 100px;
+  font-size: 13px;
+  font-family: t.$font-sans;
+  color: ds.$text;
+  background: #fff;
+  border: 1.5px solid #d0d5dd;
+  border-radius: 18px;
+  padding: 8px 18px;
+  outline: none;
+  resize: none;
+  line-height: 1.4;
+  overflow-y: auto;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+
+  &::placeholder { color: #94a3b8; font-weight: 500; }
+  &:focus {
+    border-color: ds.$brand;
+    box-shadow: 0 0 0 3px rgba(ds.$brand, 0.12), 0 1px 3px rgba(0, 0, 0, 0.06);
+  }
+}
+
+.od-chat__send {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: none;
+  background: linear-gradient(135deg, ds.$brand 0%, ds.$brand-dark 100%);
+  color: #fff;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(ds.$brand, 0.3);
+  transition: background 0.15s ease, transform 0.12s ease, box-shadow 0.15s ease;
+  flex-shrink: 0;
+
+  &:hover:not(:disabled) {
+    background: linear-gradient(135deg, ds.$brand-dark 0%, darken(ds.$brand-dark, 6%) 100%);
+    transform: scale(1.08);
+    box-shadow: 0 3px 10px rgba(ds.$brand, 0.4);
+  }
+  &:disabled {
+    background: #d5d9e0;
+    color: #fff;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
+}
+
+.od-chat__spinner {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+// ═════════════════════════════════════════════════════════════════════════════
+// EMPTY STATE — Icon + message for empty sections
+// ═════════════════════════════════════════════════════════════════════════════
+.od-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 24px 16px;
+  text-align: center;
+  background: linear-gradient(180deg, transparent 0%, rgba(ds.$brand, 0.015) 100%);
+  border-radius: 8px;
+}
+
+.od-empty-state__icon {
+  color: ds.$text-faint;
+  opacity: 0.35;
+  margin-bottom: 2px;
+}
+
+.od-empty-state__text {
+  font-size: 13px;
+  font-weight: t.$font-weight-semibold;
+  color: ds.$text-muted;
+}
+
+.od-empty-state__sub {
+  font-size: 12px;
+  color: ds.$text-faint;
 }
 
 .od-notes-user { @extend .od-link; }
@@ -834,8 +1100,9 @@ $amber-bdr:   rgba(245, 158, 11, 0.30);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 12px 16px;
-  border-top: 1px solid ds.$border;
+  padding: 5px 16px;
+  border-top: 1px solid rgba(ds.$border, 0.25);
+  background: linear-gradient(180deg, #eef3fb 0%, #e3ebf6 100%);
 }
 
 .od-history-pagination__info {
@@ -855,24 +1122,28 @@ $amber-bdr:   rgba(245, 158, 11, 0.30);
   height: 30px;
   padding: 0;
   font-size: 12px;
-  background: ds.$surface;
+  background: #fff;
   color: ds.$text;
   border: 1px solid ds.$border;
   border-radius: 6px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  transition: all 0.15s ease;
 
   &:hover:not(:disabled) {
     background: rgba(ds.$brand, 0.06);
     border-color: ds.$brand;
     color: ds.$brand;
+    box-shadow: 0 1px 4px rgba(ds.$brand, 0.15);
   }
 
   &:disabled {
     opacity: 0.35;
     cursor: not-allowed;
     pointer-events: none;
+    box-shadow: none;
   }
 }
 
@@ -1329,9 +1600,9 @@ $amber-bdr:   rgba(245, 158, 11, 0.30);
 // FOOTER
 // ═════════════════════════════════════════════════════════════════════════════
 .od-footer {
-  margin-top: 32px;
-  padding-top: 24px;
-  border-top: 1px solid rgba(ds.$border, 0.5);
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(ds.$border, 0.25);
 }
 
 // ═════════════════════════════════════════════════════════════════════════════

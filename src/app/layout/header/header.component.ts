@@ -78,13 +78,13 @@ export class HeaderComponent {
     if (page === 'workflow-information') {
       trail.push('Queue Search');
       const params = new URLSearchParams(qs ?? '');
-      const so = params.get('so');
-      if (so) trail.push(so);
+      const po = params.get('po');
+      if (po) trail.push(`PO: ${po}`);
     } else if (page === 'order-detail') {
       trail.push('Search');
       const params = new URLSearchParams(qs ?? '');
-      const so = params.get('so');
-      if (so) trail.push(so);
+      const po = params.get('po');
+      if (po) trail.push(`PO: ${po}`);
     } else if (page) {
       trail.push(page.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase()));
     }

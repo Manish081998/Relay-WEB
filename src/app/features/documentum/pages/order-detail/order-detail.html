@@ -25,20 +25,20 @@
       <div class="od-pkg-grid">
         <div class="od-pkg-field">
           <span class="od-pkg-label">Sales Order Number</span>
-          <span class="od-pkg-value od-pkg-value--mono">{{ packageInfo.salesOrderNumber || '—' }}</span>
+          <span class="od-pkg-value" [class.od-pkg-value--mono]="packageInfo.salesOrderNumber" [class.od-pkg-value--empty]="!packageInfo.salesOrderNumber">{{ packageInfo.salesOrderNumber || 'Not provided' }}</span>
         </div>
         <div class="od-pkg-field">
           <span class="od-pkg-label">Product Type</span>
-          <span class="od-pkg-value">{{ packageInfo.productType || '—' }}</span>
+          <span class="od-pkg-value" [class.od-pkg-value--empty]="!packageInfo.productType">{{ packageInfo.productType || 'Not assigned' }}</span>
         </div>
         <div class="od-pkg-field">
           <span class="od-pkg-label">Capture Date</span>
-          <span class="od-pkg-value">{{ packageInfo.captureDate ? (packageInfo.captureDate | date:'MM/dd/yy hh:mm a') : '—' }}</span>
+          <span class="od-pkg-value" [class.od-pkg-value--empty]="!packageInfo.captureDate">{{ packageInfo.captureDate ? (packageInfo.captureDate | date:'MM/dd/yy hh:mm a') : 'Pending' }}</span>
         </div>
 
         <div class="od-pkg-field">
           <span class="od-pkg-label">Purchase Order Number</span>
-          <span class="od-pkg-value od-pkg-value--mono">{{ packageInfo.purchaseOrderNumber || '—' }}</span>
+          <span class="od-pkg-value" [class.od-pkg-value--mono]="packageInfo.purchaseOrderNumber" [class.od-pkg-value--empty]="!packageInfo.purchaseOrderNumber">{{ packageInfo.purchaseOrderNumber || 'Not provided' }}</span>
         </div>
         <div class="od-pkg-field">
           <span class="od-pkg-label">Region</span>
@@ -46,43 +46,43 @@
             @if (packageInfo.region) {
               <span class="od-pkg-tag">{{ packageInfo.region }}</span>
             } @else {
-              —
+              <span class="od-pkg-value--empty">Not assigned</span>
             }
           </span>
         </div>
         <div class="od-pkg-field">
           <span class="od-pkg-label">Completion Date</span>
-          <span class="od-pkg-value">{{ packageInfo.completionDate ? (packageInfo.completionDate | date:'MM/dd/yy hh:mm a') : '—' }}</span>
+          <span class="od-pkg-value" [class.od-pkg-value--empty]="!packageInfo.completionDate">{{ packageInfo.completionDate ? (packageInfo.completionDate | date:'MM/dd/yy hh:mm a') : 'Not completed' }}</span>
         </div>
 
         <div class="od-pkg-field">
           <span class="od-pkg-label">Account Number</span>
-          <span class="od-pkg-value od-pkg-value--mono">{{ packageInfo.accountNumber || '—' }}</span>
+          <span class="od-pkg-value" [class.od-pkg-value--mono]="packageInfo.accountNumber" [class.od-pkg-value--empty]="!packageInfo.accountNumber">{{ packageInfo.accountNumber || 'Not provided' }}</span>
         </div>
         <div class="od-pkg-field">
           <span class="od-pkg-label">Rep Name</span>
-          <span class="od-pkg-value">{{ packageInfo.repName || '—' }}</span>
+          <span class="od-pkg-value" [class.od-pkg-value--empty]="!packageInfo.repName">{{ packageInfo.repName || 'Not assigned' }}</span>
         </div>
         <div class="od-pkg-field">
           <span class="od-pkg-label">Status</span>
           @if (packageInfo.status) {
             <span class="od-pkg-value od-pkg-value--status">{{ packageInfo.status }}</span>
           } @else {
-            <span class="od-pkg-value">—</span>
+            <span class="od-pkg-value od-pkg-value--empty">Pending</span>
           }
         </div>
 
         <div class="od-pkg-field">
           <span class="od-pkg-label">Job Name</span>
-          <span class="od-pkg-value">{{ packageInfo.jobName || '—' }}</span>
+          <span class="od-pkg-value" [class.od-pkg-value--empty]="!packageInfo.jobName">{{ packageInfo.jobName || 'Not provided' }}</span>
         </div>
         <div class="od-pkg-field">
           <span class="od-pkg-label">Sub Brand</span>
-          <span class="od-pkg-value">{{ packageInfo.subBrand || '—' }}</span>
+          <span class="od-pkg-value" [class.od-pkg-value--empty]="!packageInfo.subBrand">{{ packageInfo.subBrand || 'Not assigned' }}</span>
         </div>
         <div class="od-pkg-field">
           <span class="od-pkg-label">Task Owner</span>
-          <span class="od-pkg-value">{{ packageInfo.queueOwner || '—' }}</span>
+          <span class="od-pkg-value" [class.od-pkg-value--empty]="!packageInfo.queueOwner">{{ packageInfo.queueOwner || 'Not assigned' }}</span>
         </div>
 
         <div class="od-pkg-field">
@@ -91,7 +91,7 @@
             @if (packageInfo.brand) {
               <span class="od-pkg-tag od-pkg-tag--brand">{{ packageInfo.brand }}</span>
             } @else {
-              —
+              <span class="od-pkg-value--empty">Not assigned</span>
             }
           </span>
         </div>
@@ -101,7 +101,7 @@
             @if (packageInfo.priority) {
               <span class="od-priority-badge">{{ packageInfo.priority }}</span>
             } @else {
-              —
+              <span class="od-pkg-value--empty">Not set</span>
             }
           </span>
         </div>
@@ -155,53 +155,8 @@
 
     @if (activeTab() === 'documents') {
 
-      <!-- Notes -->
-      <div class="od-section">
-        <div class="od-section-header">
-          <h2 class="od-section-title">Notes</h2>
-          <div class="od-section-actions">
-            <button class="od-section-btn" pTooltip="Add a new note" tooltipPosition="bottom" (click)="openAddNoteDialog()">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M12 5v14M5 12h14"/>
-              </svg>
-              Create Note
-            </button>
-            <button class="od-section-btn od-section-btn--secondary" pTooltip="Send all notes via email" tooltipPosition="bottom">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
-                <polyline points="22,6 12,13 2,6"/>
-              </svg>
-              Email Notes
-            </button>
-          </div>
-        </div>
-        <table class="od-data-tbl">
-          <thead>
-            <tr>
-              <th>Created on</th>
-              <th>User Name</th>
-              <th>Note</th>
-            </tr>
-          </thead>
-          <tbody>
-            @for (note of notes(); track note.salesOrderNoteId) {
-              <tr>
-                <td><span class="od-notes-date">{{ note.createdDate | date:'MM/dd/yy hh:mm a' }}</span></td>
-                <td><span class="od-notes-user">{{ note.createdByName || note.createdBy }}</span></td>
-                <td>{{ note.notesDescription }}</td>
-              </tr>
-            }
-            @if (notes().length === 0) {
-              <tr>
-                <td colspan="3" class="od-empty-row">No notes yet.</td>
-              </tr>
-            }
-          </tbody>
-        </table>
-      </div>
-
       <!-- Sales Order Documents -->
-      <div class="od-section">
+      <div class="od-section od-section--docs">
         <div class="od-section-header">
           <h3 class="od-section-title">Sales Order</h3>
         </div>
@@ -217,7 +172,7 @@
             </tr>
           </thead>
           <tbody>
-            @for (doc of salesOrderDocs(); track doc.documentId) {
+            @for (doc of pagedSoDocsDocs(); track doc.documentId) {
               <tr>
                 <td>
                   <div class="od-doc-name" (click)="previewDocument(doc)">
@@ -285,15 +240,37 @@
               </tr>
             } @empty {
               <tr>
-                <td colspan="6" class="od-empty-row">No sales order documents found.</td>
+                <td colspan="6">
+                  <div class="od-empty-state">
+                    <svg class="od-empty-state__icon" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/>
+                    </svg>
+                    <span class="od-empty-state__text">No sales order documents</span>
+                    <span class="od-empty-state__sub">Documents will appear here when available</span>
+                  </div>
+                </td>
               </tr>
             }
           </tbody>
         </table>
+
+        @if (soDocsTotalPages() > 1) {
+          <div class="od-history-pagination">
+            <span class="od-history-pagination__info">
+              Page {{ soDocsPage() }} of {{ soDocsTotalPages() }} ({{ salesOrderDocs().length }} records)
+            </span>
+            <div class="od-history-pagination__btns">
+              <button class="od-history-pagination__btn" [disabled]="soDocsPage() === 1" (click)="goToSoDocsPage(1)">&laquo;</button>
+              <button class="od-history-pagination__btn" [disabled]="soDocsPage() === 1" (click)="goToSoDocsPage(soDocsPage() - 1)">&lsaquo;</button>
+              <button class="od-history-pagination__btn" [disabled]="soDocsPage() === soDocsTotalPages()" (click)="goToSoDocsPage(soDocsPage() + 1)">&rsaquo;</button>
+              <button class="od-history-pagination__btn" [disabled]="soDocsPage() === soDocsTotalPages()" (click)="goToSoDocsPage(soDocsTotalPages())">&raquo;</button>
+            </div>
+          </div>
+        }
       </div>
 
       <!-- Support Documents -->
-      <div class="od-section">
+      <div class="od-section od-section--support">
         <div class="od-section-header">
           <h3 class="od-section-title">Support Documents</h3>
         </div>
@@ -309,7 +286,7 @@
             </tr>
           </thead>
           <tbody>
-            @for (doc of supportDocs(); track doc.documentId) {
+            @for (doc of pagedSupportDocs(); track doc.documentId) {
               <tr>
                 <td>
                   <div class="od-doc-name" (click)="previewDocument(doc)">
@@ -377,11 +354,105 @@
               </tr>
             } @empty {
               <tr>
-                <td colspan="6" class="od-empty-row">No support documents found.</td>
+                <td colspan="6">
+                  <div class="od-empty-state">
+                    <svg class="od-empty-state__icon" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><polyline points="13 2 13 9 20 9"/>
+                    </svg>
+                    <span class="od-empty-state__text">No support documents</span>
+                    <span class="od-empty-state__sub">Documents will appear here when available</span>
+                  </div>
+                </td>
               </tr>
             }
           </tbody>
         </table>
+
+        @if (supportDocsTotalPages() > 1) {
+          <div class="od-history-pagination">
+            <span class="od-history-pagination__info">
+              Page {{ supportDocsPage() }} of {{ supportDocsTotalPages() }} ({{ supportDocs().length }} records)
+            </span>
+            <div class="od-history-pagination__btns">
+              <button class="od-history-pagination__btn" [disabled]="supportDocsPage() === 1" (click)="goToSupportDocsPage(1)">&laquo;</button>
+              <button class="od-history-pagination__btn" [disabled]="supportDocsPage() === 1" (click)="goToSupportDocsPage(supportDocsPage() - 1)">&lsaquo;</button>
+              <button class="od-history-pagination__btn" [disabled]="supportDocsPage() === supportDocsTotalPages()" (click)="goToSupportDocsPage(supportDocsPage() + 1)">&rsaquo;</button>
+              <button class="od-history-pagination__btn" [disabled]="supportDocsPage() === supportDocsTotalPages()" (click)="goToSupportDocsPage(supportDocsTotalPages())">&raquo;</button>
+            </div>
+          </div>
+        }
+      </div>
+
+      <!-- Sales Order Notes -->
+      <div class="od-section od-section--notes">
+        <div class="od-section-header">
+          <h2 class="od-section-title">Sales Order Notes</h2>
+          <div class="od-section-actions">
+            <button class="od-section-btn od-section-btn--secondary" pTooltip="Send all notes via email" tooltipPosition="bottom">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                <polyline points="22,6 12,13 2,6"/>
+              </svg>
+              Email Notes
+            </button>
+          </div>
+        </div>
+
+        <div class="od-chat">
+          <div class="od-chat__messages" #chatMessages>
+            @for (note of notes(); track note.salesOrderNoteId) {
+              <div class="od-msg" [class.od-msg--mine]="isMyNote(note.createdBy)">
+                <div class="od-msg__avatar od-msg__avatar--c{{ getNoteColorIndex(note.createdBy) }}">
+                  {{ (note.createdByName || note.createdBy || '?').charAt(0).toUpperCase() }}
+                </div>
+                <div class="od-msg__wrapper">
+                  <div class="od-msg__meta">
+                    @if (!isMyNote(note.createdBy)) {
+                      <span class="od-msg__name">{{ note.createdByName || note.createdBy }}</span>
+                    }
+                    <span class="od-msg__time">{{ note.createdDate | date:'MMM dd, yyyy hh:mm a' }}</span>
+                  </div>
+                  <div class="od-msg__bubble">{{ note.notesDescription }}</div>
+                </div>
+              </div>
+            } @empty {
+              <div class="od-empty-state">
+                <svg class="od-empty-state__icon" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                </svg>
+                <span class="od-empty-state__text">No notes yet</span>
+                <span class="od-empty-state__sub">Type a message below to start the conversation</span>
+              </div>
+            }
+          </div>
+
+          <!-- Chat input bar -->
+          <div class="od-chat__input">
+            <textarea
+              class="od-chat__field"
+              rows="1"
+              placeholder="Type a message..."
+              [ngModel]="newNoteText()"
+              (ngModelChange)="newNoteText.set($event)"
+              (keydown.enter)="$event.preventDefault(); saveNote()"
+            ></textarea>
+            <button
+              class="od-chat__send"
+              [disabled]="!newNoteText().trim() || isSavingNote()"
+              (click)="saveNote()"
+              pTooltip="Send"
+              tooltipPosition="top"
+            >
+              @if (isSavingNote()) {
+                <span class="od-chat__spinner"></span>
+              } @else {
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+                </svg>
+              }
+            </button>
+          </div>
+        </div>
       </div>
 
     }
@@ -389,7 +460,7 @@
     @if (activeTab() === 'logs') {
 
       <!-- Workflow History -->
-      <div class="od-section">
+      <div class="od-section od-section--history">
         <div class="od-section-header">
           <h3 class="od-section-title">Workflow History</h3>
           <div class="od-section-actions">
@@ -435,7 +506,15 @@
               </tr>
             } @empty {
               <tr>
-                <td colspan="6" style="text-align:center;padding:20px;color:#94a3b8;">No workflow history.</td>
+                <td colspan="6">
+                  <div class="od-empty-state">
+                    <svg class="od-empty-state__icon" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                      <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+                    </svg>
+                    <span class="od-empty-state__text">No workflow history</span>
+                    <span class="od-empty-state__sub">History will appear as actions are performed on this order</span>
+                  </div>
+                </td>
               </tr>
             }
           </tbody>
@@ -449,25 +528,17 @@
               ({{ workflowHistory().length }} records)
             </span>
             <div class="od-history-pagination__btns">
-              <button class="od-history-pagination__btn" [disabled]="historyPage() === 1" (click)="goToHistoryPage(1)">
-                <i class="pi pi-angle-double-left"></i>
-              </button>
-              <button class="od-history-pagination__btn" [disabled]="historyPage() === 1" (click)="goToHistoryPage(historyPage() - 1)">
-                <i class="pi pi-angle-left"></i>
-              </button>
-              <button class="od-history-pagination__btn" [disabled]="historyPage() === historyTotalPages()" (click)="goToHistoryPage(historyPage() + 1)">
-                <i class="pi pi-angle-right"></i>
-              </button>
-              <button class="od-history-pagination__btn" [disabled]="historyPage() === historyTotalPages()" (click)="goToHistoryPage(historyTotalPages())">
-                <i class="pi pi-angle-double-right"></i>
-              </button>
+              <button class="od-history-pagination__btn" [disabled]="historyPage() === 1" (click)="goToHistoryPage(1)">&laquo;</button>
+              <button class="od-history-pagination__btn" [disabled]="historyPage() === 1" (click)="goToHistoryPage(historyPage() - 1)">&lsaquo;</button>
+              <button class="od-history-pagination__btn" [disabled]="historyPage() === historyTotalPages()" (click)="goToHistoryPage(historyPage() + 1)">&rsaquo;</button>
+              <button class="od-history-pagination__btn" [disabled]="historyPage() === historyTotalPages()" (click)="goToHistoryPage(historyTotalPages())">&raquo;</button>
             </div>
           </div>
         }
       </div>
 
       <!-- Sales Order History -->
-      <div class="od-section">
+      <div class="od-section od-section--order-history">
         <div class="od-section-header">
           <h3 class="od-section-title">Sales Order History</h3>
         </div>
@@ -551,7 +622,15 @@
               </tr>
             } @empty {
               <tr>
-                <td colspan="6" class="od-empty-row">No sales order history found.</td>
+                <td colspan="6">
+                  <div class="od-empty-state">
+                    <svg class="od-empty-state__icon" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/>
+                    </svg>
+                    <span class="od-empty-state__text">No sales order history</span>
+                    <span class="od-empty-state__sub">Document history will appear here</span>
+                  </div>
+                </td>
               </tr>
             }
           </tbody>
@@ -668,16 +747,6 @@
     [mode]="'view'"
     [readOnly]="true"
   />
-
-  <!-- ═══ Footer ═══ -->
-  <div class="od-footer">
-    <button class="od-btn od-btn--back" pTooltip="Go back to search results" tooltipPosition="top" (click)="goBack()">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>
-      </svg>
-      Back to Search
-    </button>
-  </div>
 
   <!-- ═══ Add Note Dialog ═══ -->
   @if (showAddNoteDialog()) {

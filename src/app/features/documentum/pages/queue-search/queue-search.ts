@@ -171,7 +171,7 @@ export class QueueSearch {
   openOrder(order: OrderItem): void {
     this.router.navigate(
       ['/documentum/workflow-information', order.orderGuid],
-      { queryParams: { orderSeq: order.orderSeq }, state: { order } },
+      { queryParams: { orderSeq: order.orderSeq, po: order.repPO }, state: { order } },
     );
   }
 
@@ -193,6 +193,14 @@ export class QueueSearch {
       current.add(guid);
     }
     this.selectedRows.set(current);
+  }
+
+  selectRow(guid: string): void {
+    if (this.selectedRows().has(guid)) {
+      this.selectedRows.set(new Set());
+    } else {
+      this.selectedRows.set(new Set([guid]));
+    }
   }
 
   isRowSelected(guid: string): boolean {

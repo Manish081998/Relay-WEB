@@ -159,6 +159,13 @@ $divider:     rgba(t.$color-border, 0.4);
       color: $text-muted;
     }
   }
+
+  // Brand dropdown always highlighted when a value is selected
+  #brand.p-select:has(.p-select-label:not(.p-placeholder)) {
+    border-color: $primary;
+    background: rgba($primary, 0.04);
+    box-shadow: 0 0 0 2px $primary-glow;
+  }
 }
  
 // ── Actions bar ──────────────────────────────────────────────────────────────
@@ -242,12 +249,12 @@ $divider:     rgba(t.$color-border, 0.4);
 
 .btn-clear {
   @extend %btn-base;
-  background: $surface;
-  border: 1px solid $border;
-  color: $text-muted;
- 
-  &:hover { border-color: $border-str; color: $text-body; background: $surface-alt; }
-  &:active { background: rgba($border, 0.2); }
+  background: #fff;
+  border: 1px solid #e57373;
+  color: #c62828;
+
+  &:hover { border-color: #c62828; color: #fff; background: #c62828; }
+  &:active { background: #b71c1c; color: #fff; }
 }
  
 .btn-search {

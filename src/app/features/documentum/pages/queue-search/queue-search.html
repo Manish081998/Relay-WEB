@@ -1,10 +1,5 @@
 <div class="qs-page">
 
-  <!-- Page Title -->
-  <div class="qs-title-row">
-    <h1 class="qs-title">Queue Search</h1>
-  </div>
-
   <!-- Shared Search Panel -->
   <app-order-search-panel
     [productTypes]="productTypes()"
@@ -23,7 +18,7 @@
   @if (searched() && !loading()) {
     <div class="qs-toolbar">
       <div class="qs-summary">
-        Total Number of Active Queue Items: {{ selectedQueueName() || 'All Queues' }} = <strong>{{ totalCount() }}</strong>
+        Total Number of Active Queue Items: <strong class="qs-queue-name">{{ selectedQueueName() || 'All Queues' }}</strong> = <strong class="qs-count">{{ totalCount() }}</strong>
         @if (hasActiveFilters) {
           <span class="filter-badge">
             <i class="pi pi-filter"></i> Filtered
@@ -62,17 +57,7 @@
       <table class="qs-tbl" [class.resizable]="!loading()">
         <thead>
           <tr>
-            <th class="col-chk" style="width:36px;min-width:36px">
-              <label class="chk-wrap">
-                <input type="checkbox"
-                       [checked]="isAllSelected()"
-                       [indeterminate]="isIndeterminate()"
-                       (change)="toggleSelectAll()" />
-                <span class="chk-box">
-                  <i class="pi" [class.pi-check]="isAllSelected()" [class.pi-minus]="isIndeterminate()"></i>
-                </span>
-              </label>
-            </th>
+            <th class="col-chk" style="width:36px;min-width:36px"></th>
             <th class="sortable" [class.sort-active]="sortField() === 'repPO'" style="width:120px;min-width:60px" (click)="onSort('repPO')" #thRepPO>
               Purchase Order
               <span class="sort-icon">
@@ -262,7 +247,7 @@
                   <label class="chk-wrap">
                     <input type="checkbox"
                            [checked]="isRowSelected(order.orderGuid)"
-                           (change)="toggleRow(order.orderGuid)" />
+                           (change)="selectRow(order.orderGuid)" />
                     <span class="chk-box">
                       <i class="pi pi-check"></i>
                     </span>
@@ -270,17 +255,31 @@
                 </td>
                 <td class="cell-link cell-po" (click)="openOrder(order)">{{ order.repPO }}</td>
                 <td class="cell-seq">{{ order.salesOrderNumber }}</td>
-                <td>{{ order.priority }}</td>
-                <td>{{ order.accountNumber }}</td>
+                <td class="cell-priority">
+                  @if (order.priority && +order.priority > 0) {
+                    <span class="priority-badge">{{ order.priority }}</span>
+                  } @else {
+                    <span class="priority-zero">{{ order.priority }}</span>
+                  }
+                </td>
+                <td class="cell-mono">{{ order.accountNumber }}</td>
                 <td class="cell-trunc">{{ order.repName }}</td>
-                <td class="cell-trunc">{{ order.queueName }}</td>
+                <td class="cell-queue">
+                  @if (order.queueName) {
+                    <span class="queue-pill">{{ order.queueName }}</span>
+                  }
+                </td>
                 <td>{{ order.productType }}</td>
                 <td>{{ order.region }}</td>
                 <td class="cell-trunc">{{ order.jobName }}</td>
-                <td>{{ order.createdDate | date:'MM/dd/yy hh:mm a' }}</td>
-                <td>{{ order.orderDate | date:'MM/dd/yy hh:mm a' }}</td>
+                <td class="cell-date">{{ order.createdDate | date:'MM/dd/yy hh:mm a' }}</td>
+                <td class="cell-date">{{ order.orderDate | date:'MM/dd/yy hh:mm a' }}</td>
                 <td class="cell-trunc">{{ order.packageOwner }}</td>
-                <td>{{ order.brand }}</td>
+                <td class="cell-brand">
+                  @if (order.brand) {
+                    <span class="brand-tag">{{ order.brand }}</span>
+                  }
+                </td>
               </tr>
             } @empty {
               <tr>

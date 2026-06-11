@@ -178,7 +178,7 @@ export class Search {
   openOrder(order: OrderItem): void {
     this.router.navigate(
       ['/documentum/order-detail', order.orderGuid],
-      { queryParams: { orderSeq: order.orderSeq } },
+      { queryParams: { orderSeq: order.orderSeq, po: order.repPO } },
     );
   }
 
@@ -200,6 +200,14 @@ export class Search {
       current.add(guid);
     }
     this.selectedRows.set(current);
+  }
+
+  selectRow(guid: string): void {
+    if (this.selectedRows().has(guid)) {
+      this.selectedRows.set(new Set());
+    } else {
+      this.selectedRows.set(new Set([guid]));
+    }
   }
 
   isRowSelected(guid: string): boolean {

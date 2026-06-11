@@ -73,14 +73,20 @@ $text-faint:  t.$color-text-subtle;
   align-items: center;
   gap: 6px;
   padding: 5px 14px;
-  font-size: t.$font-size-xs;
-  color: $text-muted;
+  font-size: t.$font-size-sm;
+  font-weight: t.$font-weight-medium;
+  color: $text;
   background: $brand-5;
   border: 1px solid rgba($primary, 0.12);
   border-radius: t.$radius-full;
 
-  strong {
-    color: $primary;
+  .qs-queue-name {
+    color: #6d28d9;
+    font-weight: t.$font-weight-bold;
+  }
+
+  .qs-count {
+    color: #059669;
     font-weight: t.$font-weight-bold;
   }
 }
@@ -189,11 +195,11 @@ $text-faint:  t.$color-text-subtle;
     position: relative;
     font-size: t.$font-size-xs;
     font-weight: t.$font-weight-bold;
-    color: $text-muted;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    background: $surface-alt;
     padding: 8px 10px;
+    color: $text-muted;
+    background: $surface-alt;
     border-bottom: 2px solid $border;
     text-align: left;
     white-space: nowrap;
