@@ -1,0 +1,175 @@
+<div class="ro-page">
+
+  <!-- ── Page Title ───────────────────────────────────────────────────────── -->
+  <div class="ro-title-row">
+    <h1 class="ro-title">Released Orders</h1>
+    @if (!store.loading()) {
+      <span class="ro-count-badge">
+        <strong>{{ store.releasedCount() }}</strong> released ·
+        <strong>{{ totalReleasedQty() | number }}</strong> total units
+      </span>
+    }
+  </div>
+
+  <!-- ── Toolbar ───────────────────────────────────────────────────────────── -->
+  <div class="ro-toolbar">
+    <div class="ro-toolbar-left">
+      <span class="toolbar-label">Filter by plant:</span>
+      <select class="ro-select" [value]="filterPlant()" (change)="onFilterPlant($any($event.target).value)">
+        <option value="">All Plants</option>
+        @for (plant of store.plants(); track plant.id) {
+          <option [value]="plant.id">{{ plant.name }}</option>
+        }
+      </select>
+    </div>
+    <div class="ro-toolbar-right">
+      @if (hasActiveSort) {
+        <button class="btn-ghost-sm" (click)="clearSort()">
+          <i class="pi pi-sort-alt-slash"></i> Clear Sort
+        </button>
+      }
+    </div>
+  </div>
+
+  <!-- ── Grid ──────────────────────────────────────────────────────────────── -->
+  <div class="ro-grid-wrap">
+    <div class="ro-tbl-scroll">
+      <table class="ro-tbl">
+        <thead>
+          <tr>
+            <th class="sortable" [class.sort-active]="sortField() === 'order'"
+                style="width:130px" (click)="onSort('order')">
+              Order ID
+              <span class="sort-icon">
+                @if (sortField() === 'order') {
+                  <i class="pi" [class.pi-sort-amount-up-alt]="sortDirection()==='asc'" [class.pi-sort-amount-down]="sortDirection()==='desc'"></i>
+                } @else {
+                  <i class="pi pi-sort-alt"></i>
+                }
+              </span>
+            </th>
+            <th style="width:200px">Product</th>
+            <th class="sortable col-r" [class.sort-active]="sortField() === 'utilPct'"
+                style="width:80px" (click)="onSort('utilPct')">
+              Qty
+              <span class="sort-icon">
+                @if (sortField() === 'utilPct') {
+                  <i class="pi" [class.pi-sort-amount-up-alt]="sortDirection()==='asc'" [class.pi-sort-amount-down]="sortDirection()==='desc'"></i>
+                } @else {
+                  <i class="pi pi-sort-alt"></i>
+                }
+              </span>
+            </th>
+            <th style="width:100px">Ship Date</th>
+            <th style="min-width:160px">Assigned Plant</th>
+            <th style="width:100px">Cap Month</th>
+            <th style="width:90px">Utilisation</th>
+            <th class="sortable" [class.sort-active]="sortField() === 'releasedAt'"
+                style="width:140px" (click)="onSort('releasedAt')">
+              Released At
+              <span class="sort-icon">
+                @if (sortField() === 'releasedAt') {
+                  <i class="pi" [class.pi-sort-amount-up-alt]="sortDirection()==='asc'" [class.pi-sort-amount-down]="sortDirection()==='desc'"></i>
+                } @else {
+                  <i class="pi pi-sort-alt"></i>
+                }
+              </span>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+
+          @if (store.loading()) {
+            @for (_ of skeletonRows; track $index; let i = $index) {
+              <tr class="sk-row" [class.row-alt]="i % 2 !== 0" [style.animation-delay]="(i * 60) + 'ms'">
+                <td><div class="sk-pill" [style.width]="(55 + (i * 7) % 35) + '%'"></div></td>
+                <td><div class="sk-pill" [style.width]="(45 + (i * 11) % 40) + '%'"></div></td>
+                <td><div class="sk-pill" style="width:50%"></div></td>
+                <td><div class="sk-pill" style="width:70%"></div></td>
+                <td><div class="sk-pill" [style.width]="(60 + (i * 9) % 30) + '%'"></div></td>
+                <td><div class="sk-pill" style="width:80%"></div></td>
+                <td><div class="sk-pill" style="width:65%"></div></td>
+                <td><div class="sk-pill" [style.width]="(40 + (i * 13) % 40) + '%'"></div></td>
+              </tr>
+            }
+          } @else {
+            @for (row of pagedRows(); track row.order.id; let i = $index) {
+              <tr [class.row-alt]="i % 2 !== 0">
+
+                <td>
+                  <span class="order-id">{{ row.order.id }}</span>
+                </td>
+
+                <td class="cell-trunc">
+                  <div class="product-name">{{ row.order.product }}</div>
+                  <div class="product-sku">{{ row.order.sku }}</div>
+                </td>
+
+                <td class="col-r">
+                  <span class="qty-val">{{ row.order.qty | number }}</span>
+                  <span class="qty-unit">{{ row.order.unit }}</span>
+                </td>
+
+                <td>
+                  <span class="date-cell">{{ row.order.shipDate }}</span>
+                </td>
+
+                <td>
+                  <div class="plant-cell">
+                    <span class="plant-id">{{ row.assignedPlant }}</span>
+                    <span class="plant-name-sub">{{ row.plant?.name ?? '' }}</span>
+                  </div>
+                </td>
+
+                <td>
+                  <span class="week-badge">{{ row.monthLabel }}</span>
+                </td>
+
+                <td>
+                  <div class="util-cell">
+                    <div class="util-bar-track">
+                      <div class="util-bar-fill"
+                        [class.uf-ok]="row.capStatus === 'ok'"
+                        [class.uf-warn]="row.capStatus === 'warn'"
+                        [class.uf-over]="row.capStatus === 'over'"
+                        [style.width.%]="row.utilPct > 100 ? 100 : row.utilPct">
+                      </div>
+                    </div>
+                    <span class="util-pct"
+                      [class.pct-warn]="row.capStatus === 'warn'"
+                      [class.pct-over]="row.capStatus === 'over'">
+                      {{ row.utilPct }}%
+                    </span>
+                  </div>
+                </td>
+
+                <td>
+                  <span class="released-at">{{ row.releasedAt }}</span>
+                </td>
+
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="8" class="cell-empty">
+                  <i class="pi pi-inbox"></i> No released orders yet.
+                </td>
+              </tr>
+            }
+          }
+
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination -->
+    @if (!store.loading() && sorted().length > pageSize()) {
+      <div class="ro-pager">
+        <span class="pg-info">Page {{ currentPage() }} of {{ totalPages() }} · {{ sorted().length | number }} shown</span>
+        <button class="pg-btn" [disabled]="currentPage() === 1" (click)="goToPage(currentPage() - 1)">&#8249; Prev</button>
+        <button class="pg-btn" [disabled]="currentPage() >= totalPages()" (click)="goToPage(currentPage() + 1)">Next &#8250;</button>
+      </div>
+    }
+
+  </div>
+
+</div>

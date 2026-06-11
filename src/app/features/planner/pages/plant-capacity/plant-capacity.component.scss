@@ -1,0 +1,366 @@
+@use 'theme' as t;
+@use 'sass:color';
+
+$primary:     t.$color-primary;
+$surface:     t.$color-bg-surface;
+$surface-alt: t.$color-bg-subtle;
+$input-bg:    t.$color-bg-input;
+$border:      t.$color-border;
+$text:        t.$color-text-base;
+$text-muted:  t.$color-text-muted;
+$text-faint:  t.$color-text-subtle;
+$success:     t.$color-success;
+$success-bg:  t.$color-success-bg;
+$success-bdr: t.$color-success-border;
+$warning:     t.$color-warning;
+$warning-bg:  t.$color-warning-bg;
+$warning-bdr: t.$color-warning-border;
+$error:       t.$color-error;
+$error-bg:    t.$color-error-bg;
+$error-bdr:   t.$color-error-border;
+
+:host {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  font-family: t.$font-sans;
+  -webkit-font-smoothing: antialiased;
+}
+
+.pc-page {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+// ── Title row ──────────────────────────────────────────────────────────────────
+.pc-title-row {
+  display: flex;
+  align-items: center;
+  gap: t.$space-3;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+
+.pc-title {
+  margin: 0;
+  font-size: t.$font-size-lg;
+  font-weight: t.$font-weight-bold;
+  color: $text;
+  letter-spacing: -0.01em;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  &::before {
+    content: '';
+    display: inline-block;
+    width: 3px;
+    height: 20px;
+    background: linear-gradient(180deg, $success, color.adjust($success, $lightness: 10%));
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+}
+
+.pc-summary-chips {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: t.$font-size-xs;
+  font-weight: t.$font-weight-semibold;
+  padding: 4px 12px;
+  border-radius: t.$radius-full;
+  i { font-size: 0.68rem; }
+
+  &.chip-ok   { background: $success-bg; border: 1px solid $success-bdr; color: $success; }
+  &.chip-warn { background: $warning-bg; border: 1px solid $warning-bdr; color: $warning; }
+  &.chip-over { background: $error-bg;   border: 1px solid $error-bdr;   color: $error;   }
+}
+
+// ── Cards container ────────────────────────────────────────────────────────────
+.pc-cards {
+  flex: 1 1 0;
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-right: 2px;
+}
+
+// ── Skeleton ───────────────────────────────────────────────────────────────────
+@keyframes sk-pulse {
+  0%, 100% { opacity: 0.35; }
+  50%       { opacity: 1;    }
+}
+
+.sk-card { animation: sk-pulse 1.4s ease-in-out infinite both; }
+
+.sk-pill {
+  height: 11px;
+  border-radius: 6px;
+  background: rgba($primary, 0.18);
+}
+
+// ── Individual card ────────────────────────────────────────────────────────────
+.pc-card {
+  background: $surface;
+  border: 1px solid $border;
+  border-radius: t.$radius-lg;
+  overflow: hidden;
+  box-shadow: t.$shadow-card;
+  transition: border-color t.$transition-fast;
+  padding: 14px 16px 12px;
+
+  &.card-warn { border-left: 3px solid $warning; }
+  &.card-over { border-left: 3px solid $error;   }
+
+  &:not(.sk-card):hover { border-color: rgba($primary, 0.2); }
+}
+
+// ── Card header ────────────────────────────────────────────────────────────────
+.card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  cursor: pointer;
+  user-select: none;
+  margin-bottom: 10px;
+
+  &:hover .expand-icon { color: $primary; }
+}
+
+.card-header-left {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.plant-name {
+  font-size: t.$font-size-sm;
+  font-weight: t.$font-weight-bold;
+  color: $text;
+}
+
+.plant-location {
+  font-size: t.$font-size-xs;
+  color: $text-muted;
+}
+
+.card-header-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.expand-icon {
+  font-size: 0.75rem;
+  color: $text-faint;
+  transition: color t.$transition-fast;
+}
+
+// ── Status chip ────────────────────────────────────────────────────────────────
+.status-chip {
+  font-size: 0.625rem;
+  font-weight: t.$font-weight-bold;
+  padding: 3px 10px;
+  border-radius: t.$radius-full;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+
+  &.s-ok   { background: $success-bg; border: 1px solid $success-bdr; color: $success; }
+  &.s-warn { background: $warning-bg; border: 1px solid $warning-bdr; color: $warning; }
+  &.s-over { background: $error-bg;   border: 1px solid $error-bdr;   color: $error;   }
+}
+
+// ── Capacity bar ────────────────────────────────────────────────────────────────
+.cap-bar-section { margin-bottom: 10px; }
+
+.cap-bar-labels {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+.cap-bar-label { font-size: t.$font-size-xs; color: $text-faint; }
+
+.cap-bar-pct {
+  font-size: t.$font-size-xs;
+  font-weight: t.$font-weight-bold;
+  font-family: monospace;
+  color: $success;
+  &.pct-warn { color: $warning; }
+  &.pct-over { color: $error;   }
+}
+
+.cap-bar-track {
+  height: 8px;
+  background: rgba($border, 0.6);
+  border-radius: 4px;
+  position: relative;
+  overflow: hidden;
+}
+
+.cap-bar-fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.35s ease;
+
+  &.fill-released { background: rgba($success, 0.55); }
+  &.fill-warn     { background: $warning; }
+  &.fill-over     { background: $error;   }
+  &.fill-pending  { background: rgba($primary, 0.25); }
+}
+
+// ── Stats row ──────────────────────────────────────────────────────────────────
+.card-stats {
+  display: flex;
+  gap: 20px;
+  padding-top: 6px;
+  flex-wrap: wrap;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.stat-label { font-size: 0.625rem; color: $text-faint; text-transform: uppercase; letter-spacing: 0.05em; }
+.stat-value { font-size: t.$font-size-xs; font-weight: t.$font-weight-semibold; color: $text; }
+.stat-unit  { font-size: 0.6rem; color: $text-faint; font-weight: t.$font-weight-normal; }
+
+// ── Expanded breakdown ─────────────────────────────────────────────────────────
+.card-breakdown {
+  margin-top: 12px;
+  border-top: 1px solid $border;
+  padding-top: 10px;
+}
+
+.breakdown-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 8px 6px;
+  font-size: 0.6rem;
+  font-weight: t.$font-weight-bold;
+  color: $text-faint;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.breakdown-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 8px;
+  border-radius: t.$radius-sm;
+  transition: background t.$transition-fast;
+
+  &:hover    { background: rgba($primary, 0.04); }
+  &.week-warn { background: rgba($warning, 0.06); }
+  &.week-over { background: rgba($error, 0.06);   }
+}
+
+.breakdown-col {
+  font-size: t.$font-size-xs;
+  color: $text-muted;
+
+  &.col-week  { min-width: 160px; white-space: nowrap; }
+  &.col-bar   { flex: 1; min-width: 120px; }
+  &.col-rel   { width: 80px; }
+  &.col-pend  { width: 80px; }
+  &.col-free  { width: 80px; }
+  &.col-pct   { width: 70px; }
+
+  &.num { font-family: monospace; font-variant-numeric: tabular-nums; text-align: right; }
+  &.pend-nonzero { color: $primary; font-weight: t.$font-weight-semibold; }
+  &.free-low  { color: $warning; font-weight: t.$font-weight-semibold; }
+}
+
+.mini-bar-track {
+  height: 6px;
+  background: rgba($border, 0.6);
+  border-radius: 3px;
+  position: relative;
+  overflow: hidden;
+}
+
+.mini-bar-fill {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  border-radius: 3px;
+
+  &.mf-rel  { left: 0; background: rgba($success, 0.5); }
+  &.mf-warn { background: $warning; }
+  &.mf-over { background: $error;   }
+  &.mf-pend { background: rgba($primary, 0.28); }
+}
+
+.util-badge {
+  display: inline-block;
+  font-size: 0.6875rem;
+  font-weight: t.$font-weight-bold;
+  font-family: monospace;
+  padding: 2px 7px;
+  border-radius: 4px;
+
+  &.ub-ok   { background: $success-bg; color: $success; border: 1px solid $success-bdr; }
+  &.ub-warn { background: $warning-bg; color: $warning; border: 1px solid $warning-bdr; }
+  &.ub-over { background: $error-bg;   color: $error;   border: 1px solid $error-bdr;   }
+}
+
+// ── Pending orders sub-rows ────────────────────────────────────────────────────
+.pending-orders-sub {
+  padding: 2px 8px 6px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.pending-order-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: t.$font-size-xs;
+  padding: 2px 0;
+}
+
+.sub-arrow   { font-size: 0.6rem; color: $text-faint; }
+.sub-order-id { font-family: monospace; color: $primary; min-width: 130px; font-size: 0.6875rem; }
+.sub-product  { flex: 1; color: $text-muted; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sub-qty      { color: $text-faint; font-family: monospace; font-variant-numeric: tabular-nums; }
+
+// ── Breakdown empty ────────────────────────────────────────────────────────────
+.breakdown-empty {
+  font-size: t.$font-size-xs;
+  color: $text-faint;
+  font-style: italic;
+  padding: 10px 8px;
+}
+
+// ── Page empty ─────────────────────────────────────────────────────────────────
+.pc-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 40px;
+  color: $text-faint;
+  font-size: t.$font-size-sm;
+  font-style: italic;
+  i { font-size: 1.1rem; }
+}

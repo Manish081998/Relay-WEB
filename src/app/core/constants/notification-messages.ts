@@ -85,6 +85,15 @@ export const NOTIFICATION_MESSAGES = {
     },
   },
 
+  // ── PLANNER module ────────────────────────────────────────────────────────
+  PLANNER: {
+    LOAD_FAILED:     'Failed to load planner data.',
+    STATE_RESTORED:  'Draft assignments restored from your previous session.',
+    ALREADY_ASSIGNED: 'All selected orders are already confirmed — no changes made.',
+    NO_SELECTION:    'No pending orders selected. Check one or more rows first.',
+    BULK_NO_PLANT:   'Select a target plant before applying bulk assignment.',
+  },
+
   // ── WEBTOOL module ────────────────────────────────────────────────────────
   WEBTOOL: {
     SELECTION: {

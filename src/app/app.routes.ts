@@ -48,6 +48,12 @@ export const routes: Routes = [
         loadChildren: () =>
           import('./features/intranet/intranet.routes').then(m => m.intranetRoutes),
       },
+      {
+        path: 'planner',
+        canActivate: [roleGuard([Role.SuperAdmin, Role.Admin, Role.User])],
+        loadChildren: () =>
+          import('./features/planner/planner.routes').then(m => m.plannerRoutes),
+      },
 
       // WebTool — all authenticated roles
       {

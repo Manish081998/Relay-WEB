@@ -33,7 +33,15 @@
       "Bash(npm run *)",
       "PowerShell(head *)",
       "Bash(Select-Object FullName, Attributes)",
-      "mcp__code-review-graph__query_graph_tool"
+      "mcp__code-review-graph__query_graph_tool",
+      "Bash(git -C \"c:\\\\Users\\\\jgupt29\\\\Projects\\\\Project Relay ADO\\\\WEB\" status --short)",
+      "Bash(git -C \"c:\\\\Users\\\\jgupt29\\\\Projects\\\\Project Relay ADO\\\\WEB\" diff --name-only)",
+      "Bash(git -C \"c:\\\\Users\\\\jgupt29\\\\Projects\\\\Project Relay ADO\\\\WEB\" diff src/app/layout/sidebar/nav-config.ts)",
+      "Bash(git -C \"c:\\\\Users\\\\jgupt29\\\\Projects\\\\Project Relay ADO\\\\WEB\" diff src/app/layout/sidebar/nav-icons.ts)",
+      "Bash(Select-String -Pattern \"planner\")",
+      "Bash(Remove-Item *)",
+      "PowerShell(cd \"C:\\\\Users\\\\jgupt29\\\\Projects\\\\Project Relay ADO\\\\WEB\"; npx tsc --noEmit --project tsconfig.app.json 2>&1 | Where-Object { $_ -match \"planner|planner-\" } | Select-Object -First 30)",
+      "PowerShell(cd \"C:\\\\Users\\\\jgupt29\\\\Projects\\\\Project Relay ADO\\\\WEB\"; $out = npx tsc --noEmit --project tsconfig.app.json 2>&1; $plannerErrors = $out | Where-Object { $_ -match \"planner\" }; if \\($plannerErrors\\) { $plannerErrors } else { \"No planner errors\" })"
     ]
   },
   "enableAllProjectMcpServers": true,
