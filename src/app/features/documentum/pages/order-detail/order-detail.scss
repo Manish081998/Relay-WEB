@@ -2,42 +2,50 @@
 @use 'theme' as t;
 @use 'sass:color';
 
-:host { @extend %host-base; }
+:host {
+  @extend %host-base;
+  display: block;
+}
 
 .od-page {
   @extend %page-base;
-  gap: 24px;
-  padding: 0 0 40px;
+  gap: 8px;
+  padding: 0 0 4px;
 }
 
-// ═════════════════════════════════════════════════════════════════════════════
-// PACKAGE INFO CARD — Branded gradient header (standalone card)
-// ═════════════════════════════════════════════════════════════════════════════
+// =============================================================================
+// PACKAGE INFO CARD
+// =============================================================================
 .od-pkg-card {
   @extend %card;
   margin-bottom: 0;
   border-radius: t.$radius-lg;
   overflow: visible;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.04);
 }
 
-// ═════════════════════════════════════════════════════════════════════════════
-// TABS CARD — Wrapper that groups tabs + content as one visual block
-// ═════════════════════════════════════════════════════════════════════════════
+// =============================================================================
+// TABS CARD
+// =============================================================================
 .od-tabs-card {
   display: flex;
   flex-direction: column;
   border-radius: t.$radius-lg;
-  box-shadow: t.$shadow-sm;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.03);
   overflow: visible;
 }
 
 .od-pkg-body-inner {
   padding: 0;
+  background: ds.$surface;
+  border: 1px solid ds.$border;
+  border-top: none;
+  border-radius: 0 0 t.$radius-lg t.$radius-lg;
 }
 
 .od-pkg-bar {
   @extend %card-bar;
-  padding: 16px 28px;
+  padding: 14px 24px;
   background: linear-gradient(135deg, ds.$brand 0%, ds.$brand-dark 100%);
   position: relative;
   overflow: hidden;
@@ -63,8 +71,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 34px;
-  height: 34px;
+  width: 32px;
+  height: 32px;
   background: rgba(255, 255, 255, 0.15);
   border-radius: t.$radius-md;
   color: rgba(255, 255, 255, 0.9);
@@ -119,24 +127,23 @@
   display: flex;
   align-items: baseline;
   gap: 12px;
-  padding: 12px 20px;
-  border-bottom: 1px solid rgba(ds.$border, 0.5);
+  padding: 10px 20px;
+  border-bottom: 1px solid rgba(ds.$border, 0.2);
 
-  // alternating row bands (every group of 3 = one visual row)
   &:nth-child(6n+4), &:nth-child(6n+5), &:nth-child(6n+6) {
-    background: rgba(0, 0, 0, 0.018);
+    background: rgba(ds.$brand, 0.018);
   }
 
   &:nth-last-child(-n+3) { border-bottom: none; }
-  &:not(:nth-child(3n)) { border-right: 1px solid rgba(ds.$border, 0.35); }
+  &:not(:nth-child(3n)) { border-right: 1px solid rgba(ds.$border, 0.15); }
 }
 
 .od-pkg-label {
   font-size: 11px;
-  color: ds.$text-muted;
+  color: #64748b;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  font-weight: t.$font-weight-medium;
+  font-weight: 600;
   min-width: 140px;
   flex-shrink: 0;
 }
@@ -156,6 +163,14 @@
   }
 
   &--status { @extend %pkg-value-status; }
+
+  &--empty {
+    color: ds.$text-faint;
+    font-weight: t.$font-weight-normal;
+    font-style: italic;
+    font-size: 12px;
+    letter-spacing: 0;
+  }
 }
 
 .od-pkg-tag {
@@ -190,15 +205,15 @@
   border: 1px solid rgba(#f59e0b, 0.30);
 }
 
-// ═════════════════════════════════════════════════════════════════════════════
-// TABS — Card-style with dark readable font
-// ═════════════════════════════════════════════════════════════════════════════
+// =============================================================================
+// TABS
+// =============================================================================
 .od-tabs-bar {
   background: ds.$surface-alt;
-  border: 1px solid ds.$border;
+  border: 1px solid rgba(ds.$border, 0.35);
   border-bottom: none;
   border-radius: t.$radius-lg t.$radius-lg 0 0;
-  padding: 14px 12px 0;
+  padding: 6px 10px 0;
   display: flex;
 }
 
@@ -215,8 +230,8 @@
   flex: 1;
   gap: 8px;
   padding: 0 20px;
-  height: 42px;
-  font-size: 14px;
+  height: 34px;
+  font-size: 13px;
   font-weight: t.$font-weight-medium;
   font-family: t.$font-sans;
   color: ds.$text;
@@ -244,7 +259,7 @@
     z-index: 2;
     margin-top: -6px;
     margin-bottom: -1px;
-    height: 48px;
+    height: 38px;
     padding-bottom: 2px;
   }
 }
@@ -280,110 +295,145 @@
   }
 }
 
-// ═════════════════════════════════════════════════════════════════════════════
+// =============================================================================
 // TAB CONTENT
-// ═════════════════════════════════════════════════════════════════════════════
+// =============================================================================
 .od-tab-content {
   display: flex;
   flex-direction: column;
-  gap: 28px;
-  padding: 28px;
-  background: ds.$surface;
-  border: 1px solid ds.$border;
-  border-top: 3px solid ds.$brand;
+  gap: 8px;
+  padding: 12px 16px;
+  background: linear-gradient(180deg, #ffffff 0%, #fafbfd 100%);
+  border: 1px solid rgba(ds.$border, 0.30);
+  border-top: 2px solid ds.$brand;
   border-radius: 0 0 t.$radius-lg t.$radius-lg;
-  box-shadow: t.$shadow-sm;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.02);
   position: relative;
-  min-height: 200px;
 }
 
-// Overlay uses global .app-loading-overlay from styles.scss
-
-// ═════════════════════════════════════════════════════════════════════════════
-// SECTION — Light header
-// ═════════════════════════════════════════════════════════════════════════════
+// =============================================================================
+// SECTION
+// =============================================================================
 .od-section {
-  border: 1px solid ds.$border;
-  border-radius: t.$radius-md;
+  border: 1px solid rgba(ds.$border, 0.30);
+  border-radius: t.$radius-lg;
   overflow: hidden;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.03);
+  background: ds.$surface;
+  transition: box-shadow 0.2s ease;
+  border-left: 3.5px solid transparent;
+
+  &:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.04);
+  }
+
+  // Section color variants (unified brand tones)
+  &--notes   { border-left-color: ds.$brand-dark; }
+  &--docs    { border-left-color: ds.$brand; }
+  &--support { border-left-color: ds.$brand-dark; }
+  &--history { border-left-color: ds.$brand; }
+  &--order-history { border-left-color: ds.$brand-dark; }
 }
 
 .od-section-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 14px 20px;
-  background: linear-gradient(180deg, #f0f1f3 0%, ds.$surface-alt 100%);
-  border-bottom: 1px solid ds.$border;
+  padding: 10px 16px;
+  background: linear-gradient(135deg, #f8fafc 0%, #eef2f7 100%);
+  border-bottom: 1px solid rgba(ds.$border, 0.30);
 }
 
 .od-section-title {
   display: flex;
   align-items: center;
+  gap: 0;
   margin: 0;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: t.$font-weight-bold;
-  color: ds.$text;
+  color: #1e293b;
   text-transform: uppercase;
   letter-spacing: 0.05em;
 
   &::before {
     content: '';
     display: inline-block;
-    width: 3px;
-    height: 16px;
-    background: ds.$brand;
+    width: 3.5px;
+    height: 18px;
+    background: linear-gradient(180deg, ds.$brand 0%, ds.$brand-dark 100%);
     border-radius: 2px;
     margin-right: 10px;
     flex-shrink: 0;
+    box-shadow: 0 1px 3px rgba(ds.$brand, 0.25);
   }
 }
 
-.od-section-actions { display: flex; gap: 8px; }
+.od-section-actions {
+  display: flex;
+  gap: 8px;
+}
 
 .od-section-btn {
   @extend %btn-base;
   font-size: 11px;
-  padding: 6px 14px;
-  gap: 5px;
-  background: ds.$brand;
+  padding: 5px 12px;
+  gap: 4px;
+  background: linear-gradient(135deg, ds.$brand 0%, ds.$brand-dark 100%);
   color: #fff;
   border: 1px solid ds.$brand;
   font-weight: t.$font-weight-semibold;
   letter-spacing: 0.02em;
+  box-shadow: 0 1px 3px rgba(ds.$brand, 0.2);
+  transition: all 0.15s ease;
 
-  &:hover { background: ds.$brand-dark; border-color: ds.$brand-dark; }
+  &:hover {
+    background: linear-gradient(135deg, ds.$brand-dark 0%, darken(ds.$brand-dark, 4%) 100%);
+    border-color: ds.$brand-dark;
+    box-shadow: 0 2px 6px rgba(ds.$brand, 0.3);
+  }
 
   &--secondary {
     background: #fff;
     color: ds.$brand;
     border-color: rgba(ds.$brand, 0.35);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
 
-    &:hover { background: rgba(ds.$brand, 0.06); border-color: ds.$brand; }
+    &:hover {
+      background: rgba(ds.$brand, 0.06);
+      border-color: ds.$brand;
+      box-shadow: 0 1px 4px rgba(ds.$brand, 0.15);
+    }
   }
 
   &:disabled {
-    opacity: 0.5; cursor: not-allowed; background: ds.$border; color: ds.$text-muted; border-color: ds.$border;
-    &:hover { background: ds.$border; color: ds.$text-muted; border-color: ds.$border; }
+    opacity: 0.5;
+    cursor: not-allowed;
+    background: ds.$border;
+    color: ds.$text-muted;
+    border-color: ds.$border;
+    &:hover {
+      color: ds.$text-muted;
+      border-color: ds.$border;
+      background: ds.$border;
+    }
   }
 }
 
-// ═════════════════════════════════════════════════════════════════════════════
-// DATA TABLES — Airy, minimal
-// ═════════════════════════════════════════════════════════════════════════════
+// =============================================================================
+// DATA TABLES
+// =============================================================================
 .od-data-tbl {
   width: 100%;
   border-collapse: collapse;
 
   thead th {
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 700;
-    color: #1e293b;
+    color: #2a5298;
     text-transform: uppercase;
     letter-spacing: 0.06em;
-    padding: 14px 20px;
-    border-bottom: 2px solid #cbd5e1;
+    padding: 9px 16px;
+    border-bottom: 2px solid rgba(ds.$brand, 0.12);
     text-align: left;
     white-space: nowrap;
     background: linear-gradient(180deg, #f1f5f9 0%, #e8ecf1 100%);
@@ -392,20 +442,20 @@
   tbody td {
     font-size: t.$font-size-sm;
     color: ds.$text;
-    padding: 14px 20px;
-    border-bottom: 1px solid rgba(ds.$border, 0.4);
+    padding: 9px 16px;
+    border-bottom: 1px solid rgba(ds.$border, 0.18);
     vertical-align: middle;
   }
 
   tbody tr {
-    transition: background 0.1s ease;
+    transition: background 0.15s ease;
     &:nth-child(even) { background: rgba(0, 0, 0, 0.015); }
     &:last-child td { border-bottom: none; }
-    &:hover { background: rgba(ds.$brand, 0.04); }
+    &:hover { background: rgba(ds.$brand, 0.045); }
   }
 }
 
-// ── Two-line document name ───────────────────────────────────────────────────
+// -- Document name cell
 .od-doc-name {
   display: flex;
   align-items: center;
@@ -418,9 +468,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 36px;
-  height: 36px;
-  border-radius: t.$radius-md;
+  width: 24px;
+  height: 24px;
+  border-radius: t.$radius-sm;
   flex-shrink: 0;
   background: transparent;
 
@@ -445,7 +495,7 @@
   font-weight: t.$font-weight-normal;
 }
 
-// ── File type badges ─────────────────────────────────────────────────────────
+// -- File type badges
 .od-type-badge {
   display: inline-flex;
   align-items: center;
@@ -457,47 +507,40 @@
   letter-spacing: 0.03em;
   white-space: nowrap;
 
-  // Default
   background: rgba(ds.$text-muted, 0.08);
   color: ds.$text-muted;
   border: 1px solid rgba(ds.$text-muted, 0.15);
 
-  // PDF — orange
   &[data-type="pdf"] {
     background: rgba(#e67e22, 0.08);
     color: #c0651a;
     border: 1px solid rgba(#e67e22, 0.20);
   }
 
-  // Word
   &[data-type="word"] {
     background: rgba(#3b82f6, 0.08);
     color: #2563eb;
     border: 1px solid rgba(#3b82f6, 0.20);
   }
 
-  // Excel
   &[data-type="excel"] {
     background: rgba(#10b981, 0.08);
     color: #059669;
     border: 1px solid rgba(#10b981, 0.20);
   }
 
-  // Images — purple
   &[data-type="image"] {
     background: rgba(#8b5cf6, 0.08);
     color: #7c3aed;
     border: 1px solid rgba(#8b5cf6, 0.20);
   }
 
-  // Text — amber
   &[data-type="text"] {
     background: rgba(#f59e0b, 0.08);
     color: #d97706;
     border: 1px solid rgba(#f59e0b, 0.20);
   }
 
-  // Generic
   &[data-type="generic"] {
     background: rgba(ds.$text-muted, 0.08);
     color: ds.$text-muted;
@@ -505,7 +548,7 @@
   }
 }
 
-// ── Badges ───────────────────────────────────────────────────────────────────
+// -- Badges
 .od-link {
   color: ds.$brand;
   cursor: pointer;
@@ -516,7 +559,7 @@
 .od-notes-user { @extend .od-link; }
 .od-notes-date { font-variant-numeric: tabular-nums; font-size: t.$font-size-xs; color: ds.$text-muted; white-space: nowrap; }
 
-.od-empty-row { color: ds.$text-faint; font-style: italic; text-align: center; padding: 40px 20px !important; }
+.od-empty-row { color: ds.$text-faint; font-style: italic; text-align: center; padding: 16px 16px !important; }
 
 .od-version-badge {
   display: inline-flex; align-items: center; justify-content: center;
@@ -526,13 +569,14 @@
   background: t.$color-success-bg; color: #065f46; border: 1px solid t.$color-success-border;
 }
 
-// ── Workflow history pagination ──────────────────────────────────────────────
+// -- Pagination
 .od-history-pagination {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 12px 16px;
-  border-top: 1px solid ds.$border;
+  padding: 5px 16px;
+  border-top: 1px solid rgba(ds.$border, 0.25);
+  background: linear-gradient(180deg, #eef3fb 0%, #e3ebf6 100%);
 }
 
 .od-history-pagination__info {
@@ -552,28 +596,32 @@
   height: 30px;
   padding: 0;
   font-size: 12px;
-  background: ds.$surface;
+  background: #fff;
   color: ds.$text;
   border: 1px solid ds.$border;
   border-radius: 6px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  transition: all 0.15s ease;
 
   &:hover:not(:disabled) {
     background: rgba(ds.$brand, 0.06);
     border-color: ds.$brand;
     color: ds.$brand;
+    box-shadow: 0 1px 4px rgba(ds.$brand, 0.15);
   }
 
   &:disabled {
     opacity: 0.35;
     cursor: not-allowed;
     pointer-events: none;
+    box-shadow: none;
   }
 }
 
-// ── Event Type badges (colored by data-event attribute) ─────────────────────
+// -- Event Type badges
 .od-event-badge {
   display: inline-flex; align-items: center;
   font-size: t.$font-size-xs; font-weight: t.$font-weight-semibold;
@@ -587,7 +635,7 @@
   &:not([data-event])       { background: rgba(ds.$brand, 0.06); color: ds.$brand; border-color: rgba(ds.$brand, 0.18); }
 }
 
-// ── Order Status badges (colored by data-status attribute) ──────────────────
+// -- Order Status badges
 .od-status-badge {
   font-weight: t.$font-weight-semibold; font-size: t.$font-size-xs;
   display: inline-flex; align-items: center; gap: 5px;
@@ -600,9 +648,9 @@
   &:not([data-status])              { background: #f9fafb; color: #6b7280; border-color: #e5e7eb; }
 }
 
-// ═════════════════════════════════════════════════════════════════════════════
-// ACTION BUTTONS — Icon buttons in table rows
-// ═════════════════════════════════════════════════════════════════════════════
+// =============================================================================
+// ACTION BUTTONS
+// =============================================================================
 .od-actions-col {
   width: 90px;
   text-align: center;
@@ -637,21 +685,245 @@
   &--history:hover { color: #8b5cf6; background: rgba(#8b5cf6, 0.08); }
 }
 
-// ═════════════════════════════════════════════════════════════════════════════
+// =============================================================================
 // BUTTONS
-// ═════════════════════════════════════════════════════════════════════════════
+// =============================================================================
 .od-btn {
   @extend %btn-base;
   &--primary { background: ds.$brand; color: #fff; border-color: ds.$brand; &:hover { background: ds.$brand-dark; } }
   &--sm { font-size: t.$font-size-xs; padding: 7px 16px; }
   &--ghost { background: transparent; color: ds.$text-muted; border-color: transparent; padding: 7px 14px; font-size: t.$font-size-xs; &:hover { background: ds.$surface-alt; color: ds.$text; } }
-  &--back { background: ds.$surface; color: ds.$text-muted; border: 1px solid ds.$border; padding: 9px 20px; &:hover { color: ds.$brand; border-color: ds.$brand; } }
+  &--back { background: ds.$surface; color: ds.$text-muted; border: 1px solid ds.$border; padding: 9px 20px; &:hover { color: ds.$brand; border-color: ds.$brand; background: rgba(ds.$brand, 0.03); } }
   &--disabled, &:disabled { @extend %btn-disabled; }
 }
 
-// ═════════════════════════════════════════════════════════════════════════════
+// =============================================================================
+// CHAT -- Bubble-style conversation (Teams / iMessage inspired)
+// =============================================================================
+
+$avatar-palette: (
+  0: #5b6abf,
+  1: #16a34a,
+  2: #e67c22,
+  3: #8b5cf6,
+  4: #e74c6f,
+  5: #0ea5c8,
+);
+
+.od-chat {
+  display: flex;
+  flex-direction: column;
+}
+
+.od-chat__messages {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 8px 16px 6px;
+  max-height: 280px;
+  overflow-y: auto;
+
+  &::-webkit-scrollbar { width: 5px; }
+  &::-webkit-scrollbar-track { background: transparent; }
+  &::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 10px;
+    &:hover { background: #94a3b8; }
+  }
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 transparent;
+}
+
+.od-msg {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  max-width: 85%;
+
+  &--mine {
+    align-self: flex-end;
+    flex-direction: row-reverse;
+
+    .od-msg__wrapper { align-items: flex-end; }
+    .od-msg__meta { flex-direction: row-reverse; }
+
+    .od-msg__bubble {
+      background: linear-gradient(135deg, ds.$brand 0%, ds.$brand-dark 100%);
+      color: #fff;
+      border-radius: 14px 14px 4px 14px;
+    }
+  }
+}
+
+.od-msg__avatar {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  @each $i, $color in $avatar-palette {
+    &--c#{$i} { background: $color; }
+  }
+}
+
+.od-msg__wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.od-msg__meta {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 0 2px;
+}
+
+.od-msg__name {
+  font-size: 12px;
+  font-weight: 700;
+  color: #1e293b;
+  line-height: 1;
+}
+
+.od-msg__time {
+  font-size: 10.5px;
+  color: #94a3b8;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.od-msg__bubble {
+  background: #f0f2f5;
+  color: #1e293b;
+  font-size: 12.5px;
+  line-height: 1.5;
+  padding: 8px 14px;
+  border-radius: 14px 14px 14px 4px;
+  word-break: break-word;
+  white-space: pre-wrap;
+}
+
+// -- Chat input bar
+.od-chat__input {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  padding: 10px 16px 12px;
+  border-top: 1px solid #e2e5ea;
+  background: linear-gradient(180deg, #f0f4fa 0%, #fafbfc 100%);
+}
+
+.od-chat__field {
+  flex: 1;
+  min-height: 38px;
+  max-height: 100px;
+  font-size: 13px;
+  font-family: t.$font-sans;
+  color: ds.$text;
+  background: #fff;
+  border: 1.5px solid #d0d5dd;
+  border-radius: 18px;
+  padding: 8px 18px;
+  outline: none;
+  resize: none;
+  line-height: 1.4;
+  overflow-y: auto;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+
+  &::placeholder { color: #94a3b8; font-weight: 500; }
+  &:focus {
+    border-color: ds.$brand;
+    box-shadow: 0 0 0 3px rgba(ds.$brand, 0.12), 0 1px 3px rgba(0, 0, 0, 0.06);
+  }
+}
+
+.od-chat__send {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: none;
+  background: linear-gradient(135deg, ds.$brand 0%, ds.$brand-dark 100%);
+  color: #fff;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(ds.$brand, 0.3);
+  transition: background 0.15s ease, transform 0.12s ease, box-shadow 0.15s ease;
+  flex-shrink: 0;
+
+  &:hover:not(:disabled) {
+    background: linear-gradient(135deg, ds.$brand-dark 0%, darken(ds.$brand-dark, 6%) 100%);
+    transform: scale(1.08);
+    box-shadow: 0 3px 10px rgba(ds.$brand, 0.4);
+  }
+  &:disabled {
+    background: #d5d9e0;
+    color: #fff;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
+}
+
+.od-chat__spinner {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+// =============================================================================
+// EMPTY STATE
+// =============================================================================
+.od-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 24px 16px;
+  text-align: center;
+  background: linear-gradient(180deg, transparent 0%, rgba(ds.$brand, 0.015) 100%);
+  border-radius: 8px;
+}
+
+.od-empty-state__icon {
+  color: ds.$text-faint;
+  opacity: 0.35;
+  margin-bottom: 2px;
+}
+
+.od-empty-state__text {
+  font-size: 13px;
+  font-weight: t.$font-weight-semibold;
+  color: ds.$text-muted;
+}
+
+.od-empty-state__sub {
+  font-size: 12px;
+  color: ds.$text-faint;
+}
+
+// =============================================================================
 // VERSION HISTORY DIALOG
-// ═════════════════════════════════════════════════════════════════════════════
+// =============================================================================
 .vd-header {
   display: flex;
   align-items: center;
@@ -871,9 +1143,9 @@
   }
 }
 
-// ═════════════════════════════════════════════════════════════════════════════
+// =============================================================================
 // ADD NOTE DIALOG
-// ═════════════════════════════════════════════════════════════════════════════
+// =============================================================================
 .note-dialog-body {
   padding: 0;
 }
@@ -929,18 +1201,18 @@
   border-top: 1px solid #eef0f2;
 }
 
-// ═════════════════════════════════════════════════════════════════════════════
+// =============================================================================
 // FOOTER
-// ═════════════════════════════════════════════════════════════════════════════
+// =============================================================================
 .od-footer {
-  margin-top: 32px;
-  padding-top: 24px;
-  border-top: 1px solid rgba(ds.$border, 0.5);
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(ds.$border, 0.25);
 }
 
-// ═════════════════════════════════════════════════════════════════════════════
+// =============================================================================
 // RESPONSIVE
-// ═════════════════════════════════════════════════════════════════════════════
+// =============================================================================
 @media (max-width: 1024px) {
   .od-pkg-grid { grid-template-columns: 1fr 1fr; }
   .od-pkg-field:not(:nth-child(3n)) { border-right: none; }

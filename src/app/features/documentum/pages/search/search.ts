@@ -202,6 +202,14 @@ export class Search {
     this.selectedRows.set(current);
   }
 
+  selectRow(guid: string): void {
+    if (this.selectedRows().has(guid)) {
+      this.selectedRows.set(new Set());
+    } else {
+      this.selectedRows.set(new Set([guid]));
+    }
+  }
+
   isRowSelected(guid: string): boolean {
     return this.selectedRows().has(guid);
   }

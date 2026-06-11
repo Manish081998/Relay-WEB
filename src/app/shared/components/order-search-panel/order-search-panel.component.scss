@@ -159,6 +159,13 @@ $divider:     rgba(t.$color-border, 0.4);
       color: $text-muted;
     }
   }
+
+  // Brand dropdown always highlighted when a value is selected
+  #brand.p-select:has(.p-select-label:not(.p-placeholder)) {
+    border-color: $primary;
+    background: rgba($primary, 0.04);
+    box-shadow: 0 0 0 2px $primary-glow;
+  }
 }
  
 // ── Actions bar ──────────────────────────────────────────────────────────────

@@ -57,17 +57,7 @@
       <table class="qs-tbl" [class.resizable]="!loading()">
         <thead>
           <tr>
-            <th class="col-chk" style="width:36px;min-width:36px">
-              <label class="chk-wrap">
-                <input type="checkbox"
-                       [checked]="isAllSelected()"
-                       [indeterminate]="isIndeterminate()"
-                       (change)="toggleSelectAll()" />
-                <span class="chk-box">
-                  <i class="pi" [class.pi-check]="isAllSelected()" [class.pi-minus]="isIndeterminate()"></i>
-                </span>
-              </label>
-            </th>
+            <th class="col-chk" style="width:36px;min-width:36px"></th>
             <th class="sortable" [class.sort-active]="sortField() === 'repPO'" style="width:120px;min-width:60px" (click)="onSort('repPO')" #thRepPO>
               Purchase Order
               <span class="sort-icon">
@@ -257,7 +247,7 @@
                   <label class="chk-wrap">
                     <input type="checkbox"
                            [checked]="isRowSelected(order.orderGuid)"
-                           (change)="toggleRow(order.orderGuid)" />
+                           (change)="selectRow(order.orderGuid)" />
                     <span class="chk-box">
                       <i class="pi pi-check"></i>
                     </span>

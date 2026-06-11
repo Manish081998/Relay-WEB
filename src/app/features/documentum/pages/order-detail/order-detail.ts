@@ -21,6 +21,7 @@ import { SalesOrderNoteDto } from '../../models/note.model';
 import { AnnotationDialogComponent } from '../../components/annotation-dialog/annotation-dialog.component';
 import { Dialog } from 'primeng/dialog';
 import { Tooltip } from 'primeng/tooltip';
+import { AuthStore } from '../../../../core/auth/auth.store';
 
 @Component({
   selector: 'app-order-detail',
@@ -38,6 +39,7 @@ export class OrderDetail {
   private readonly docService = inject(SalesOrderDocumentService);
   private readonly noteService = inject(SalesOrderNoteService);
   private readonly workflowService = inject(WorkflowService);
+  private readonly auth = inject(AuthStore);
   private readonly destroyRef = inject(DestroyRef);
 
   readonly orderGuid = input<string>('');
@@ -77,6 +79,57 @@ export class OrderDetail {
   readonly showAddNoteDialog = signal(false);
   readonly newNoteText = signal('');
   readonly isSavingNote = signal(false);
+
+  // ── Chat UI support ────────────────────────────────────────────────────────
+  readonly chatMessagesEl = viewChild<ElementRef<HTMLElement>>('chatMessages');
+
+  readonly currentUserGlobalId = computed(() => this.auth.currentUser()?.globalId?.toLowerCase() ?? '');
+  readonly currentUserInitial = computed(() => {
+    const u = this.auth.currentUser();
+    return (u?.displayName || u?.email || '?').charAt(0).toUpperCase();
+  });
+
+  /** Check if a note was created by the current user */
+  isMyNote(createdBy: string): boolean {
+    return createdBy?.toLowerCase() === this.currentUserGlobalId();
+  }
+
+  /** Assign a consistent color index (0–5) per unique user for note avatars */
+  private readonly userColorMap = new Map<string, number>();
+  private nextColorIndex = 0;
+
+  getNoteColorIndex(createdBy: string): number {
+    const key = (createdBy ?? '').toLowerCase();
+    if (!this.userColorMap.has(key)) {
+      this.userColorMap.set(key, this.nextColorIndex % 6);
+      this.nextColorIndex++;
+    }
+    return this.userColorMap.get(key)!;
+  }
+
+  // ── Sales Order Docs pagination ───────────────────────────────────────────
+  readonly soDocsPage = signal(1);
+  readonly soDocsPageSize = 5;
+  readonly soDocsTotalPages = computed(() =>
+    Math.max(1, Math.ceil(this.salesOrderDocs().length / this.soDocsPageSize)),
+  );
+  readonly pagedSoDocsDocs = computed(() => {
+    const all = this.salesOrderDocs();
+    const start = (this.soDocsPage() - 1) * this.soDocsPageSize;
+    return all.slice(start, start + this.soDocsPageSize);
+  });
+
+  // ── Support Docs pagination ───────────────────────────────────────────────
+  readonly supportDocsPage = signal(1);
+  readonly supportDocsPageSize = 5;
+  readonly supportDocsTotalPages = computed(() =>
+    Math.max(1, Math.ceil(this.supportDocs().length / this.supportDocsPageSize)),
+  );
+  readonly pagedSupportDocs = computed(() => {
+    const all = this.supportDocs();
+    const start = (this.supportDocsPage() - 1) * this.supportDocsPageSize;
+    return all.slice(start, start + this.supportDocsPageSize);
+  });
 
   readonly workflowHistory = signal<WorkflowHistoryItem[]>([]);
   readonly historyPage = signal(1);
@@ -143,6 +196,23 @@ export class OrderDetail {
   goToHistoryPage(page: number): void {
     if (page < 1 || page > this.historyTotalPages()) return;
     this.historyPage.set(page);
+  }
+
+  goToSoDocsPage(page: number): void {
+    if (page < 1 || page > this.soDocsTotalPages()) return;
+    this.soDocsPage.set(page);
+  }
+
+  goToSupportDocsPage(page: number): void {
+    if (page < 1 || page > this.supportDocsTotalPages()) return;
+    this.supportDocsPage.set(page);
+  }
+
+  private scrollChatToBottom(): void {
+    setTimeout(() => {
+      const el = this.chatMessagesEl()?.nativeElement;
+      if (el) el.scrollTop = el.scrollHeight;
+    });
   }
 
   private updatePackageInfo(o: OrderItem): void {
@@ -257,8 +327,13 @@ export class OrderDetail {
         takeUntilDestroyed(this.destroyRef),
       )
       .subscribe(notes => {
-        this.notes.set(notes);
+        // Sort oldest → newest (latest at bottom, chat order)
+        const sorted = [...notes].sort((a, b) =>
+          new Date(a.createdDate).getTime() - new Date(b.createdDate).getTime()
+        );
+        this.notes.set(sorted);
         this.isLoadingNotes.set(false);
+        this.scrollChatToBottom();
       });
   }
 
@@ -284,8 +359,8 @@ export class OrderDetail {
       .subscribe({
         next: () => {
           this.isSavingNote.set(false);
-          this.showAddNoteDialog.set(false);
           this.newNoteText.set('');
+          this.showAddNoteDialog.set(false);
           this.loadNotes(seq);
         },
         error: (err) => {
