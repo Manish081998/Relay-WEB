@@ -43,6 +43,7 @@ export const intranetRoutes: Routes = [
         loadComponent: () =>
           import('./pages/xml-viewer/xml-viewer').then(m => m.XmlViewer),
       },
+      
     ],
   },
 ];

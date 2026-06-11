@@ -20,4 +20,9 @@ export const API_ENDPOINTS = {
   WEBTOOL: {
     SELECTIONS: '/api/selections',
   },
+  PLANNER: {
+    ORDERS:  '/api/intranet/planner/orders',
+    PLANTS:  '/api/intranet/planner/plants',
+    RELEASE: '/api/intranet/planner/release',
+  },
 } as const;

@@ -1,0 +1,369 @@
+<div class="pl-page">
+
+  <!-- ── Page Title ─────────────────────────────────────────────────────────── -->
+  <div class="pl-title-row">
+    <h1 class="pl-title">Production Orders</h1>
+    <span class="pl-count-badge">
+      <strong>{{ store.totalCount() }}</strong> total
+    </span>
+  </div>
+
+  <!-- ── Action Toolbar ────────────────────────────────────────────────────── -->
+  <div class="pl-toolbar">
+
+    <div class="pl-toolbar-left">
+      <button class="btn-assign" (click)="assignSelected()">
+        <i class="pi pi-bolt"></i> Assign Selected
+      </button>
+      <button class="btn-release" (click)="openReleaseModal()">
+        <i class="pi pi-send"></i> Release / Finalize
+      </button>
+
+      <div class="toolbar-divider"></div>
+
+      <span class="toolbar-label">Bulk Plant:</span>
+      <select class="pl-select" [value]="bulkPlantId()" (change)="bulkPlantId.set($any($event.target).value)">
+        <option value="">— Select Plant —</option>
+        @for (plant of store.plants(); track plant.id) {
+          <option [value]="plant.id">{{ plant.name }}</option>
+        }
+      </select>
+      <button class="btn-ghost" (click)="applyBulkPlant()">Apply to Selected</button>
+    </div>
+
+    <div class="pl-toolbar-right">
+      @if (hasActiveSort) {
+        <button class="btn-ghost-sm" (click)="clearSort()">
+          <i class="pi pi-sort-alt-slash"></i> Clear Sort
+        </button>
+      }
+      @if (selectedPendingCount() > 0) {
+        <span class="pl-selection-badge">{{ selectedPendingCount() }} selected</span>
+        <button class="btn-ghost-sm" (click)="store.clearSelections()">
+          <i class="pi pi-times"></i> Clear
+        </button>
+      }
+    </div>
+
+  </div>
+
+  <!-- ── Grid ──────────────────────────────────────────────────────────────── -->
+  <div class="pl-grid-wrap">
+
+    <div class="pl-tbl-scroll">
+      <table class="pl-tbl">
+        <thead>
+          <tr>
+            <th class="col-chk">
+              <input
+                type="checkbox"
+                class="pl-checkbox"
+                [checked]="allPendingSelected()"
+                [indeterminate]="selectedPendingCount() > 0 && !allPendingSelected()"
+                (change)="onSelectAll($any($event.target).checked)"
+              />
+            </th>
+            <th class="sortable" [class.sort-active]="sortField() === 'id'"
+                style="width:130px" (click)="onSort('id')">
+              Order ID
+              <span class="sort-icon">
+                @if (sortField() === 'id') {
+                  <i class="pi" [class.pi-sort-amount-up-alt]="sortDirection()==='asc'" [class.pi-sort-amount-down]="sortDirection()==='desc'"></i>
+                } @else {
+                  <i class="pi pi-sort-alt"></i>
+                }
+              </span>
+            </th>
+            <th class="sortable" [class.sort-active]="sortField() === 'product'"
+                style="width:200px" (click)="onSort('product')">
+              Product
+              <span class="sort-icon">
+                @if (sortField() === 'product') {
+                  <i class="pi" [class.pi-sort-amount-up-alt]="sortDirection()==='asc'" [class.pi-sort-amount-down]="sortDirection()==='desc'"></i>
+                } @else {
+                  <i class="pi pi-sort-alt"></i>
+                }
+              </span>
+            </th>
+            <th class="sortable col-r" [class.sort-active]="sortField() === 'qty'"
+                style="width:80px" (click)="onSort('qty')">
+              Qty
+              <span class="sort-icon">
+                @if (sortField() === 'qty') {
+                  <i class="pi" [class.pi-sort-amount-up-alt]="sortDirection()==='asc'" [class.pi-sort-amount-down]="sortDirection()==='desc'"></i>
+                } @else {
+                  <i class="pi pi-sort-alt"></i>
+                }
+              </span>
+            </th>
+            <th class="sortable" [class.sort-active]="sortField() === 'shipDate'"
+                style="width:100px" (click)="onSort('shipDate')">
+              Ship Date
+              <span class="sort-icon">
+                @if (sortField() === 'shipDate') {
+                  <i class="pi" [class.pi-sort-amount-up-alt]="sortDirection()==='asc'" [class.pi-sort-amount-down]="sortDirection()==='desc'"></i>
+                } @else {
+                  <i class="pi pi-sort-alt"></i>
+                }
+              </span>
+            </th>
+            <th style="width:70px">Region</th>
+            <th style="min-width:200px">Recommended Plant</th>
+            <th style="min-width:160px">Override Plant</th>
+            <th style="width:100px">Cap Status</th>
+            <th style="width:90px">Status</th>
+            <th style="min-width:140px">Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+
+          @if (store.loading()) {
+            @for (_ of skeletonRows; track $index; let i = $index) {
+              <tr class="sk-row" [class.row-alt]="i % 2 !== 0" [style.animation-delay]="(i * 60) + 'ms'">
+                <td><div class="sk-pill" style="width:14px;height:14px;border-radius:3px"></div></td>
+                <td><div class="sk-pill" [style.width]="(55 + (i * 7) % 35) + '%'"></div></td>
+                <td><div class="sk-pill" [style.width]="(45 + (i * 11) % 40) + '%'"></div></td>
+                <td><div class="sk-pill" style="width:50%"></div></td>
+                <td><div class="sk-pill" style="width:70%"></div></td>
+                <td><div class="sk-pill" style="width:55%"></div></td>
+                <td><div class="sk-pill" [style.width]="(60 + (i * 9) % 30) + '%'"></div></td>
+                <td><div class="sk-pill" style="width:80%"></div></td>
+                <td><div class="sk-pill" style="width:65%"></div></td>
+                <td><div class="sk-pill" style="width:60%"></div></td>
+                <td><div class="sk-pill" [style.width]="(40 + (i * 13) % 40) + '%'"></div></td>
+              </tr>
+            }
+          } @else {
+            @for (row of pagedOrders(); track row.id; let i = $index) {
+              <tr [class.row-alt]="i % 2 !== 0" [class.row-released]="row.isReleased" [class.row-selected]="row.isSelected">
+
+                <td class="col-chk">
+                  <input type="checkbox" class="pl-checkbox"
+                    [checked]="row.isSelected"
+                    [disabled]="row.isReleased"
+                    (change)="onRowCheck(row.id, $any($event.target).checked)" />
+                </td>
+
+                <td>
+                  <span class="order-id">{{ row.id }}</span>
+                </td>
+
+                <td class="cell-trunc">
+                  <div class="product-name">{{ row.product }}</div>
+                  <div class="product-sku">{{ row.sku }}</div>
+                </td>
+
+                <td class="col-r">
+                  <span class="qty-val">{{ row.qty | number }}</span>
+                  <span class="qty-unit">{{ row.unit }}</span>
+                </td>
+
+                <td>
+                  <span class="date-cell" [class.date-overdue]="!row.isReleased && isDue(row.shipDate)">
+                    {{ row.shipDate }}
+                  </span>
+                </td>
+
+                <td>
+                  <span class="region-badge">{{ row.region }}</span>
+                </td>
+
+                <!-- Recommended Plant — shows all eligible plants with capacity % -->
+                <td class="cell-rec-plant">
+                  @for (pid of row.allowedPlants; track pid; let last = $last) {
+                    <div class="rec-plant-row">
+                      <span class="cap-dot" [class.dot-ok]="getRecPlantStatus(pid,row)==='ok'" [class.dot-warn]="getRecPlantStatus(pid,row)==='warn'" [class.dot-over]="getRecPlantStatus(pid,row)==='over'"></span>
+                      <span class="rec-plant-id" [class.is-rec]="pid === row.recommendedPlant">{{ pid }}</span>
+                      @if (pid === row.recommendedPlant) {
+                        <span class="rec-tag">REC</span>
+                      }
+                      <span class="rec-pct" [class.pct-warn]="getRecPlantStatus(pid,row)==='warn'" [class.pct-over]="getRecPlantStatus(pid,row)==='over'">
+                        {{ getRecPlantPct(pid, row) }}%
+                      </span>
+                    </div>
+                    @if (last) {
+                      <div class="rec-rule-tag" [class.rule-restricted]="isRestricted(row)">
+                        @if (isRestricted(row)) {
+                          <i class="pi pi-lock"></i> Region-restricted
+                        } @else {
+                          <i class="pi pi-check"></i> Override allowed
+                        }
+                      </div>
+                    }
+                  }
+                </td>
+
+                <!-- Override Plant dropdown -->
+                <td>
+                  @if (row.isReleased) {
+                    <span class="plant-locked">
+                      <i class="pi pi-check-circle"></i> {{ row.effectivePlant }}
+                    </span>
+                  } @else {
+                    <select
+                      class="override-select"
+                      [class.is-modified]="row.isModified"
+                      [value]="row.overridePlant"
+                      (change)="onOverrideChange(row.id, $any($event.target).value)">
+                      <option value="">— Keep Rec ({{ row.recommendedPlant }}) —</option>
+                      @for (pid of row.allowedPlants; track pid) {
+                        <option [value]="pid">{{ getPlantOptionLabel(pid, row) }}</option>
+                      }
+                    </select>
+                  }
+                </td>
+
+                <!-- Capacity Status badge -->
+                <td>
+                  <span class="cap-badge"
+                    [class.cap-ok]="row.isReleased || row.capStatus === 'ok'"
+                    [class.cap-warn]="!row.isReleased && row.capStatus === 'warn'"
+                    [class.cap-over]="!row.isReleased && row.capStatus === 'over'">
+                    <span class="cap-dot-inline"></span>
+                    {{ row.isReleased ? 'OK' : capStatusLabel(row.capStatus) }}
+                  </span>
+                </td>
+
+                <!-- Status badge -->
+                <td>
+                  @if (row.isReleased) {
+                    <span class="status-released"><i class="pi pi-check"></i> Released</span>
+                  } @else {
+                    <span class="status-pending">Pending</span>
+                  }
+                </td>
+
+                <!-- Notes -->
+                <td>
+                  <input
+                    type="text"
+                    class="notes-input"
+                    [value]="row.currentNote"
+                    [disabled]="row.isReleased"
+                    placeholder="Add note…"
+                    (input)="onNoteInput(row.id, $any($event.target).value)"
+                  />
+                </td>
+
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="11" class="cell-empty">
+                  <i class="pi pi-inbox"></i> No orders found.
+                </td>
+              </tr>
+            }
+          }
+
+        </tbody>
+      </table>
+    </div>
+
+    @if (store.loading()) {
+      <div class="app-loading-overlay">
+        <div class="app-loader">
+          <div class="app-dots"><span class="app-dot"></span><span class="app-dot"></span><span class="app-dot"></span></div>
+          <span class="app-loader__title">Loading planner data…</span>
+          <span class="app-loader__sub">This should only take a moment</span>
+        </div>
+      </div>
+    }
+
+    <!-- Pagination -->
+    @if (!store.loading() && store.totalCount() > pageSize()) {
+      <div class="pl-pager">
+        <span class="pg-info">Page {{ currentPage() }} of {{ totalPages() }} · {{ store.totalCount() | number }} total</span>
+        <button class="pg-btn" [disabled]="currentPage() === 1" (click)="goToPage(currentPage() - 1)">&#8249; Prev</button>
+        <button class="pg-btn" [disabled]="currentPage() >= totalPages()" (click)="goToPage(currentPage() + 1)">Next &#8250;</button>
+      </div>
+    }
+
+  </div>
+
+</div>
+
+<!-- ── Release Confirmation Modal ─────────────────────────────────────────── -->
+@if (showModal()) {
+  <div class="modal-backdrop" (click)="closeModal()">
+    <div class="modal" (click)="$event.stopPropagation()">
+
+      <div class="modal-header">
+        <div class="modal-icon-wrap"><i class="pi pi-send"></i></div>
+        <div>
+          <div class="modal-title">Confirm Release to Production</div>
+          <div class="modal-subtitle">EDI dispatch · irreversible after confirmation</div>
+        </div>
+      </div>
+
+      <div class="modal-body">
+
+        <!-- Order list -->
+        <div class="modal-section-label">Orders being released</div>
+        <div class="modal-order-list">
+          @for (item of modalItems(); track item.order.id) {
+            <div class="modal-order-row">
+              <span class="modal-order-id">{{ item.order.id }}</span>
+              <span class="modal-order-arrow">→</span>
+              <span class="modal-order-plant">{{ item.plantName }}</span>
+              <span class="modal-order-qty">{{ item.order.qty | number }} {{ item.order.unit }}</span>
+              @if (item.capStatus === 'over') {
+                <span class="modal-tag modal-tag-over">{{ item.projPct }}% after</span>
+              } @else if (item.capStatus === 'warn') {
+                <span class="modal-tag modal-tag-warn">{{ item.projPct }}% after</span>
+              }
+            </div>
+          }
+        </div>
+
+        <!-- Capacity impact -->
+        <div class="modal-section-label">Capacity impact after release</div>
+        <div class="modal-impact">
+          @for (impact of modalImpact(); track impact.plant.id) {
+            <div class="modal-impact-row">
+              <span class="modal-plant-name">{{ impact.plant.name }}</span>
+              <div class="modal-bar-wrap">
+                <div class="modal-bar-track">
+                  <div class="modal-bar-fill modal-bar-before" [style.width.%]="impact.beforePct"></div>
+                  <div class="modal-bar-fill modal-bar-after"
+                    [class.fill-ok]="impact.status==='ok'" [class.fill-warn]="impact.status==='warn'" [class.fill-over]="impact.status==='over'"
+                    [style.width.%]="impact.afterPct > 100 ? 100 : impact.afterPct"></div>
+                </div>
+                <div class="modal-pct-row">
+                  <span class="modal-pct-before">{{ impact.beforePct }}%</span>
+                  <span class="modal-pct-arrow">→</span>
+                  <span class="modal-pct-after"
+                    [class.pct-ok]="impact.status==='ok'" [class.pct-warn]="impact.status==='warn'" [class.pct-over]="impact.status==='over'">
+                    {{ impact.afterPct }}%
+                  </span>
+                  <span class="modal-pct-units">{{ impact.afterLoad | number }} / {{ impact.plant.monthlyCapacity | number }} u/mo</span>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+
+        @if (hasCapWarn()) {
+          <div class="modal-cap-warning">
+            <i class="pi pi-exclamation-triangle"></i>
+            One or more plants will exceed capacity after this release. Consider reassigning before confirming.
+          </div>
+        }
+
+        <div class="modal-edi-note">
+          <i class="pi pi-info-circle"></i>
+          Confirming will dispatch an <strong>EDI 830 Planning Schedule</strong> to each assigned plant's queue.
+          Orders will be locked. Plant acknowledgement expected within <strong>2 business hours</strong>.
+        </div>
+
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn-ghost" (click)="closeModal()">Cancel</button>
+        <button class="btn-release" (click)="confirmRelease()">
+          <i class="pi pi-send"></i> Confirm &amp; Dispatch EDI
+        </button>
+      </div>
+
+    </div>
+  </div>
+}

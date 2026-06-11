@@ -1,0 +1,180 @@
+<div class="pc-page">
+
+  <!-- ── Page Title ───────────────────────────────────────────────────────── -->
+  <div class="pc-title-row">
+    <h1 class="pc-title">Plant Capacity</h1>
+    @if (!store.loading()) {
+      <div class="pc-summary-chips">
+        @if (overCapCount() > 0) {
+          <span class="chip chip-over"><i class="pi pi-exclamation-circle"></i> {{ overCapCount() }} Over Capacity</span>
+        }
+        @if (warnCount() > 0) {
+          <span class="chip chip-warn"><i class="pi pi-exclamation-triangle"></i> {{ warnCount() }} Near Capacity</span>
+        }
+        @if (overCapCount() === 0 && warnCount() === 0) {
+          <span class="chip chip-ok"><i class="pi pi-check-circle"></i> All plants within capacity</span>
+        }
+      </div>
+    }
+  </div>
+
+  <!-- ── Plant cards ───────────────────────────────────────────────────────── -->
+  <div class="pc-cards">
+
+    @if (store.loading()) {
+      @for (_ of skeletonRows; track $index; let i = $index) {
+        <div class="pc-card sk-card" [style.animation-delay]="(i * 80) + 'ms'">
+          <div class="sk-pill" style="width:40%;height:14px;margin-bottom:10px"></div>
+          <div class="sk-pill" style="width:70%;height:8px;margin-bottom:8px"></div>
+          <div class="sk-pill" style="width:100%;height:10px;border-radius:5px"></div>
+          <div style="display:flex;gap:12px;margin-top:10px">
+            <div class="sk-pill" style="flex:1;height:8px"></div>
+            <div class="sk-pill" style="flex:1;height:8px"></div>
+            <div class="sk-pill" style="flex:1;height:8px"></div>
+          </div>
+        </div>
+      }
+    } @else {
+      @for (summary of store.plantCapacitySummaries(); track summary.plant.id) {
+        <div class="pc-card" [class.card-over]="summary.worstStatus === 'over'" [class.card-warn]="summary.worstStatus === 'warn'">
+
+          <!-- Card header -->
+          <div class="card-header" (click)="togglePlant(summary.plant.id)">
+            <div class="card-header-left">
+              <div class="plant-name">{{ summary.plant.name }}</div>
+              <div class="plant-location">{{ summary.plant.location }}</div>
+            </div>
+            <div class="card-header-right">
+              <span class="status-chip"
+                [class.s-ok]="summary.worstStatus === 'ok'"
+                [class.s-warn]="summary.worstStatus === 'warn'"
+                [class.s-over]="summary.worstStatus === 'over'">
+                @if (summary.worstStatus === 'over') { Over Cap }
+                @else if (summary.worstStatus === 'warn') { Near Cap }
+                @else { On Track }
+              </span>
+              <i class="pi expand-icon" [class.pi-chevron-down]="!isExpanded(summary.plant.id)" [class.pi-chevron-up]="isExpanded(summary.plant.id)"></i>
+            </div>
+          </div>
+
+          <!-- Capacity bar: released load -->
+          <div class="cap-bar-section">
+            <div class="cap-bar-labels">
+              <span class="cap-bar-label">Released load</span>
+              <span class="cap-bar-pct" [class.pct-warn]="summary.worstStatus === 'warn'" [class.pct-over]="summary.worstStatus === 'over'">
+                @if (summary.monthlyBreakdown.length > 0) {
+                  {{ summary.monthlyBreakdown[0].relPct }}%
+                } @else {
+                  0%
+                }
+              </span>
+            </div>
+            <div class="cap-bar-track">
+              <div class="cap-bar-fill fill-released"
+                [class.fill-warn]="summary.worstStatus === 'warn'"
+                [class.fill-over]="summary.worstStatus === 'over'"
+                [style.width.%]="summary.monthlyBreakdown.length > 0 ? barPct(summary.monthlyBreakdown[0].relPct) : 0">
+              </div>
+              @if (summary.monthlyBreakdown.length > 0 && summary.monthlyBreakdown[0].pendingLoad > 0) {
+                <div class="cap-bar-fill fill-pending"
+                  [style.left.%]="barPct(summary.monthlyBreakdown[0].relPct)"
+                  [style.width.%]="barPct(summary.monthlyBreakdown[0].projPct) - barPct(summary.monthlyBreakdown[0].relPct)">
+                </div>
+              }
+            </div>
+          </div>
+
+          <!-- Key stats row -->
+          <div class="card-stats">
+            <div class="stat">
+              <span class="stat-label">Weekly Cap</span>
+              <span class="stat-value">{{ summary.plant.monthlyCapacity | number }} <span class="stat-unit">u/mo</span></span>
+            </div>
+            <div class="stat">
+              <span class="stat-label">Pending</span>
+              <span class="stat-value">{{ summary.pendingQty | number }} <span class="stat-unit">units</span></span>
+            </div>
+            <div class="stat">
+              <span class="stat-label">Orders</span>
+              <span class="stat-value">{{ summary.pendingOrders.length }}</span>
+            </div>
+            <div class="stat">
+              <span class="stat-label">Region</span>
+              <span class="stat-value">{{ summary.plant.region }}</span>
+            </div>
+          </div>
+
+          <!-- Expanded: week-by-week breakdown -->
+          @if (isExpanded(summary.plant.id)) {
+            <div class="card-breakdown">
+              <div class="breakdown-header">
+                <span class="breakdown-col col-week">Month</span>
+                <span class="breakdown-col col-bar"></span>
+                <span class="breakdown-col col-rel">Released</span>
+                <span class="breakdown-col col-pend">Pending</span>
+                <span class="breakdown-col col-free">Free Units</span>
+                <span class="breakdown-col col-pct">Utilisation</span>
+              </div>
+
+              @for (month of summary.monthlyBreakdown; track month.monthKey) {
+                <div class="breakdown-row" [class]="monthRowClass(month)">
+                  <span class="breakdown-col col-week">{{ month.monthLabel }}</span>
+                  <span class="breakdown-col col-bar">
+                    <div class="mini-bar-track">
+                      <div class="mini-bar-fill mf-rel"
+                        [class.mf-warn]="month.status === 'warn'"
+                        [class.mf-over]="month.status === 'over'"
+                        [style.width.%]="barPct(month.relPct)">
+                      </div>
+                      @if (month.pendingLoad > 0) {
+                        <div class="mini-bar-fill mf-pend"
+                          [style.left.%]="barPct(month.relPct)"
+                          [style.width.%]="barPct(month.projPct) - barPct(month.relPct)">
+                        </div>
+                      }
+                    </div>
+                  </span>
+                  <span class="breakdown-col col-rel num">{{ month.releasedLoad | number }}</span>
+                  <span class="breakdown-col col-pend num" [class.pend-nonzero]="month.pendingLoad > 0">{{ month.pendingLoad | number }}</span>
+                  <span class="breakdown-col col-free num" [class.free-low]="month.freeUnits < month.releasedLoad * 0.15">{{ month.freeUnits | number }}</span>
+                  <span class="breakdown-col col-pct">
+                    <span class="util-badge"
+                      [class.ub-ok]="month.projStatus === 'ok'"
+                      [class.ub-warn]="month.projStatus === 'warn'"
+                      [class.ub-over]="month.projStatus === 'over'">
+                      {{ month.projPct }}%
+                    </span>
+                  </span>
+                </div>
+
+                <!-- Pending orders in this month -->
+                @if (month.pendingOrdersList.length > 0) {
+                  <div class="pending-orders-sub">
+                    @for (order of month.pendingOrdersList; track order.id) {
+                      <div class="pending-order-row">
+                        <i class="pi pi-angle-right sub-arrow"></i>
+                        <span class="sub-order-id">{{ order.id }}</span>
+                        <span class="sub-product">{{ order.product }}</span>
+                        <span class="sub-qty">{{ order.qty | number }} {{ order.unit }}</span>
+                      </div>
+                    }
+                  </div>
+                }
+              } @empty {
+                <div class="breakdown-empty">No scheduled weeks — no orders assigned to this plant.</div>
+              }
+            </div>
+          }
+
+        </div>
+      } @empty {
+        <div class="pc-empty">
+          <i class="pi pi-database"></i>
+          <span>No plant data loaded.</span>
+        </div>
+      }
+    }
+
+  </div>
+
+</div>

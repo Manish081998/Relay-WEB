@@ -1,0 +1,346 @@
+@use 'theme' as t;
+@use 'sass:color';
+
+$primary:     t.$color-primary;
+$surface:     t.$color-bg-surface;
+$surface-alt: t.$color-bg-subtle;
+$input-bg:    t.$color-bg-input;
+$border:      t.$color-border;
+$text:        t.$color-text-base;
+$text-muted:  t.$color-text-muted;
+$text-faint:  t.$color-text-subtle;
+$success:     t.$color-success;
+$success-bg:  t.$color-success-bg;
+$success-bdr: t.$color-success-border;
+$warning:     t.$color-warning;
+$warning-bg:  t.$color-warning-bg;
+$warning-bdr: t.$color-warning-border;
+$error:       t.$color-error;
+
+:host {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  font-family: t.$font-sans;
+  -webkit-font-smoothing: antialiased;
+}
+
+.ro-page {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+// ── Title ─────────────────────────────────────────────────────────────────────
+.ro-title-row {
+  display: flex;
+  align-items: center;
+  gap: t.$space-3;
+  margin-bottom: 8px;
+}
+
+.ro-title {
+  margin: 0;
+  font-size: t.$font-size-lg;
+  font-weight: t.$font-weight-bold;
+  color: $text;
+  letter-spacing: -0.01em;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  &::before {
+    content: '';
+    display: inline-block;
+    width: 3px;
+    height: 20px;
+    background: linear-gradient(180deg, t.$color-info, color.adjust(t.$color-info, $lightness: 10%));
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+}
+
+.ro-count-badge {
+  font-size: t.$font-size-xs;
+  color: $text-muted;
+  background: rgba($primary, 0.04);
+  border: 1px solid rgba($primary, 0.12);
+  border-radius: t.$radius-full;
+  padding: 3px 12px;
+
+  strong { color: $primary; font-weight: t.$font-weight-bold; }
+}
+
+// ── Toolbar ───────────────────────────────────────────────────────────────────
+.ro-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: t.$space-2;
+  padding: 8px 12px;
+  margin-bottom: 10px;
+  background: $surface;
+  border: 1px solid $border;
+  border-radius: t.$radius-lg;
+  box-shadow: t.$shadow-card;
+}
+
+.ro-toolbar-left,
+.ro-toolbar-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.toolbar-label {
+  font-size: t.$font-size-xs;
+  font-weight: t.$font-weight-bold;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: $text-muted;
+  white-space: nowrap;
+}
+
+.ro-select {
+  height: 30px;
+  padding: 0 10px;
+  background: $input-bg;
+  border: 1px solid $border;
+  border-radius: t.$radius-sm;
+  font-size: t.$font-size-xs;
+  font-family: t.$font-sans;
+  color: $text;
+  outline: none;
+  cursor: pointer;
+  min-width: 160px;
+  transition: border-color t.$transition-fast;
+
+  &:focus { border-color: $primary; box-shadow: 0 0 0 2px rgba($primary, 0.15); }
+}
+
+.btn-ghost-sm {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 26px;
+  padding: 0 10px;
+  border-radius: t.$radius-sm;
+  font-size: t.$font-size-xs;
+  font-weight: t.$font-weight-semibold;
+  font-family: t.$font-sans;
+  cursor: pointer;
+  background: $surface;
+  border: 1px solid $border;
+  color: $text-muted;
+  transition: all t.$transition-fast;
+  i { font-size: 0.65rem; }
+  &:hover { border-color: $primary; color: $primary; background: rgba($primary, 0.04); }
+}
+
+// ── Grid ──────────────────────────────────────────────────────────────────────
+.ro-grid-wrap {
+  flex: 1 1 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  background: $surface;
+  border: 1px solid $border;
+  border-radius: t.$radius-lg;
+  overflow: hidden;
+  box-shadow: t.$shadow-card;
+}
+
+.ro-tbl-scroll {
+  flex: 1 1 0;
+  min-height: 0;
+  overflow: auto;
+}
+
+// ── Skeleton ──────────────────────────────────────────────────────────────────
+@keyframes sk-pulse {
+  0%, 100% { opacity: 0.35; }
+  50%       { opacity: 1;    }
+}
+
+.sk-row { animation: sk-pulse 1.4s ease-in-out infinite both; }
+
+.sk-pill {
+  height: 11px;
+  border-radius: 6px;
+  background: rgba($primary, 0.18);
+}
+
+// ── Table ─────────────────────────────────────────────────────────────────────
+.ro-tbl {
+  width: max-content;
+  min-width: 100%;
+  border-collapse: collapse;
+
+  thead th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    font-size: t.$font-size-xs;
+    font-weight: t.$font-weight-bold;
+    color: $text-muted;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    background: $surface-alt;
+    padding: 8px 10px;
+    border-bottom: 2px solid $border;
+    text-align: left;
+    white-space: nowrap;
+
+    &.col-r { text-align: right; }
+
+    &.sortable {
+      cursor: pointer;
+      user-select: none;
+      transition: background t.$transition-fast, color t.$transition-fast;
+      &:hover { background: color.mix($primary, $surface-alt, 8%); color: $primary; }
+      &.sort-active { background: rgba($primary, 0.06); color: $primary; border-bottom-color: $primary; }
+    }
+
+    .sort-icon {
+      display: inline-flex;
+      align-items: center;
+      margin-left: 4px;
+      vertical-align: middle;
+      i { font-size: 0.65rem; color: $text-faint; }
+    }
+    &.sort-active .sort-icon i { color: $primary; }
+  }
+
+  tbody tr {
+    background: $surface;
+    transition: background 80ms;
+    &.row-alt { background: rgba($primary, 0.03); }
+    &:hover   { background: rgba($primary, 0.06); }
+  }
+
+  tbody td {
+    font-size: t.$font-size-xs;
+    color: $text;
+    padding: 7px 10px;
+    border-bottom: 1px solid rgba($border, 0.4);
+    vertical-align: middle;
+    white-space: nowrap;
+
+    &.col-r { text-align: right; font-variant-numeric: tabular-nums; }
+  }
+
+  td.cell-trunc { max-width: 0; overflow: hidden; text-overflow: ellipsis; }
+  td.cell-empty {
+    text-align: center;
+    padding: 36px 16px;
+    color: $text-faint;
+    font-size: t.$font-size-sm;
+    font-style: italic;
+    white-space: normal;
+    background: $surface-alt;
+    i { margin-right: 6px; }
+  }
+}
+
+// ── Cell types ─────────────────────────────────────────────────────────────────
+.order-id {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.6875rem;
+  font-weight: t.$font-weight-semibold;
+  color: $primary;
+}
+
+.product-name { font-weight: t.$font-weight-medium; color: $text; }
+.product-sku  { font-size: 0.625rem; color: $text-faint; margin-top: 1px; }
+
+.qty-val  { font-weight: t.$font-weight-semibold; font-variant-numeric: tabular-nums; }
+.qty-unit { font-size: 0.6rem; color: $text-faint; margin-left: 2px; }
+
+.date-cell { font-size: 0.7rem; color: $text-muted; }
+
+.plant-cell { display: flex; flex-direction: column; gap: 1px; }
+.plant-id   { font-family: monospace; font-size: 0.6875rem; color: $primary; font-weight: t.$font-weight-semibold; }
+.plant-name-sub { font-size: 0.625rem; color: $text-faint; }
+
+.week-badge {
+  font-size: 0.6rem;
+  font-family: monospace;
+  color: $text-faint;
+  white-space: nowrap;
+}
+
+// ── Utilisation bar ────────────────────────────────────────────────────────────
+.util-cell {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.util-bar-track {
+  flex: 1;
+  height: 5px;
+  background: rgba($border, 0.6);
+  border-radius: 3px;
+  overflow: hidden;
+  min-width: 40px;
+}
+
+.util-bar-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.3s ease;
+
+  &.uf-ok   { background: rgba($success, 0.55); }
+  &.uf-warn { background: $warning; }
+  &.uf-over { background: $error;   }
+}
+
+.util-pct {
+  font-size: 0.6875rem;
+  font-family: monospace;
+  font-weight: t.$font-weight-semibold;
+  color: $success;
+  min-width: 32px;
+  text-align: right;
+
+  &.pct-warn { color: $warning; }
+  &.pct-over { color: $error;   }
+}
+
+.released-at {
+  font-size: 0.6875rem;
+  color: $text-faint;
+  font-style: italic;
+}
+
+// ── Pagination ─────────────────────────────────────────────────────────────────
+.ro-pager {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 6px 14px;
+  border-top: 1px solid $border;
+  background: $surface-alt;
+  justify-content: flex-end;
+}
+
+.pg-info { font-size: t.$font-size-xs; color: $text-muted; white-space: nowrap; }
+
+.pg-btn {
+  height: 26px;
+  padding: 0 14px;
+  font-size: t.$font-size-xs;
+  font-weight: t.$font-weight-semibold;
+  font-family: t.$font-sans;
+  border: 1px solid $border;
+  border-radius: t.$radius-sm;
+  background: $surface;
+  color: $text-muted;
+  cursor: pointer;
+  transition: all t.$transition-fast;
+
+  &:hover:not(:disabled) { background: rgba($primary, 0.04); border-color: $primary; color: $primary; }
+  &:disabled { opacity: 0.35; cursor: default; }
+}
