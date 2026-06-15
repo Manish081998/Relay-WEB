@@ -12,7 +12,8 @@ import { AuthStore } from '../../../../core/auth/auth.store';
 import { NotificationService } from '../../../../core/services/notification.service';
 import { NOTIFICATION_MESSAGES as NM } from '../../../../core/constants/notification-messages';
 import { EdgeOrdersService } from '../../services/edge-orders.service';
-import { LineItem, OrderByGuidData, PlantCode, PlantCodeUpdateDto, ShipTerm } from '../../models/edge-orders.model';
+import { LineItem, LineItemFamily, OrderByGuidData, PlantCode, PlantCodeUpdateDto, ShipTerm } from '../../models/edge-orders.model';
+import { getConfigByFamilyTag, HeaderCell, OrderTypeConfig } from '../../models/order-config.model';
 
 @Component({
   selector: 'app-edit-order',
@@ -32,7 +33,7 @@ export class EditOrder implements OnInit {
   private readonly edgeOrdersSvc   = inject(EdgeOrdersService);
   private readonly notify          = inject(NotificationService);
 
-  readonly lineItems              = signal<LineItem[]>([]);
+  readonly lineItemFamilies       = signal<LineItemFamily[]>([]);
   readonly isFastTrack            = signal(false);
   readonly marshalFileLabel       = signal('');
   readonly plantCodes             = signal<PlantCode[]>([]);
@@ -55,6 +56,42 @@ export class EditOrder implements OnInit {
 
   isEdited(section: string): boolean {
     return this.editedSections().has(section);
+  }
+
+  cfgFor(familyTag: string): OrderTypeConfig {
+    return getConfigByFamilyTag(familyTag, this._orderData?.brand ?? '');
+  }
+
+  headersFor(cfg: OrderTypeConfig): HeaderCell[][] {
+    return cfg.headerRows.length > 0
+      ? cfg.headerRows
+      : [cfg.columns.map((c) => ({ label: c.label }))];
+  }
+
+  toRecord(item: LineItem, cfg: OrderTypeConfig): Record<string, string> {
+    const rec: Record<string, string> = {
+      line:       item.line,
+      qty:        item.quantity,
+      model:      item.model,
+      priceEach:  item.individualPrice,
+      totalPrice: item.totalCost,
+      tag:        item.tag        ?? '',
+      comment:    item.comment    ?? '',
+      multiplier: item.multiplier ?? '',
+    };
+    const ef = item.extraFields ?? {};
+    for (const col of cfg.columns) {
+      if (rec[col.key] !== undefined) continue;
+      let val: string | null | undefined = ef[col.key];
+      if (!val) {
+        for (const tag of col.xmlTags) {
+          val = ef[tag] ?? ef[tag.toLowerCase()] ?? ef[tag.toUpperCase()];
+          if (val) break;
+        }
+      }
+      rec[col.key] = val ?? '';
+    }
+    return rec;
   }
 
   cancelChanges(): void {
@@ -396,8 +433,7 @@ export class EditOrder implements OnInit {
   }
 
   private patchFromApiResponse(data: OrderByGuidData): void {
-    const allItems = (data.lineItemFamilies ?? []).flatMap(f => f.items ?? []);
-    this.lineItems.set(allItems);
+    this.lineItemFamilies.set(data.lineItemFamilies ?? []);
     this.plantCodes.set(data.plantCodes ?? []);
     this.shipTermsData.set(data.shipTerms ?? []);
     this.isFastTrack.set(data.isFastTrack ?? false);

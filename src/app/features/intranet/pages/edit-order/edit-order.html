@@ -19,53 +19,52 @@
       <span class="card-title">Line Items</span>
     </div>
     <div class="card-body li-card-body">
-      <div class="li-table-wrap">
-        <table class="li-table">
-          <thead>
-            <tr>
-              <th>Line</th>
-              <th>Plant Code</th>
-              <th>Alt Plant</th>
-              <th>Quantity</th>
-              <th>Model</th>
-              <th>Comment</th>
-              <th>Tag</th>
-              <th>Multiplier</th>
-              <th>Individual Price</th>
-              <th>Total Cost</th>
-              <th>Group Id</th>
-              <th>Made In USA</th>
-            </tr>
-          </thead>
-          <tbody>
-            @if (lineItems().length === 0) {
-              <tr>
-                <td colspan="12" class="li-empty">No line items.</td>
-              </tr>
-            }
-            @for (item of lineItems(); track item.line) {
-              <tr>
-                <td>{{ item.line }}</td>
-                <td>{{ item.plantCode }}</td>
-                <td>
-                  <button type="button" class="plant-code-btn" (click)="openPlantCodePopup(item)">
-                    {{ item.secondaryPlantCode || '—' }}
-                  </button>
-                </td>                
-                <td>{{ item.quantity }}</td>
-                <td>{{ item.model }}</td>
-                <td class="li-trunc" [title]="item.comment ?? ''">{{ item.comment }}</td>
-                <td>{{ item.tag }}</td>
-                <td class="li-trunc" [title]="item.multiplier">{{ item.multiplier }}</td>
-                <td>{{ item.individualPrice }}</td>
-                <td>{{ item.totalCost }}</td>
-                <td>{{ item.groupId }}</td>
-                <td>{{ item.madeInUsa ? 'Yes' : 'No' }}</td>
-              </tr>
-            }
-          </tbody>
-        </table>
-      </div>
+
+      @if (lineItemFamilies().length === 0) {
+        <div class="li-empty">No line items.</div>
+      } @else {
+        @let cfg  = cfgFor(lineItemFamilies()[0].familyTag);
+        @let rows = headersFor(cfg);
+        <div class="li-table-wrap">
+          <table class="li-table">
+            <thead>
+              @for (row of rows; track $index; let rowIdx = $index) {
+                <tr>
+                  @if (rowIdx === 0) {
+                    <th [attr.rowspan]="rows.length > 1 ? rows.length : null">Plant Code</th>
+                    <th [attr.rowspan]="rows.length > 1 ? rows.length : null">Alt Plant</th>
+                  }
+                  @for (cell of row; track $index) {
+                    <th
+                      [attr.rowspan]="cell.rowspan ?? null"
+                      [attr.colspan]="cell.colspan ?? null"
+                    >{{ cell.label }}</th>
+                  }
+                </tr>
+              }
+            </thead>
+            <tbody>
+              @for (family of lineItemFamilies(); track family.familyTag) {
+                @for (item of family.items; track item.line) {
+                  @let rec = toRecord(item, cfg);
+                  <tr>
+                    <td>{{ item.plantCode }}</td>
+                    <td>
+                      <button type="button" class="plant-code-btn" (click)="openPlantCodePopup(item)">
+                        {{ item.secondaryPlantCode || '—' }}
+                      </button>
+                    </td>
+                    @for (col of cfg.columns; track col.key) {
+                      <td [class]="'li-td-' + col.align">{{ rec[col.key] }}</td>
+                    }
+                  </tr>
+                }
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+
     </div>
   </div>
 

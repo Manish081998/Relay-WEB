@@ -70,8 +70,8 @@ const TITUSGRD_COLUMNS: TableColumn[] = [
   { key: 'line', label: 'Line', xmlTags: ['Line'], align: 'center', widthPct: 4 },
   { key: 'qty', label: 'Qty', xmlTags: ['Qty'], align: 'center', widthPct: 4 },
   { key: 'model', label: 'Model', xmlTags: ['Model'], align: 'left', widthPct: 10 },
-  { key: 'dimOne', label: 'Dim 1', xmlTags: ['DimOne', 'WIDTH'], align: 'center', widthPct: 5 },
-  { key: 'dimTwo', label: 'Dim 2', xmlTags: ['DimTwo', 'HEIGHT'], align: 'center', widthPct: 5 },
+  { key: 'dimOne', label: 'Dim 1', xmlTags: ['DimOne', 'WIDTH', 'DIM1'], align: 'center', widthPct: 5 },
+  { key: 'dimTwo', label: 'Dim 2', xmlTags: ['DimTwo', 'HEIGHT', 'DIM2'], align: 'center', widthPct: 5 },
   {
     key: 'modSize',
     label: 'Module Size',
@@ -82,7 +82,7 @@ const TITUSGRD_COLUMNS: TableColumn[] = [
   {
     key: 'frameBorder',
     label: 'Frame',
-    xmlTags: ['FrameBorder', 'BORDER'],
+    xmlTags: ['FrameBorder', 'BORDER', 'FRAME'],
     align: 'center',
     widthPct: 5,
   },
@@ -90,7 +90,7 @@ const TITUSGRD_COLUMNS: TableColumn[] = [
   {
     key: 'fastenPattern',
     label: 'Fastener',
-    xmlTags: ['FastenPattern', 'MOUNTING'],
+    xmlTags: ['FastenPattern', 'MOUNTING', 'PATTERN'],
     align: 'center',
     widthPct: 6,
   },
@@ -1511,7 +1511,7 @@ const KRUGRD_COLUMNS: TableColumn[] = [
   { key: 'endBorder', label: 'End Border', xmlTags: ['endborder'], align: 'center', widthPct: 5 },
   { key: 'frame', label: 'Frame', xmlTags: ['frame', 'basket'], align: 'center', widthPct: 5 },
   { key: 'finish', label: 'Finish', xmlTags: ['finish'], align: 'center', widthPct: 4 },
-  { key: 'panel', label: 'Panel', xmlTags: ['panel', 'curved'], align: 'center', widthPct: 4 },
+  { key: 'panel', label: 'Panel', xmlTags: ['panel', 'curved', 'module'], align: 'center', widthPct: 4 },
   {
     key: 'numSlots',
     label: '# of Slots',
@@ -1522,7 +1522,7 @@ const KRUGRD_COLUMNS: TableColumn[] = [
   {
     key: 'actFast',
     label: 'Act / Fast. / Mount',
-    xmlTags: ['fastening', 'mount', 'actuator', 'vpqdiftyp', 'ufd_len_alph'],
+    xmlTags: ['fastening', 'mount', 'actuator', 'vpqdiftyp', 'ufd_len_alph', 'pattern'],
     align: 'center',
     widthPct: 7,
   },
@@ -2640,6 +2640,24 @@ const ALL_CONFIGS: OrderTypeConfig[] = [
 
 export function getConfigById(id: string): OrderTypeConfig {
   return ALL_CONFIGS.find((c) => c.id === id) ?? TITUSGRD_CONFIG;
+}
+
+export function getConfigByFamilyTag(familyTag: string, brand?: string): OrderTypeConfig {
+  const tag = familyTag.toLowerCase();
+  const found = ALL_CONFIGS.find((cfg) =>
+    cfg.groupSelector
+      .split(',')
+      .map((s) => s.split('>')[0].trim().toLowerCase())
+      .some((t) => t === tag),
+  );
+  if (found) return found;
+  // Fall back to the brand's primary table config when no groupSelector matches
+  switch ((brand ?? '').toUpperCase()) {
+    case 'KRU': return KRUGRD_CONFIG;
+    case 'TNB': return TNBHEADER_CONFIG;
+    case 'PEN': return GENERIC_CONFIG;
+    default:    return TITUSGRD_CONFIG;
+  }
 }
 
 /**
