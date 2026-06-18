@@ -463,6 +463,19 @@ $text-faint:  t.$color-text-subtle;
   }
 }
 
+// ── Queue pill ──────────────────────────────────────────────────────────────
+.queue-pill {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: t.$radius-full;
+  font-size: 0.6rem;
+  font-weight: t.$font-weight-bold;
+  letter-spacing: 0.03em;
+  background: rgba($primary, 0.08);
+  color: $primary-dk;
+  border: 1px solid rgba($primary, 0.2);
+}
+
 // ── Status chip ──────────────────────────────────────────────────────────────
 .status-chip {
   display: inline-block;
@@ -502,6 +515,73 @@ $text-faint:  t.$color-text-subtle;
     background: t.$color-error-bg;
     color: #842029;
     border: 1px solid t.$color-error-border;
+  }
+
+  &--acquired {
+    background: rgba(t.$color-info, 0.1);
+    color: t.$color-info;
+    border: 1px solid t.$color-info-border;
+  }
+
+  &--dormant {
+    background: t.$color-success-bg;
+    color: #065f46;
+    border: 1px solid t.$color-success-border;
+  }
+
+  &--none {
+    background: t.$color-warning-bg;
+    color: #7a4e00;
+    border: 1px solid t.$color-warning-border;
+  }
+}
+
+// ── Acquire result banner ────────────────────────────────────────────────────
+.acquire-result {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  font-size: t.$font-size-xs;
+  font-weight: t.$font-weight-semibold;
+  border: 1px solid $border;
+  background: $surface-alt;
+
+  > i { font-size: 0.85rem; flex-shrink: 0; }
+
+  &--success {
+    background: t.$color-success-bg;
+    color: #065f46;
+    border-color: t.$color-success-border;
+  }
+  &--warning {
+    background: t.$color-warning-bg;
+    color: #7a4e00;
+    border-color: t.$color-warning-border;
+  }
+  &--error {
+    background: t.$color-error-bg;
+    color: #842029;
+    border-color: t.$color-error-border;
+  }
+
+  &--info {
+    background: #eff6ff;
+    color: #1e40af;
+    border-color: #bfdbfe;
+  }
+
+  &__close {
+    margin-left: auto;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: inherit;
+    opacity: 0.6;
+    padding: 2px 4px;
+    font-size: 0.75rem;
+
+    &:hover { opacity: 1; }
   }
 }
 

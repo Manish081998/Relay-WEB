@@ -3,6 +3,7 @@
   "configurations": [
     {
       "name": "angular-dev",
+      "cwd": ".",
       "runtimeExecutable": "npx",
       "runtimeArgs": ["ng", "serve", "--port", "4200"],
       "port": 4200

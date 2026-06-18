@@ -514,6 +514,19 @@ $text-faint:  t.$color-text-subtle;
   }
 }
 
+// ── Queue pill ──────────────────────────────────────────────────────────────
+.queue-pill {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: t.$radius-full;
+  font-size: 0.6rem;
+  font-weight: t.$font-weight-bold;
+  letter-spacing: 0.03em;
+  background: rgba($primary, 0.08);
+  color: $primary-dk;
+  border: 1px solid rgba($primary, 0.2);
+}
+
 // ── Status chip ──────────────────────────────────────────────────────────────
 .status-chip {
   display: inline-block;
@@ -553,6 +566,24 @@ $text-faint:  t.$color-text-subtle;
     background: t.$color-error-bg;
     color: #842029;
     border: 1px solid t.$color-error-border;
+  }
+
+  &--acquired {
+    background: rgba(t.$color-info, 0.1);
+    color: t.$color-info;
+    border: 1px solid t.$color-info-border;
+  }
+
+  &--dormant {
+    background: t.$color-success-bg;
+    color: #065f46;
+    border: 1px solid t.$color-success-border;
+  }
+
+  &--none {
+    background: t.$color-warning-bg;
+    color: #7a4e00;
+    border: 1px solid t.$color-warning-border;
   }
 }
 

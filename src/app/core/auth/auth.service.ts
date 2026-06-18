@@ -20,6 +20,9 @@ export interface ApiUserProfile {
   office: string | null;
   userType: string;
   profileImage: string | null;
+  brandId: number | null;
+  brandName: string | null;
+  associatedQueueNames: string[];
 }
 
 export interface LoginResponse {

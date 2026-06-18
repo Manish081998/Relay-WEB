@@ -21,7 +21,7 @@
       </div>
       <div class="field">
         <label for="brand">Brand</label>
-        <p-select id="brand" formControlName="brand" [options]="brands()" optionLabel="label" optionValue="value" placeholder="Select" [showClear]="true" appendTo="body" panelStyleClass="order-search-select-panel" styleClass="w-full" (onChange)="onBrandChange()" />
+        <p-select id="brand" formControlName="brand" [options]="brands()" optionLabel="label" optionValue="value" placeholder="Select" [showClear]="!brandDisabled()" [disabled]="brandDisabled()" appendTo="body" panelStyleClass="order-search-select-panel" styleClass="w-full" (onChange)="onBrandChange()" />
       </div>
 
       <!-- Row 2 -->
@@ -66,9 +66,19 @@
         <label for="pageSize">Records</label>
         <input id="pageSize" pInputText type="text" inputmode="numeric" formControlName="pageSize" placeholder="100" autocomplete="off" />
       </div>
+      @if (showAcquireButton() && acquireMessage()) {
+        <span class="acquire-message">
+          <i class="pi pi-exclamation-triangle"></i>
+          {{ acquireMessage() }}
+        </span>
+      }
       @if (showAcquireButton()) {
-        <button type="button" class="btn-acquire" (click)="acquire.emit()">
-          Acquire Selected Queue Items
+        <button type="button" class="btn-acquire" [disabled]="acquireDisabled() || isAcquiring()" [class.btn-acquire--loading]="isAcquiring()" (click)="acquire.emit()">
+          @if (isAcquiring()) {
+            <i class="pi pi-spin pi-spinner"></i> Acquiring items, please wait...
+          } @else {
+            Acquire Selected Queue Items
+          }
         </button>
       }
       <button type="button" class="btn-clear" (click)="onClear()">

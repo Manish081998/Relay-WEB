@@ -13,4 +13,7 @@ export interface AppUser {
   department?: string | null;
   office?: string | null;
   profileImage?: string | null;
+  brandId?: number | null;
+  brandName?: string | null;
+  associatedQueueNames?: string[];
 }

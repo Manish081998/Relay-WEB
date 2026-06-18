@@ -6,8 +6,12 @@
     [regions]="regions()"
     [brands]="brands()"
     [queueNames]="queueNames()"
-    [showAcquireButton]="true"
-    [defaultBrand]="'Krueger'"
+    [showAcquireButton]="isAdmin()"
+    [acquireDisabled]="acquireDisabled()"
+    [acquireMessage]="acquireValidationMessage()"
+    [isAcquiring]="isAcquiring()"
+    [defaultBrand]="userBrand()"
+    [brandDisabled]="brandDisabled()"
     (brandChanged)="onBrandChanged($event)"
     (search)="onSearch($event)"
     (cleared)="onCleared()"
@@ -47,6 +51,21 @@
           </button>
         }
       </div>
+    </div>
+  }
+
+  <!-- Acquire result banner -->
+  @if (acquireResultMessage()) {
+    <div class="acquire-result" [class.acquire-result--success]="acquireResultType() === 'success'"
+         [class.acquire-result--warning]="acquireResultType() === 'warning'"
+         [class.acquire-result--error]="acquireResultType() === 'error'">
+      <i class="pi" [class.pi-check-circle]="acquireResultType() === 'success'"
+         [class.pi-exclamation-triangle]="acquireResultType() === 'warning'"
+         [class.pi-times-circle]="acquireResultType() === 'error'"></i>
+      <span>{{ acquireResultMessage() }}</span>
+      <button class="acquire-result__close" (click)="acquireResultMessage.set('')">
+        <i class="pi pi-times"></i>
+      </button>
     </div>
   }
 
@@ -201,6 +220,7 @@
               </span>
               <span class="col-resize-handle" (mousedown)="onResizeStart($event, thBrand)"></span>
             </th>
+            <th style="width:80px;min-width:60px">Status</th>
           </tr>
           <!-- Filter row -->
           <tr class="filter-row">
@@ -218,6 +238,7 @@
             <th></th>
             <th><input type="text" class="col-filter" placeholder="Filter..." [ngModel]="colFilters()['packageOwner'] ?? ''" (ngModelChange)="onFilterChange('packageOwner', $event)" /></th>
             <th><input type="text" class="col-filter" placeholder="Filter..." [ngModel]="colFilters()['brand'] ?? ''" (ngModelChange)="onFilterChange('brand', $event)" /></th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
@@ -238,6 +259,7 @@
                 <td><div class="sk-pill" [style.width]="(55 + (i * 13) % 30) + '%'"></div></td>
                 <td><div class="sk-pill" [style.width]="(50 + (i * 9) % 35) + '%'"></div></td>
                 <td><div class="sk-pill" [style.width]="(40 + (i * 11) % 30) + '%'"></div></td>
+                <td><div class="sk-pill" style="width:60%"></div></td>
               </tr>
             }
           } @else {
@@ -247,7 +269,7 @@
                   <label class="chk-wrap">
                     <input type="checkbox"
                            [checked]="isRowSelected(order.orderGuid)"
-                           (change)="selectRow(order.orderGuid)" />
+                           (change)="toggleRow(order.orderGuid)" />
                     <span class="chk-box">
                       <i class="pi pi-check"></i>
                     </span>
@@ -280,10 +302,19 @@
                     <span class="brand-tag">{{ order.brand }}</span>
                   }
                 </td>
+                <td>
+                  @if (order.isAcquired) {
+                    <span class="status-chip status-chip--acquired">Acquired</span>
+                  } @else if (order.currentQueueId != null) {
+                    <span class="status-chip status-chip--dormant">Dormant</span>
+                  } @else {
+                    <span class="status-chip status-chip--none">No Queue</span>
+                  }
+                </td>
               </tr>
             } @empty {
               <tr>
-                <td colspan="14" class="cell-empty">
+                <td colspan="15" class="cell-empty">
                   @if (searched()) {
                     <i class="pi pi-inbox"></i> No records found matching your criteria.
                   } @else {

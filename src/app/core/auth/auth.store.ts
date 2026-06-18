@@ -71,6 +71,9 @@ export class AuthStore {
       department: user.department,
       office: user.office,
       profileImage: user.profileImage,
+      brandId: user.brandId,
+      brandName: user.brandName,
+      associatedQueueNames: user.associatedQueueNames ?? [],
     };
   }
 

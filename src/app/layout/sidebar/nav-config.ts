@@ -65,7 +65,7 @@ export const NAV_GROUPS: NavGroup[] = [
     label: 'Administration',
     icon: NAV_ICONS.settings,
     color: '#f97316',
-    roles: 'all',
+    roles: [Role.SuperAdmin],
     children: [
       {
         label: 'Manage Queue',

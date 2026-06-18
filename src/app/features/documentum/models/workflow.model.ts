@@ -25,3 +25,18 @@ export interface WorkflowActionResult {
   success: boolean;
   message: string;
 }
+
+export interface BulkAcquireItemResult {
+  orderSeq: number;
+  status: 'acquired' | 'already_acquired' | 'no_queue' | 'error';
+  message: string;
+}
+
+export interface BulkAcquireResult {
+  totalRequested: number;
+  acquiredCount: number;
+  alreadyAcquiredCount: number;
+  noQueueCount: number;
+  errorCount: number;
+  items: BulkAcquireItemResult[];
+}

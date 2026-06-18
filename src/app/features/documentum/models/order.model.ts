@@ -22,6 +22,9 @@ export interface OrderItem {
   createdDate: string;
   completionDate: string;
   packageOwner: string;
+  isAcquired: boolean;
+  acquiredBy: string | null;
+  currentQueueId: number | null;
 }
 
 export interface OrderSearchResponse {

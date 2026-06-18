@@ -2,7 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiService } from '../../../core/services/api.service';
 import { ENVIRONMENT } from '../../../core/tokens/environment.token';
-import { WorkflowState, WorkflowHistoryItem, WorkflowActionResult } from '../models/workflow.model';
+import { WorkflowState, WorkflowHistoryItem, WorkflowActionResult, BulkAcquireResult } from '../models/workflow.model';
 
 @Injectable()
 export class WorkflowService {
@@ -37,6 +37,13 @@ export class WorkflowService {
     return this.api.post<WorkflowActionResult>(
       `${this.base(orderSeq)}/complete`,
       { destinationQueueId, displayName },
+    );
+  }
+
+  bulkAcquire(orderSeqs: number[], displayName: string): Observable<BulkAcquireResult> {
+    return this.api.post<BulkAcquireResult>(
+      `${this.env.apiBaseUrl}/api/documentum/workflow/bulk-acquire`,
+      { orderSeqs, displayName },
     );
   }
 }

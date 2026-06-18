@@ -6,7 +6,8 @@
     [regions]="regions()"
     [brands]="brands()"
     [queueNames]="queueNames()"
-    [defaultBrand]="'Carrier'"
+    [defaultBrand]="userBrand()"
+    [brandDisabled]="brandDisabled()"
     (brandChanged)="onBrandChanged($event)"
     (search)="onSearch($event)"
     (cleared)="onCleared()"
@@ -29,11 +30,6 @@
         }
       </div>
       <div class="qs-toolbar-actions">
-        @if (selectedCount() > 0) {
-          <span class="selection-badge">
-            <i class="pi pi-check-square"></i> {{ selectedCount() }} selected
-          </span>
-        }
         @if (hasActiveSort) {
           <button class="btn-clear-filters" (click)="clearSort()">
             <i class="pi pi-sort-alt-slash"></i> Clear Sort
@@ -55,7 +51,6 @@
       <table class="qs-tbl" [class.resizable]="!loading()">
         <thead>
           <tr>
-            <th class="col-chk" style="width:36px;min-width:36px"></th>
             <th class="sortable" [class.sort-active]="sortField() === 'repPO'" style="width:120px;min-width:60px" (click)="onSort('repPO')" #thRepPO>
               Purchase Order
               <span class="sort-icon">
@@ -199,10 +194,10 @@
               </span>
               <span class="col-resize-handle" (mousedown)="onResizeStart($event, thBrand)"></span>
             </th>
+            <th style="width:80px;min-width:60px">Status</th>
           </tr>
           <!-- Filter row -->
           <tr class="filter-row">
-            <th class="col-chk"></th>
             <th><input type="text" class="col-filter" placeholder="Filter..." [ngModel]="colFilters()['repPO'] ?? ''" (ngModelChange)="onFilterChange('repPO', $event)" /></th>
             <th><input type="text" class="col-filter" placeholder="Filter..." [ngModel]="colFilters()['salesOrderNumber'] ?? ''" (ngModelChange)="onFilterChange('salesOrderNumber', $event)" /></th>
             <th><input type="text" class="col-filter" placeholder="Filter..." [ngModel]="colFilters()['priority'] ?? ''" (ngModelChange)="onFilterChange('priority', $event)" /></th>
@@ -216,13 +211,13 @@
             <th></th>
             <th><input type="text" class="col-filter" placeholder="Filter..." [ngModel]="colFilters()['packageOwner'] ?? ''" (ngModelChange)="onFilterChange('packageOwner', $event)" /></th>
             <th><input type="text" class="col-filter" placeholder="Filter..." [ngModel]="colFilters()['brand'] ?? ''" (ngModelChange)="onFilterChange('brand', $event)" /></th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
           @if (loading()) {
             @for (_ of skeletonRows; track $index; let i = $index) {
               <tr class="sk-row" [class.row-alt]="i % 2 !== 0" [style.animation-delay]="(i * 80) + 'ms'">
-                <td class="col-chk"><div class="sk-pill" style="width:16px;height:16px;border-radius:3px"></div></td>
                 <td><div class="sk-pill" [style.width]="(60 + (i * 7) % 30) + '%'"></div></td>
                 <td><div class="sk-pill" [style.width]="(50 + (i * 11) % 35) + '%'"></div></td>
                 <td><div class="sk-pill" style="width:40%"></div></td>
@@ -236,21 +231,12 @@
                 <td><div class="sk-pill" [style.width]="(55 + (i * 13) % 30) + '%'"></div></td>
                 <td><div class="sk-pill" [style.width]="(50 + (i * 9) % 35) + '%'"></div></td>
                 <td><div class="sk-pill" [style.width]="(40 + (i * 11) % 30) + '%'"></div></td>
+                <td><div class="sk-pill" style="width:60%"></div></td>
               </tr>
             }
           } @else {
             @for (order of orders(); track order.orderGuid; let i = $index) {
-              <tr [class.row-alt]="i % 2 !== 0" [class.row-selected]="isRowSelected(order.orderGuid)">
-                <td class="col-chk">
-                  <label class="chk-wrap">
-                    <input type="checkbox"
-                           [checked]="isRowSelected(order.orderGuid)"
-                           (change)="selectRow(order.orderGuid)" />
-                    <span class="chk-box">
-                      <i class="pi pi-check"></i>
-                    </span>
-                  </label>
-                </td>
+              <tr [class.row-alt]="i % 2 !== 0">
                 <td class="cell-link cell-po" (click)="openOrder(order)">{{ order.repPO }}</td>
                 <td class="cell-seq">{{ order.salesOrderNumber }}</td>
                 <td class="cell-priority">
@@ -276,6 +262,15 @@
                 <td class="cell-brand">
                   @if (order.brand) {
                     <span class="brand-tag">{{ order.brand }}</span>
+                  }
+                </td>
+                <td class="cell-status">
+                  @if (order.isAcquired) {
+                    <span class="status-chip status-chip--acquired">Acquired</span>
+                  } @else if (order.currentQueueId != null) {
+                    <span class="status-chip status-chip--dormant">Dormant</span>
+                  } @else {
+                    <span class="status-chip status-chip--none">No Queue</span>
                   }
                 </td>
               </tr>

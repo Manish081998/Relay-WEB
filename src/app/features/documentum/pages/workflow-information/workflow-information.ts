@@ -98,14 +98,18 @@ export class WorkflowInformation {
 
   readonly isAcquired = computed(() => this.workflowState()?.isAcquired ?? false);
 
+  readonly hasNoQueue = computed(() =>
+    !this.isLoadingWorkflow() && this.workflowState() === null,
+  );
+
   readonly isAcquiredByMe = computed(() => {
     const state = this.workflowState();
     if (!state?.isAcquired || !state.acquiredBy) return false;
     return state.acquiredBy.toLowerCase() === this.currentUserGlobalId();
   });
 
-  // Dormant: show Acquire only
-  readonly showAcquireBtn = computed(() => !this.isAcquired());
+  // Dormant: show Acquire only (hidden when no queue assigned)
+  readonly showAcquireBtn = computed(() => !this.isAcquired() && !this.hasNoQueue());
   // Acquired: show Unassign only to acquiring user
   readonly showUnassignBtn = computed(() => this.isAcquiredByMe());
   // Acquired: show Complete (enabled only when Route To selected)
@@ -146,6 +150,9 @@ export class WorkflowInformation {
   readonly workflowStartedOn = computed(() => this.workflowState()?.startedOn ?? '');
 
   readonly acquireBtnTooltip = computed(() => {
+    if (this.hasNoQueue()) {
+      return 'This order is not assigned to any queue and cannot be acquired';
+    }
     const state = this.workflowState();
     if (state?.isAcquired) {
       const name = state.acquiredByName ?? state.acquiredBy ?? WORKFLOW.FALLBACK_NAME;

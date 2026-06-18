@@ -121,13 +121,21 @@ $divider:     rgba(t.$color-border, 0.4);
     box-shadow: none;
     transition: border-color t.$transition-base, background t.$transition-base, box-shadow t.$transition-base;
  
-    &:hover { border-color: $border-str; background: $surface; }
- 
-    &.p-focus {
+    &:hover:not(.p-disabled) { border-color: $border-str; background: $surface; }
+
+    &.p-focus:not(.p-disabled) {
       border-color: $primary;
       background: $surface;
       box-shadow: 0 0 0 2px $primary-glow;
       outline: none;
+    }
+
+    &.p-disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+      background: $surface-alt;
+      border-color: $border;
+      pointer-events: none;
     }
  
     .p-select-label {
@@ -160,8 +168,8 @@ $divider:     rgba(t.$color-border, 0.4);
     }
   }
 
-  // Brand dropdown always highlighted when a value is selected
-  #brand.p-select:has(.p-select-label:not(.p-placeholder)) {
+  // Brand dropdown always highlighted when a value is selected (but not when disabled)
+  #brand.p-select:not(.p-disabled):has(.p-select-label:not(.p-placeholder)) {
     border-color: $primary;
     background: rgba($primary, 0.04);
     box-shadow: 0 0 0 2px $primary-glow;
@@ -239,12 +247,39 @@ $divider:     rgba(t.$color-border, 0.4);
   color: $text-body;
   padding: 0 16px;
 
-  &:hover {
+  &:hover:not(:disabled) {
     border-color: $primary;
     color: $primary;
     background: rgba($primary, 0.04);
   }
-  &:active { background: rgba($primary, 0.08); }
+  &:active:not(:disabled) { background: rgba($primary, 0.08); }
+  &:disabled { opacity: 0.45; cursor: not-allowed; }
+
+  &--loading {
+    background: #60a5fa !important;
+    border-color: #60a5fa !important;
+    color: #fff !important;
+    opacity: 1 !important;
+    cursor: wait !important;
+
+    i { color: #fff; }
+  }
+}
+
+.acquire-message {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  font-size: 0.65rem;
+  line-height: 1.4;
+  color: #842029;
+  background: #fff5f5;
+  border: 1px solid #f5c6cb;
+  border-radius: t.$radius-sm;
+  white-space: nowrap;
+
+  i { font-size: 0.7rem; flex-shrink: 0; color: #e65100; }
 }
 
 .btn-clear {
