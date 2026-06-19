@@ -6,6 +6,8 @@ export interface NavChild {
   route: string;
   icon: string;
   color?: string;
+  requiredRoles?: Role[];
+  requiredQueues?: string[];
 }
 
 export interface NavGroup {
@@ -43,7 +45,7 @@ export const NAV_GROUPS: NavGroup[] = [
         icon: NAV_ICONS.users,
         color: '#60a5fa',
       },
-      { label: 'EDI', route: '/intranet/edi', icon: NAV_ICONS.selections, color: '#a78bfa' },
+      { label: 'EDI', route: '/intranet/edi', icon: NAV_ICONS.selections, color: '#a78bfa', requiredRoles: [Role.SuperAdmin, Role.Admin], requiredQueues: ['EDI Order Entry'] },
     ],
   },
   {

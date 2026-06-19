@@ -92,7 +92,9 @@
       <table class="eo-tbl" [class.resizable]="!loading()">
         <thead>
           <tr>
-            <th class="col-edit" style="width:44px;min-width:44px"></th>
+            @if (showEdiColumn()) {
+              <th class="col-edit" style="width:44px;min-width:44px"></th>
+            }
             <th class="sortable" [class.sort-active]="sortField() === 'releaseNumber'" style="width:100px;min-width:60px" (click)="onSort('releaseNumber')" #thRelease>
               Release
               <span class="sort-icon">
@@ -232,7 +234,9 @@
           @if (loading()) {
             @for (_ of skeletonRows; track $index; let i = $index) {
               <tr class="sk-row" [class.row-alt]="i % 2 !== 0" [style.animation-delay]="(i * 80) + 'ms'">
-                <td class="col-edit"><div class="sk-pill" style="width:20px;height:20px;border-radius:3px"></div></td>
+                @if (showEdiColumn()) {
+                  <td class="col-edit"><div class="sk-pill" style="width:20px;height:20px;border-radius:3px"></div></td>
+                }
                 <td><div class="sk-pill" [style.width]="(55 + (i * 7) % 30) + '%'"></div></td>
                 <td><div class="sk-pill" [style.width]="(50 + (i * 11) % 35) + '%'"></div></td>
                 <td><div class="sk-pill" [style.width]="(45 + (i * 13) % 30) + '%'"></div></td>
@@ -251,9 +255,11 @@
           } @else {
           @for (row of orders(); track row.releaseNumber; let i = $index) {
             <tr [class.row-alt]="i % 2 !== 0">
-              <td class="col-edit">
-                <a class="link-edi" (click)="openEditOrder(row)">EDI</a>
-              </td>
+              @if (showEdiColumn()) {
+                <td class="col-edit">
+                  <a class="link-edi" (click)="openEditOrder(row)">EDI</a>
+                </td>
+              }
               <td class="cell-release">
                 @if (row.xmlMacPacOrder) {
                   <button type="button" class="release-btn" (click)="openOrderTransmittal(row)">
@@ -284,7 +290,7 @@
             </tr>
           } @empty {
             <tr>
-              <td colspan="14" class="cell-empty">
+              <td [attr.colspan]="showEdiColumn() ? 14 : 13" class="cell-empty">
                 @if (searched()) {
                   <i class="pi pi-inbox"></i> No records found matching your criteria.
                 } @else {

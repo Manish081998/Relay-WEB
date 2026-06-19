@@ -79,9 +79,16 @@ export class SidebarComponent {
   }
 
   readonly visibleGroups = computed<NavGroup[]>(() =>
-    this.allGroups.filter(g =>
-      g.roles === 'all' || this.auth.hasAnyRole(g.roles),
-    ),
+    this.allGroups
+      .filter(g => g.roles === 'all' || this.auth.hasAnyRole(g.roles))
+      .map(g => ({
+        ...g,
+        children: g.children.filter(c =>
+          (!c.requiredRoles?.length || this.auth.hasAnyRole(c.requiredRoles)) &&
+          (!c.requiredQueues?.length || this.auth.hasAnyQueue(c.requiredQueues)),
+        ),
+      }))
+      .filter(g => g.children.length > 0),
   );
 
   readonly visibleAdmin = computed<NavStandaloneItem[]>(() =>

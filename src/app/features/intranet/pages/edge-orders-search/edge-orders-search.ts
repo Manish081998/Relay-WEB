@@ -18,6 +18,7 @@ import { EdgeOrderDto, EdgeOrderSearchParams } from '../../models/edge-orders.mo
 import { NOTIFICATION_MESSAGES as NM } from '../../../../core/constants/notification-messages';
 import { NotificationService } from '../../../../core/services/notification.service';
 import { AuthStore } from '../../../../core/auth/auth.store';
+import { Role } from '../../../../models/role.enum';
 
 @Component({
   selector: 'app-edge-orders-search',
@@ -47,6 +48,11 @@ export class EdgeOrdersSearch implements OnInit {
   readonly skeletonRows = Array.from({ length: 20 });
 
   readonly totalPages = computed(() => Math.max(1, Math.ceil(this.totalCount() / this.pageSize())));
+
+  readonly showEdiColumn = computed(() =>
+    this.authStore.hasAnyRole([Role.SuperAdmin, Role.Admin]) &&
+    this.authStore.hasAnyQueue(['EDI Order Entry','Order Entry']),
+  );
 
   private unsortedOrders: EdgeOrderDto[] = [];
   private lastSearchParams: EdgeOrderSearchParams = { PageNumber: 1, PageSize: 50 };

@@ -15,6 +15,7 @@ export class AuthStore {
   readonly currentUser = this._user.asReadonly();
   readonly isAuthenticated = computed(() => this._user() !== null);
   readonly roles = computed(() => this._user()?.roles ?? []);
+  readonly queues = computed(() => this._user()?.associatedQueueNames ?? []);
 
   hasRole(role: Role): boolean {
     return this.roles().includes(role);
@@ -22,6 +23,10 @@ export class AuthStore {
 
   hasAnyRole(allowed: Role[]): boolean {
     return allowed.some((r) => this.roles().includes(r));
+  }
+
+  hasAnyQueue(required: string[]): boolean {
+    return required.some((q) => this.queues().includes(q));
   }
 
   login(response: LoginResponse): void {
