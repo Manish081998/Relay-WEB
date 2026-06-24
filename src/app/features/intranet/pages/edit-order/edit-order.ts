@@ -143,7 +143,6 @@ export class EditOrder implements OnInit {
   }
 
   submitChanges(): void {
-    debugger;
     const data = this._orderData;
     if (!data || this._submitting()) return;
 

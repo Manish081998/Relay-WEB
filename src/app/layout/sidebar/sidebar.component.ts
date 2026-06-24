@@ -83,7 +83,7 @@ export class SidebarComponent {
       .map(g => ({
         ...g,
         children: g.children.filter(c =>
-          (!c.requiredRoles?.length || this.auth.hasAnyRole(c.requiredRoles)) &&
+          (!c.requiredRoles?.length || this.auth.hasAnyRole(c.requiredRoles)) ||
           (!c.requiredQueues?.length || this.auth.hasAnyQueue(c.requiredQueues)),
         ),
       }))

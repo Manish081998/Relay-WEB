@@ -45,7 +45,7 @@ export const NAV_GROUPS: NavGroup[] = [
         icon: NAV_ICONS.users,
         color: '#60a5fa',
       },
-      { label: 'EDI', route: '/intranet/edi', icon: NAV_ICONS.selections, color: '#a78bfa', requiredRoles: [Role.SuperAdmin, Role.Admin], requiredQueues: ['EDI Order Entry'] },
+      { label: 'EDI', route: '/intranet/edi', icon: NAV_ICONS.selections, color: '#a78bfa', requiredRoles: [Role.SuperAdmin, Role.Admin], requiredQueues: ['EDI Order Entry','Order Entry'] },
     ],
   },
   {

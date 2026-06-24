@@ -50,7 +50,7 @@ export class EdgeOrdersSearch implements OnInit {
   readonly totalPages = computed(() => Math.max(1, Math.ceil(this.totalCount() / this.pageSize())));
 
   readonly showEdiColumn = computed(() =>
-    this.authStore.hasAnyRole([Role.SuperAdmin, Role.Admin]) &&
+    this.authStore.hasAnyRole([Role.SuperAdmin, Role.Admin]) ||
     this.authStore.hasAnyQueue(['EDI Order Entry','Order Entry']),
   );
 
