@@ -25,7 +25,7 @@ import {
   signal,
   effect,
 } from '@angular/core';
-import { NgIf, NgFor } from '@angular/common';
+import { NgIf, NgFor, DOCUMENT } from '@angular/common';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { TOOL_IDS } from '@adticorp/annot-core';
 import type { Annotation, ToolId } from '@adticorp/annot-core';
@@ -69,10 +69,7 @@ const STROKE_COLORS = [
 ] as const;
 
 const STROKE_WIDTHS = [1, 2, 4, 6] as const;
-pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
-  'pdfjs-dist/build/pdf.worker.min.mjs',
-  import.meta.url,
-).toString();
+
 @Component({
   standalone: true,
   imports: [NgIf, NgFor, AnnotatorComponent],
@@ -169,6 +166,11 @@ export class AnnotationViewerComponent implements AfterViewInit, OnDestroy {
 
   private readonly cdr = inject(ChangeDetectorRef);
   private readonly sanitizer = inject(DomSanitizer);
+
+  constructor() {
+    const doc = inject(DOCUMENT);
+    pdfjsLib.GlobalWorkerOptions.workerSrc = `${doc.baseURI}assets/pdfjs/pdf.worker.min.mjs`;
+  }
 
   private pdfDoc: any = null;
   private _pdfNativeW = 0;

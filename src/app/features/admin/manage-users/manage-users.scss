@@ -245,6 +245,74 @@ $fg-3:        #5c6773;
   }
 }
 
+// p-multiselect variant: auto-height to accommodate chips
+:host ::ng-deep .mu-brand-select.mu-queue-multiselect {
+  height: auto !important;
+  min-height: 34px !important;
+  align-items: stretch;
+
+  .p-multiselect-label-container {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+  }
+
+  .p-multiselect-label {
+    padding: 3px 6px 3px 10px !important;
+    min-height: 28px;
+    line-height: unset !important;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 3px;
+
+    &.p-placeholder {
+      color: fc.$fc-text-placeholder;
+      font-size: 12px;
+      line-height: 28px !important;
+    }
+  }
+
+  // individual chips
+  .p-multiselect-chip,
+  .p-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 1px 6px 1px 8px;
+    background: #e8f0fe;
+    color: #0a4a7a;
+    border: 1px solid #c7d9f0;
+    border-radius: 5px;
+    font-size: 11.5px;
+    font-weight: 500;
+    line-height: 1.6;
+    max-width: 160px;
+
+    .p-chip-text,
+    .p-multiselect-chip-label { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+    .p-chip-remove-icon,
+    .p-multiselect-chip-icon {
+      font-size: 9px;
+      opacity: 0.55;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: opacity 0.1s;
+      &:hover { opacity: 1; }
+    }
+  }
+
+  .p-multiselect-dropdown {
+    min-height: 28px;
+    height: auto !important;
+    display: flex !important;
+    align-items: center !important;
+    padding: 0 2px;
+  }
+}
+
 // Fluid width: fill the flex cell
 :host ::ng-deep .mu-field .mu-brand-select {
   width: 100% !important;

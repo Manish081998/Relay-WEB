@@ -57,7 +57,7 @@ ng serve -o
 | Target | Command | Output |
 | :--- | :--- | :--- |
 | Development | `npm run build:development` | `dist/relay-web/` |
-| UAT | `npm run build:uat` | `dist/relay-web/` |
+| UAT | `ng build --configuration uat --base-href /ProjectRelay_WEB/` | `dist/relay-web/` |
 | Production | `ng build --configuration production --base-href /ProjectRelay_WEB/` | `dist/relay-web/` |
 
 <details>

@@ -84,21 +84,24 @@
           }
         </div>
 
-        <div class="mu-field" [class.mu-field--err]="saveAttempted() && !selectedQueueId()">
+        <div class="mu-field" [class.mu-field--err]="saveAttempted() && selectedQueueIds().length === 0">
           <label for="queue" class="mu-field-label">Queue <span class="mu-req">*</span></label>
-          <p-select
+          <p-multiselect
             inputId="queue"
-            styleClass="mu-brand-select"
-            [ngModel]="selectedQueueId()"
+            styleClass="mu-brand-select mu-queue-multiselect"
+            panelStyleClass="mu-queue-ms-panel"
+            [ngModel]="selectedQueueIds()"
             (ngModelChange)="onQueueChange($event)"
             [options]="filteredQueues()"
             optionLabel="queueName"
             optionValue="queueId"
-            placeholder="Select queue"
+            placeholder="Select queue(s)"
+            display="chip"
             [showClear]="true"
             [disabled]="!selectedBrandId()"
+            filterPlaceholder="Search queues..."
           />
-          @if (saveAttempted() && !selectedQueueId()) {
+          @if (saveAttempted() && selectedQueueIds().length === 0) {
             <span class="mu-err-text">Required</span>
           }
         </div>

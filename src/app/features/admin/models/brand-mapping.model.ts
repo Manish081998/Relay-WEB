@@ -22,8 +22,8 @@ export interface QueueUserMappingDto {
   fullName: string | null;
   globalId: string | null;
   emailId: string | null;
-  queueId: number | null;
-  queueName: string | null;
+  queueId: string | null;   // comma-separated: "5, 11"
+  queueName: string | null; // comma-separated: "AM, EDI Order Entry"
   brandId: number | null;
   brandName: string | null;
   roleName: string | null;

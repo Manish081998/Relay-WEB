@@ -13,17 +13,23 @@ import { TableModule } from 'primeng/table';
 import { FormsModule } from '@angular/forms';
 import { InputTextModule } from 'primeng/inputtext';
 import { Select } from 'primeng/select';
-import { firstValueFrom } from 'rxjs';
+import { MultiSelectModule } from 'primeng/multiselect';
+import { firstValueFrom, forkJoin } from 'rxjs';
 
 import { NotificationService } from 'src/app/core/services/notification.service';
 import { BrandDto, DocumentumUserDto } from '../../documentum/models/documentum-user.model';
 import { invalidateCache } from 'src/app/core/interceptors/cache.interceptor';
 import { NOTIFICATION_MESSAGES as NM } from 'src/app/core/constants/notification-messages';
 import { ManageUserService } from '../services/manage-user-service';
-import { AdUserDto, CreateUserRequest, UpdateUserRequest } from '../models/ad-user.model';
+import { AdUserDto } from '../models/ad-user.model';
 import { BrandQueueMappingDto, QueueUserMappingDto, RoleDto } from '../models/brand-mapping.model';
 import { InitialsPipe } from 'src/app/shared/pipes/initials.pipe';
 import { AuthStore } from 'src/app/core/auth/auth.store';
+
+function parseQueueIds(raw: string | null): number[] {
+  if (!raw) return [];
+  return raw.split(',').map(s => parseInt(s.trim(), 10)).filter(n => !isNaN(n));
+}
 
 @Component({
   selector: 'app-manage-users',
@@ -32,6 +38,7 @@ import { AuthStore } from 'src/app/core/auth/auth.store';
     FormsModule,
     InputTextModule,
     Select,
+    MultiSelectModule,
     TableModule,
     InitialsPipe,
   ],
@@ -60,11 +67,11 @@ export class ManageUsers implements OnInit {
   readonly isEditMode = computed(() => this.editingRow() !== null);
 
   private readonly _brandOverride = signal<number | null>(null);
-  private readonly _queueOverride = signal<number | null>(null);
+  private readonly _queueOverride = signal<number[]>([]);
   private readonly _roleOverride = signal<number | null>(null);
 
   readonly selectedBrandId = computed<number | null>(() => this._brandOverride());
-  readonly selectedQueueId = computed<number | null>(() => this._queueOverride());
+  readonly selectedQueueIds = computed<number[]>(() => this._queueOverride());
   readonly selectedRoleId = computed<number | null>(() => this._roleOverride());
 
   readonly filteredQueues = computed<BrandQueueMappingDto[]>(() => {
@@ -76,7 +83,7 @@ export class ManageUsers implements OnInit {
   readonly canSave = computed(
     () =>
       this.selectedBrandId() !== null &&
-      this.selectedQueueId() !== null &&
+      this.selectedQueueIds().length > 0 &&
       this.selectedRoleId() !== null,
   );
 
@@ -95,7 +102,7 @@ export class ManageUsers implements OnInit {
     this.searchedUser.set(null);
     this.saveAttempted.set(false);
     this._brandOverride.set(null);
-    this._queueOverride.set(null);
+    this._queueOverride.set([]);
     this._roleOverride.set(null);
     this.searching.set(true);
     try {
@@ -124,15 +131,17 @@ export class ManageUsers implements OnInit {
     this.saving.set(true);
 
     if (this.isEditMode()) {
-      const req: UpdateUserRequest = {
-        globalId: this.globalIdValue(),
-        brandId: this.selectedBrandId()!,
-        queueId: this.selectedQueueId()!,
-        roleId: this.selectedRoleId()!,
-        updatedBy: this.authStore.currentUser()?.globalId ?? '',
-      };
-      this.usersService
-        .updateUser(req)
+      const updatedBy = this.authStore.currentUser()?.globalId ?? '';
+      const requests = this.selectedQueueIds().map(queueId =>
+        this.usersService.updateUser({
+          globalId: this.globalIdValue(),
+          brandId: this.selectedBrandId()!,
+          queueId,
+          roleId: this.selectedRoleId()!,
+          updatedBy,
+        }),
+      );
+      forkJoin(requests)
         .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe({
           next: () => {
@@ -145,18 +154,20 @@ export class ManageUsers implements OnInit {
           },
         });
     } else {
-      const req: CreateUserRequest = {
-        globalId: this.globalIdValue(),
-        firstName: user.firstName,
-        lastName: user.lastName,
-        emailId: user.emailId,
-        brandId: this.selectedBrandId(),
-        queueId: this.selectedQueueId(),
-        roleId: this.selectedRoleId(),
-        createdBy: this.authStore.currentUser()?.globalId ?? '',
-      };
-      this.usersService
-        .createUser(req)
+      const createdBy = this.authStore.currentUser()?.globalId ?? '';
+      const requests = this.selectedQueueIds().map(queueId =>
+        this.usersService.createUser({
+          globalId: this.globalIdValue(),
+          firstName: user.firstName,
+          lastName: user.lastName,
+          emailId: user.emailId,
+          brandId: this.selectedBrandId(),
+          queueId,
+          roleId: this.selectedRoleId(),
+          createdBy,
+        }),
+      );
+      forkJoin(requests)
         .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe({
           next: () => {
@@ -174,19 +185,25 @@ export class ManageUsers implements OnInit {
   onEditRow(row: QueueUserMappingDto): void {
     const [firstName = '', ...rest] = (row.fullName ?? '').split(' ');
     const role = this.roles().find(r => r.roleName === row.roleName);
+    const queueIds = parseQueueIds(row.queueId);
 
     this.globalIdValue.set(row.globalId ?? '');
     this.searchedUser.set({ firstName, lastName: rest.join(' '), emailId: row.emailId ?? '' });
     this._brandOverride.set(row.brandId ?? null);
-    this._queueOverride.set(row.queueId ?? null);
+    this._queueOverride.set(queueIds);
     this._roleOverride.set(role?.roleMasterId ?? null);
     this.editingRow.set(row);
     this.saveAttempted.set(false);
   }
 
   onDeleteRow(row: QueueUserMappingDto): void {
-    this.usersService
-      .deleteUser(row.globalId!, row.queueId!)
+    const queueIds = parseQueueIds(row.queueId);
+    if (!row.globalId || queueIds.length === 0) return;
+
+    const requests = queueIds.map((queueId: number) =>
+      this.usersService.deleteUser(row.globalId!, queueId),
+    );
+    forkJoin(requests)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => {
@@ -204,7 +221,7 @@ export class ManageUsers implements OnInit {
     this.globalIdValue.set('');
     this.saveAttempted.set(false);
     this._brandOverride.set(null);
-    this._queueOverride.set(null);
+    this._queueOverride.set([]);
     this._roleOverride.set(null);
     this.editingRow.set(null);
     invalidateCache();
@@ -213,11 +230,11 @@ export class ManageUsers implements OnInit {
 
   onBrandChange(id: number | null): void {
     this._brandOverride.set(id ?? null);
-    this._queueOverride.set(null);
+    this._queueOverride.set([]);
   }
 
-  onQueueChange(id: number | null): void {
-    this._queueOverride.set(id ?? null);
+  onQueueChange(ids: number[]): void {
+    this._queueOverride.set(ids ?? []);
   }
 
   onRoleChange(id: number | null): void {
@@ -230,6 +247,8 @@ export class ManageUsers implements OnInit {
       this.brands.set(data.brands ?? []);
       this.queues.set(data.brandQueueMappings ?? []);
       this.userQueueMappings.set(data.userQueueMappings ?? []);
+      debugger
+      JSON.stringify('this.userQueueMappings=='+this.userQueueMappings);
       this.roles.set(data.roles ?? []);
     } catch {
       this.notify.error(NM.GENERAL.LOADING_FAILED, 'Intranet');
