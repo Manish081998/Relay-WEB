@@ -14,7 +14,8 @@ import { FormsModule } from '@angular/forms';
 import { InputTextModule } from 'primeng/inputtext';
 import { Select } from 'primeng/select';
 import { MultiSelectModule } from 'primeng/multiselect';
-import { firstValueFrom, forkJoin } from 'rxjs';
+import { TooltipModule } from 'primeng/tooltip';
+import { firstValueFrom } from 'rxjs';
 
 import { NotificationService } from 'src/app/core/services/notification.service';
 import { BrandDto, DocumentumUserDto } from '../../documentum/models/documentum-user.model';
@@ -39,6 +40,7 @@ function parseQueueIds(raw: string | null): number[] {
     InputTextModule,
     Select,
     MultiSelectModule,
+    TooltipModule,
     TableModule,
     InitialsPipe,
   ],
@@ -130,18 +132,17 @@ export class ManageUsers implements OnInit {
 
     this.saving.set(true);
 
+    const queueId = this.selectedQueueIds();
+
     if (this.isEditMode()) {
-      const updatedBy = this.authStore.currentUser()?.globalId ?? '';
-      const requests = this.selectedQueueIds().map(queueId =>
-        this.usersService.updateUser({
+      this.usersService
+        .updateUser({
           globalId: this.globalIdValue(),
           brandId: this.selectedBrandId()!,
           queueId,
           roleId: this.selectedRoleId()!,
-          updatedBy,
-        }),
-      );
-      forkJoin(requests)
+          updatedBy: this.authStore.currentUser()?.globalId ?? '',
+        })
         .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe({
           next: () => {
@@ -154,9 +155,8 @@ export class ManageUsers implements OnInit {
           },
         });
     } else {
-      const createdBy = this.authStore.currentUser()?.globalId ?? '';
-      const requests = this.selectedQueueIds().map(queueId =>
-        this.usersService.createUser({
+      this.usersService
+        .createUser({
           globalId: this.globalIdValue(),
           firstName: user.firstName,
           lastName: user.lastName,
@@ -164,10 +164,8 @@ export class ManageUsers implements OnInit {
           brandId: this.selectedBrandId(),
           queueId,
           roleId: this.selectedRoleId(),
-          createdBy,
-        }),
-      );
-      forkJoin(requests)
+          createdBy: this.authStore.currentUser()?.globalId ?? '',
+        })
         .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe({
           next: () => {
@@ -197,13 +195,9 @@ export class ManageUsers implements OnInit {
   }
 
   onDeleteRow(row: QueueUserMappingDto): void {
-    const queueIds = parseQueueIds(row.queueId);
-    if (!row.globalId || queueIds.length === 0) return;
-
-    const requests = queueIds.map((queueId: number) =>
-      this.usersService.deleteUser(row.globalId!, queueId),
-    );
-    forkJoin(requests)
+    if (!row.globalId) return;
+    this.usersService
+      .deleteUser(row.globalId, this.authStore.currentUser()?.globalId ?? '')
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => {

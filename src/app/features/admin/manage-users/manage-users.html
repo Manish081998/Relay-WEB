@@ -199,7 +199,11 @@
           <td class="cell-mono">{{ row.globalId ?? '—' }}</td>
           <td class="cell-trunc">{{ row.emailId ?? '—' }}</td>
           <td>{{ row.brandName ?? '—' }}</td>
-          <td>{{ row.queueName ?? '—' }}</td>
+          <td
+            [pTooltip]="row.queueName ?? ''"
+            [tooltipDisabled]="!row.queueName"
+            tooltipPosition="top"
+          >{{ row.queueName ?? '—' }}</td>
           <td>{{ row.roleName ?? '—' }}</td>
           <td class="cell-trunc">{{ row.actionByFullName ?? '—' }}</td>
           <td class="cell-actions">

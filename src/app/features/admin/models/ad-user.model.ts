@@ -14,7 +14,7 @@ export interface CreateUserRequest {
   lastName: string;
   emailId: string;
   brandId: number | null;
-  queueId: number | null;
+  queueId: number[];
   roleId: number | null;
   createdBy: string;
 }
@@ -22,7 +22,7 @@ export interface CreateUserRequest {
 export interface UpdateUserRequest {
   globalId: string;
   brandId: number;
-  queueId: number;
+  queueId: number[];
   roleId: number;
   updatedBy: string;
 }
