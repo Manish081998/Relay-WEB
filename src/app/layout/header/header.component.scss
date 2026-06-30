@@ -324,6 +324,23 @@
   margin-top: 3px;
 }
 
+.user-dropdown__brand {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.7rem;
+  font-weight: t.$font-weight-semibold;
+  background: #f0fdf4;
+  color: #166534;
+  border: 1px solid #bbf7d0;
+  padding: 2px 8px;
+  border-radius: t.$radius-full;
+  margin-top: 4px;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
 .user-dropdown__signout {
   display: flex;
   align-items: center;

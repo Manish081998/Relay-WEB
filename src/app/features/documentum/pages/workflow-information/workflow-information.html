@@ -22,7 +22,7 @@
           Acquire
         </button>
         @if (showUnassignBtn()) {
-          <button class="od-card__bar-btn od-card__bar-btn--warn" pTooltip="Unassign this task and return it to the queue" tooltipPosition="bottom"
+          <button class="od-card__bar-btn od-card__bar-btn--warn" pTooltip="Unassign this order and return it to the queue" tooltipPosition="bottom"
                   [disabled]="isProcessingAction()" (click)="onUnassignClick()">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
               <path d="M18 6L6 18M6 6l12 12"/>
@@ -31,7 +31,7 @@
           </button>
         }
         @if (showCompleteBtn()) {
-          <button class="od-card__bar-btn od-card__bar-btn--success" pTooltip="Mark this task as complete" tooltipPosition="bottom"
+          <button class="od-card__bar-btn od-card__bar-btn--success" pTooltip="Mark this order as complete" tooltipPosition="bottom"
                   [disabled]="!canComplete() || isProcessingAction()" (click)="onCompleteClick()">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
               <path d="M20 6L9 17l-5-5"/>
@@ -361,7 +361,7 @@
         <div class="od-section-header">
           <h3 class="od-section-title">Sales Order</h3>
           <div class="od-section-actions">
-            <button class="od-section-btn" [pTooltip]="canAnnotate() ? 'Upload a new sales order document' : 'Only the user who acquired this task can import documents'" tooltipPosition="bottom" (click)="openAnnotationForNewUpload(false)" [disabled]="!canAnnotate() || isUploading()">
+            <button class="od-section-btn" [pTooltip]="canAnnotate() ? 'Upload a new sales order document' : 'Only the user who acquired this order can import documents'" tooltipPosition="bottom" (click)="openAnnotationForNewUpload(false)" [disabled]="!canAnnotate() || isUploading()">
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
               </svg>

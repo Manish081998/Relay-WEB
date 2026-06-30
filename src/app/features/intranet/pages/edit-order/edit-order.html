@@ -527,6 +527,17 @@
 
 </div>
 
+<!-- ── Submit Confirmation ───────────────────────────────────────────────────── -->
+<app-confirmation-dialog
+  [isOpen]="showSubmitConfirm()"
+  title="Submit Order"
+  description="Do you want to submit this order to MacPac?"
+  confirmLabel="Submit"
+  confirmVariant="primary"
+  (confirmed)="onSubmitConfirmed()"
+  (cancelled)="showSubmitConfirm.set(false)"
+/>
+
 <!-- ── Plant Code Popup ──────────────────────────────────────────────────────── -->
 <p-dialog
   [visible]="plantCodePopupVisible()"

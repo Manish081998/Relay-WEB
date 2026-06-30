@@ -161,7 +161,7 @@ export class WorkflowInformation {
         : '';
       return `Acquired by ${name}${date ? ' on ' + date : ''}`;
     }
-    return 'Acquire this task and assign it to yourself';
+    return 'Acquire this order';
   });
 
   readonly notes = signal<SalesOrderNoteDto[]>([]);
@@ -336,8 +336,8 @@ export class WorkflowInformation {
 
   onAcquireClick(): void {
     this.pendingAction = 'acquire';
-    this.confirmTitle.set('Acquire Task');
-    this.confirmDescription.set('This task will be assigned to you. Continue?');
+    this.confirmTitle.set('Acquire Order');
+    this.confirmDescription.set('This order will be assigned to you. Do you want to proceed?');
     this.confirmLabel.set('Acquire');
     this.confirmVariant.set('primary');
     this.showConfirmDialog.set(true);
@@ -345,8 +345,8 @@ export class WorkflowInformation {
 
   onUnassignClick(): void {
     this.pendingAction = 'unassign';
-    this.confirmTitle.set('Unassign Task');
-    this.confirmDescription.set('This task will be returned to the queue. Are you sure?');
+    this.confirmTitle.set('Unassign Order');
+    this.confirmDescription.set('This order will be returned to the queue. Are you sure?');
     this.confirmLabel.set('Unassign');
     this.confirmVariant.set('warning');
     this.showConfirmDialog.set(true);
@@ -354,8 +354,8 @@ export class WorkflowInformation {
 
   onCompleteClick(): void {
     this.pendingAction = 'complete';
-    this.confirmTitle.set('Complete Task');
-    this.confirmDescription.set('Are you sure you want to complete and route this task?');
+    this.confirmTitle.set('Complete Order');
+    this.confirmDescription.set('Are you sure you want to complete and route this order?');
     this.confirmLabel.set('Complete');
     this.confirmVariant.set('primary');
     this.showConfirmDialog.set(true);
@@ -380,7 +380,7 @@ export class WorkflowInformation {
       timeout(15000),
       catchError((err) => {
         const body = err?.error;
-        const msg = typeof body === 'string' ? body : body?.message ?? err?.message ?? `Failed to ${action} task.`;
+        const msg = typeof body === 'string' ? body : body?.message ?? err?.message ?? `Failed to ${action} order.`;
         this.notify.error(msg, 'Error');
         return of(null);
       }),
@@ -390,7 +390,7 @@ export class WorkflowInformation {
       this.pendingAction = null;
 
       if (result) {
-        this.notify.success(result.message || `Task ${action}d successfully.`, 'Success');
+        this.notify.success(result.message || `Order ${action}d successfully.`, 'Success');
         this.selectedRouteTo.set('');
         this.reloadWorkflow();
       }
@@ -638,7 +638,7 @@ export class WorkflowInformation {
   /** Called when the user clicks Save in the annotation dialog */
   onSaveAsNewVersion(event: { blob: Blob; filename: string }): void {
     if (!this.canAnnotate()) {
-      this.notify.warning('Only the user who acquired this task can save changes.', 'Not Allowed');
+      this.notify.warning('Only the user who acquired this order can save changes.', 'Not Allowed');
       return;
     }
     if (this.annotationDocId === null) {

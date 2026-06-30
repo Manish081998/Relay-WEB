@@ -8,6 +8,7 @@ import { switchMap, toArray } from 'rxjs/operators';
 import { InputTextModule } from 'primeng/inputtext';
 import { Select } from 'primeng/select';
 import { Dialog } from 'primeng/dialog';
+import { ConfirmationDialogComponent } from '../../../../shared/components/confirmation-dialog/confirmation-dialog.component';
 import { AuthStore } from '../../../../core/auth/auth.store';
 import { NotificationService } from '../../../../core/services/notification.service';
 import { NOTIFICATION_MESSAGES as NM } from '../../../../core/constants/notification-messages';
@@ -18,7 +19,7 @@ import { getConfigByFamilyTag, HeaderCell, OrderTypeConfig } from '../../models/
 @Component({
   selector: 'app-edit-order',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, InputTextModule, Select, Dialog],
+  imports: [CommonModule, ReactiveFormsModule, InputTextModule, Select, Dialog, ConfirmationDialogComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './edit-order.html',
   styleUrl: './edit-order.scss',
@@ -50,9 +51,10 @@ export class EditOrder implements OnInit {
   private readonly _editedSections = signal<Set<string>>(new Set());
   private readonly _submitting      = signal(false);
 
-  readonly editedSections = this._editedSections.asReadonly();
-  readonly isSubmitting   = this._submitting.asReadonly();
-  readonly hasEdits       = computed(() => this._editedSections().size > 0);
+  readonly editedSections    = this._editedSections.asReadonly();
+  readonly isSubmitting      = this._submitting.asReadonly();
+  readonly hasEdits          = computed(() => this._editedSections().size > 0);
+  readonly showSubmitConfirm = signal(false);
 
   isEdited(section: string): boolean {
     return this.editedSections().has(section);
@@ -143,6 +145,11 @@ export class EditOrder implements OnInit {
   }
 
   submitChanges(): void {
+    this.showSubmitConfirm.set(true);
+  }
+
+  onSubmitConfirmed(): void {
+    this.showSubmitConfirm.set(false);
     const data = this._orderData;
     if (!data || this._submitting()) return;
 
