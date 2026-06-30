@@ -26,11 +26,11 @@ export class ManageUserService {
     return this.api.put<void>(`${this.env.apiBaseUrl}/api/users/UpdateUser`, body);
   }
 
-  deleteUser(globalId: string, queueId: number): Observable<void> {
+  deleteUser(globalId: string, createdBy: string): Observable<void> {
     return this.api.delete<void>(
-      `${this.env.apiBaseUrl}/api/users/DeleteUser`,
+      `${this.env.apiBaseUrl}/api/users/DeleteUser/${globalId}`,
       undefined,
-      { params: { globalId, queueId } },
+      { params: { createdBy } },
     );
   }
 
