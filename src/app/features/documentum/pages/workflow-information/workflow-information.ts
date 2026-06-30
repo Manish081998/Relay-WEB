@@ -234,10 +234,11 @@ export class WorkflowInformation {
   readonly annotationFile = signal<File | null>(null);
   readonly annotationDocName = signal('');
   readonly annotationMode = signal<'view' | 'upload'>('view');
+  readonly annotationReadOnly = signal(true);
   private annotationDocId: number | null = null;
   private annotationOriginalName = '';
   private annotationMimeType = '';
-  private annotationIsSupportDoc = false;
+  readonly annotationIsSupportDoc = signal(false);
 
   constructor() {
     const nav = this.router.getCurrentNavigation();
@@ -549,7 +550,8 @@ export class WorkflowInformation {
     this.annotationDocId = null;
     this.annotationOriginalName = '';
     this.annotationMimeType = '';
-    this.annotationIsSupportDoc = isSupportDoc;
+    this.annotationIsSupportDoc.set(isSupportDoc);
+    this.annotationReadOnly.set(false);
     this.annotationFile.set(null);
     this.annotationFileUrl.set(null);
     this.annotationDocName.set(isSupportDoc ? 'Import Support Document' : 'Import Sales Order');
@@ -593,7 +595,23 @@ export class WorkflowInformation {
     this.annotationDocId = doc.documentId;
     this.annotationOriginalName = doc.documentName;
     this.annotationMimeType = doc.mimeType;
-    // Get latest version to get the file path, then fetch as blob for auth
+    this.annotationIsSupportDoc.set(false);
+    this.annotationReadOnly.set(true);
+    this.docService.getVersions(doc.documentId)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(versions => {
+        if (versions.length > 0) {
+          this.openBlobPreview(versions[0].documentPath, doc.documentName, doc.mimeType);
+        }
+      });
+  }
+
+  editDocument(doc: SalesOrderDocumentDto, isSupportDoc: boolean): void {
+    this.annotationDocId = doc.documentId;
+    this.annotationOriginalName = doc.documentName;
+    this.annotationMimeType = doc.mimeType;
+    this.annotationIsSupportDoc.set(isSupportDoc);
+    this.annotationReadOnly.set(false);
     this.docService.getVersions(doc.documentId)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(versions => {
@@ -607,6 +625,17 @@ export class WorkflowInformation {
     this.annotationDocId = version.documentId;
     this.annotationOriginalName = version.documentPath.split('/').pop() ?? 'document';
     this.annotationMimeType = version.mimeType;
+    this.annotationIsSupportDoc.set(false);
+    this.annotationReadOnly.set(true);
+    this.openBlobPreview(version.documentPath, `Version ${version.versionNumber}`, version.mimeType);
+  }
+
+  editVersion(version: SalesOrderDocumentVersionDto, isSupportDoc: boolean): void {
+    this.annotationDocId = version.documentId;
+    this.annotationOriginalName = version.documentPath.split('/').pop() ?? 'document';
+    this.annotationMimeType = version.mimeType;
+    this.annotationIsSupportDoc.set(isSupportDoc);
+    this.annotationReadOnly.set(false);
     this.openBlobPreview(version.documentPath, `Version ${version.versionNumber}`, version.mimeType);
   }
 
@@ -637,7 +666,7 @@ export class WorkflowInformation {
 
   /** Called when the user clicks Save in the annotation dialog */
   onSaveAsNewVersion(event: { blob: Blob; filename: string }): void {
-    if (!this.canAnnotate()) {
+    if (this.annotationReadOnly()) {
       this.notify.warning('Only the user who acquired this task can save changes.', 'Not Allowed');
       return;
     }
@@ -663,7 +692,7 @@ export class WorkflowInformation {
           this.loadDocuments();
           // Refresh version list if version panel is open
           if (this.showVersionPanel()) {
-            this.showVersions({ documentId: docId } as SalesOrderDocumentDto);
+            this.showVersions({ documentId: docId } as SalesOrderDocumentDto, this.versionPanelIsSupportDoc);
           }
           this.notify.success('New version saved successfully.', 'Version Created');
         },
@@ -675,7 +704,7 @@ export class WorkflowInformation {
     const o = this.order();
     if (!o) return;
 
-    const isSupportDoc = this.annotationIsSupportDoc;
+    const isSupportDoc = this.annotationIsSupportDoc();
     const file = new File([event.blob], event.filename, { type: event.blob.type });
 
     this.isUploading.set(true);
@@ -703,7 +732,10 @@ export class WorkflowInformation {
 
   // ── Version management ────────────────────────────────────────────────────
 
-  showVersions(doc: SalesOrderDocumentDto): void {
+  versionPanelIsSupportDoc = false;
+
+  showVersions(doc: SalesOrderDocumentDto, isSupportDoc = false): void {
+    this.versionPanelIsSupportDoc = isSupportDoc;
     this.versionPanelDocId.set(doc.documentId);
     this.versionPanelDocName.set(doc.documentName);
     this.showVersionPanel.set(true);

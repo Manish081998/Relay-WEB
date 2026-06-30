@@ -1111,6 +1111,19 @@ $avatar-palette: (
   }
 }
 
+.vd-readonly-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+  background: none;
+  color: ds.$text-faint;
+  font-size: 10px;
+  font-weight: t.$font-weight-medium;
+  font-style: italic;
+  font-family: t.$font-sans;
+  letter-spacing: 0.02em;
+}
+
 .vd-footer {
   display: flex;
   align-items: center;

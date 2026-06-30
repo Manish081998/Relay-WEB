@@ -713,12 +713,13 @@
                 <td class="vd-date">{{ ver.createdDate | date:'MM/dd/yy hh:mm a' }}</td>
                 <td class="vd-author">{{ ver.createdByName || ver.createdBy }}</td>
                 <td class="vd-actions-cell">
-                  <button class="vd-action-btn" pTooltip="Preview this version" tooltipPosition="top" (click)="previewVersion(ver)">
+                  <button class="vd-action-btn" pTooltip="Preview this version (Read Only)" tooltipPosition="top" (click)="previewVersion(ver)">
                     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                       <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
                     </svg>
                     Preview
                   </button>
+                  <span class="vd-readonly-badge">Read Only</span>
                 </td>
               </tr>
             }
