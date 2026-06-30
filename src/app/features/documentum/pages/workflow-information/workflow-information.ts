@@ -161,7 +161,7 @@ export class WorkflowInformation {
         : '';
       return `Acquired by ${name}${date ? ' on ' + date : ''}`;
     }
-    return 'Acquire this order';
+    return 'Acquire this task and assign it to yourself';
   });
 
   readonly notes = signal<SalesOrderNoteDto[]>([]);
@@ -234,10 +234,11 @@ export class WorkflowInformation {
   readonly annotationFile = signal<File | null>(null);
   readonly annotationDocName = signal('');
   readonly annotationMode = signal<'view' | 'upload'>('view');
+  readonly annotationReadOnly = signal(true);
   private annotationDocId: number | null = null;
   private annotationOriginalName = '';
   private annotationMimeType = '';
-  private annotationIsSupportDoc = false;
+  readonly annotationIsSupportDoc = signal(false);
 
   constructor() {
     const nav = this.router.getCurrentNavigation();
@@ -336,8 +337,8 @@ export class WorkflowInformation {
 
   onAcquireClick(): void {
     this.pendingAction = 'acquire';
-    this.confirmTitle.set('Acquire Order');
-    this.confirmDescription.set('This order will be assigned to you. Do you want to proceed?');
+    this.confirmTitle.set('Acquire Task');
+    this.confirmDescription.set('This task will be assigned to you. Continue?');
     this.confirmLabel.set('Acquire');
     this.confirmVariant.set('primary');
     this.showConfirmDialog.set(true);
@@ -345,8 +346,8 @@ export class WorkflowInformation {
 
   onUnassignClick(): void {
     this.pendingAction = 'unassign';
-    this.confirmTitle.set('Unassign Order');
-    this.confirmDescription.set('This order will be returned to the queue. Are you sure?');
+    this.confirmTitle.set('Unassign Task');
+    this.confirmDescription.set('This task will be returned to the queue. Are you sure?');
     this.confirmLabel.set('Unassign');
     this.confirmVariant.set('warning');
     this.showConfirmDialog.set(true);
@@ -354,8 +355,8 @@ export class WorkflowInformation {
 
   onCompleteClick(): void {
     this.pendingAction = 'complete';
-    this.confirmTitle.set('Complete Order');
-    this.confirmDescription.set('Are you sure you want to complete and route this order?');
+    this.confirmTitle.set('Complete Task');
+    this.confirmDescription.set('Are you sure you want to complete and route this task?');
     this.confirmLabel.set('Complete');
     this.confirmVariant.set('primary');
     this.showConfirmDialog.set(true);
@@ -380,7 +381,7 @@ export class WorkflowInformation {
       timeout(15000),
       catchError((err) => {
         const body = err?.error;
-        const msg = typeof body === 'string' ? body : body?.message ?? err?.message ?? `Failed to ${action} order.`;
+        const msg = typeof body === 'string' ? body : body?.message ?? err?.message ?? `Failed to ${action} task.`;
         this.notify.error(msg, 'Error');
         return of(null);
       }),
@@ -390,7 +391,7 @@ export class WorkflowInformation {
       this.pendingAction = null;
 
       if (result) {
-        this.notify.success(result.message || `Order ${action}d successfully.`, 'Success');
+        this.notify.success(result.message || `Task ${action}d successfully.`, 'Success');
         this.selectedRouteTo.set('');
         this.reloadWorkflow();
       }
@@ -549,7 +550,8 @@ export class WorkflowInformation {
     this.annotationDocId = null;
     this.annotationOriginalName = '';
     this.annotationMimeType = '';
-    this.annotationIsSupportDoc = isSupportDoc;
+    this.annotationIsSupportDoc.set(isSupportDoc);
+    this.annotationReadOnly.set(false);
     this.annotationFile.set(null);
     this.annotationFileUrl.set(null);
     this.annotationDocName.set(isSupportDoc ? 'Import Support Document' : 'Import Sales Order');
@@ -566,7 +568,7 @@ export class WorkflowInformation {
     this.isUploading.set(true);
     this.uploadError.set(null);
 
-    this.docService.upload(o.orderSeq, file, isSupportDoc, o.repPO, o.brand)
+    this.docService.upload(o.orderSeq, file, isSupportDoc, o.repPO, o.brand, o.createdDate)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => {
@@ -577,23 +579,35 @@ export class WorkflowInformation {
         error: (err) => {
           console.error('Upload error:', err);
           this.isUploading.set(false);
-          const body = err?.error;
-          const msg = typeof body === 'string' ? body
-            : body?.message ?? body?.title ?? err?.message ?? 'Upload failed.';
-          this.uploadError.set(msg);
+          this.uploadError.set(this.extractErrorMessage(err, 'Upload failed.'));
         },
       });
 
     input.value = '';
   }
 
+  private extractErrorMessage(err: any, fallback: string): string {
+    const body = err?.error;
+    return typeof body === 'string' ? body
+      : body?.message ?? body?.title ?? err?.message ?? fallback;
+  }
+
   // ── Preview / Annotation ──────────────────────────────────────────────────
 
   previewDocument(doc: SalesOrderDocumentDto): void {
+    this.openDocument(doc, false, true);
+  }
+
+  editDocument(doc: SalesOrderDocumentDto, isSupportDoc: boolean): void {
+    this.openDocument(doc, isSupportDoc, false);
+  }
+
+  private openDocument(doc: SalesOrderDocumentDto, isSupportDoc: boolean, readOnly: boolean): void {
     this.annotationDocId = doc.documentId;
     this.annotationOriginalName = doc.documentName;
     this.annotationMimeType = doc.mimeType;
-    // Get latest version to get the file path, then fetch as blob for auth
+    this.annotationIsSupportDoc.set(isSupportDoc);
+    this.annotationReadOnly.set(readOnly);
     this.docService.getVersions(doc.documentId)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(versions => {
@@ -604,9 +618,19 @@ export class WorkflowInformation {
   }
 
   previewVersion(version: SalesOrderDocumentVersionDto): void {
+    this.openVersionPreview(version, false, true);
+  }
+
+  editVersion(version: SalesOrderDocumentVersionDto, isSupportDoc: boolean): void {
+    this.openVersionPreview(version, isSupportDoc, false);
+  }
+
+  private openVersionPreview(version: SalesOrderDocumentVersionDto, isSupportDoc: boolean, readOnly: boolean): void {
     this.annotationDocId = version.documentId;
     this.annotationOriginalName = version.documentPath.split('/').pop() ?? 'document';
     this.annotationMimeType = version.mimeType;
+    this.annotationIsSupportDoc.set(isSupportDoc);
+    this.annotationReadOnly.set(readOnly);
     this.openBlobPreview(version.documentPath, `Version ${version.versionNumber}`, version.mimeType);
   }
 
@@ -637,8 +661,8 @@ export class WorkflowInformation {
 
   /** Called when the user clicks Save in the annotation dialog */
   onSaveAsNewVersion(event: { blob: Blob; filename: string }): void {
-    if (!this.canAnnotate()) {
-      this.notify.warning('Only the user who acquired this order can save changes.', 'Not Allowed');
+    if (this.annotationReadOnly()) {
+      this.notify.warning('Only the user who acquired this task can save changes.', 'Not Allowed');
       return;
     }
     if (this.annotationDocId === null) {
@@ -663,7 +687,7 @@ export class WorkflowInformation {
           this.loadDocuments();
           // Refresh version list if version panel is open
           if (this.showVersionPanel()) {
-            this.showVersions({ documentId: docId } as SalesOrderDocumentDto);
+            this.showVersions({ documentId: docId } as SalesOrderDocumentDto, this.versionPanelIsSupportDoc);
           }
           this.notify.success('New version saved successfully.', 'Version Created');
         },
@@ -675,13 +699,13 @@ export class WorkflowInformation {
     const o = this.order();
     if (!o) return;
 
-    const isSupportDoc = this.annotationIsSupportDoc;
+    const isSupportDoc = this.annotationIsSupportDoc();
     const file = new File([event.blob], event.filename, { type: event.blob.type });
 
     this.isUploading.set(true);
     this.uploadError.set(null);
 
-    this.docService.upload(o.orderSeq, file, isSupportDoc, o.repPO, o.brand)
+    this.docService.upload(o.orderSeq, file, isSupportDoc, o.repPO, o.brand, o.createdDate)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => {
@@ -693,17 +717,17 @@ export class WorkflowInformation {
         error: (err) => {
           console.error('Upload error:', err);
           this.isUploading.set(false);
-          const body = err?.error;
-          const msg = typeof body === 'string' ? body
-            : body?.message ?? body?.title ?? err?.message ?? 'Upload failed.';
-          this.uploadError.set(msg);
+          this.uploadError.set(this.extractErrorMessage(err, 'Upload failed.'));
         },
       });
   }
 
   // ── Version management ────────────────────────────────────────────────────
 
-  showVersions(doc: SalesOrderDocumentDto): void {
+  versionPanelIsSupportDoc = false;
+
+  showVersions(doc: SalesOrderDocumentDto, isSupportDoc = false): void {
+    this.versionPanelIsSupportDoc = isSupportDoc;
     this.versionPanelDocId.set(doc.documentId);
     this.versionPanelDocName.set(doc.documentName);
     this.showVersionPanel.set(true);

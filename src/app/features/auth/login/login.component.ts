@@ -48,7 +48,6 @@ export class LoginComponent {
 
     try {
       const res = await firstValueFrom(this.authSvc.login(this.username(), this.password()));
-      debugger
       this.authStore.login(res);
       this.notify.success(NM.AUTH.LOGIN_SUCCESS, 'Auth');
       this.router.navigate(['/']);

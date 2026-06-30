@@ -11,6 +11,17 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-  <app-root></app-root>
+  <app-root>
+    <style>
+      .app-initial-loader{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;background:#f5f7fa;gap:1rem;font-family:'Inter',system-ui,sans-serif}
+      .app-initial-loader__spinner{width:36px;height:36px;border:3px solid #e2e8f0;border-top-color:#2a5298;border-radius:50%;animation:app-spin .7s linear infinite}
+      .app-initial-loader__text{color:#64748b;font-size:.875rem;letter-spacing:.01em}
+      @keyframes app-spin{to{transform:rotate(360deg)}}
+    </style>
+    <div class="app-initial-loader">
+      <div class="app-initial-loader__spinner"></div>
+      <span class="app-initial-loader__text">Loading…</span>
+    </div>
+  </app-root>
 </body>
 </html>

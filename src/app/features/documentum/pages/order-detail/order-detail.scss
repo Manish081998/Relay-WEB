@@ -1111,6 +1111,8 @@ $avatar-palette: (
   }
 }
 
+.vd-readonly-badge { @extend %vd-readonly-badge; }
+
 .vd-footer {
   display: flex;
   align-items: center;

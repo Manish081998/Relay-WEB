@@ -502,6 +502,22 @@ $radius-lg:     t.$radius-lg;
 }
 
 // ═════════════════════════════════════════════════════════════════════════════
+// VERSION DIALOG — Read Only badge
+// ═════════════════════════════════════════════════════════════════════════════
+%vd-readonly-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+  background: none;
+  color: $text-faint;
+  font-size: 10px;
+  font-weight: t.$font-weight-medium;
+  font-style: italic;
+  font-family: t.$font-sans;
+  letter-spacing: 0.02em;
+}
+
+// ═════════════════════════════════════════════════════════════════════════════
 // INFO BANNER — subtle contextual strip
 // ═════════════════════════════════════════════════════════════════════════════
 %info-banner {

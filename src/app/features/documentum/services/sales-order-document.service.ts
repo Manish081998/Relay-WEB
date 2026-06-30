@@ -22,6 +22,7 @@ export class SalesOrderDocumentService {
     isSupportedDocument: boolean,
     repPO?: string,
     brandName?: string,
+    orderDate?: string,
   ): Observable<UploadDocumentResultDto> {
     const form = new FormData();
     form.append('orderSeq', orderSeq.toString());
@@ -29,6 +30,7 @@ export class SalesOrderDocumentService {
     form.append('file', file, file.name);
     if (repPO) form.append('repPO', repPO);
     if (brandName) form.append('brandName', brandName);
+    if (orderDate) form.append('orderDate', orderDate);
     return this.api.upload<UploadDocumentResultDto>(`${this.base}/upload`, form);
   }
 

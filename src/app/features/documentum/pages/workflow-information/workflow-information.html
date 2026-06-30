@@ -251,7 +251,10 @@
                 }
               </span>
             </div>
-            <div class="od-pkg-field"></div>
+            <!-- <div class="od-pkg-field">
+              <span class="od-pkg-label">Order Created Date</span>
+              <span class="od-pkg-value" [class.od-pkg-value--empty]="!o.createdDate">{{ o.createdDate ? (o.createdDate | date:'MM/dd/yy hh:mm a') : 'Pending' }}</span>
+            </div> -->
           </div>
         } @else {
           <div class="od-pkg-loading">Order not found.</div>
@@ -435,11 +438,19 @@
                 <td>{{ doc.createdByName || doc.createdBy }}</td>
                 <td><span class="od-version-badge">v{{ doc.currentVersion }}</span></td>
                 <td class="od-actions-cell">
-                  <button class="od-icon-btn od-icon-btn--preview" pTooltip="Preview" tooltipPosition="top" (click)="previewDocument(doc)">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
-                    </svg>
-                  </button>
+                  @if (canAnnotate()) {
+                    <button class="od-icon-btn od-icon-btn--edit" pTooltip="Edit Document" tooltipPosition="top" (click)="editDocument(doc, false)">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                      </svg>
+                    </button>
+                  } @else {
+                    <button class="od-icon-btn od-icon-btn--preview" pTooltip="Preview (Only acquired user can edit)" tooltipPosition="top" (click)="previewDocument(doc)">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+                      </svg>
+                    </button>
+                  }
                   <button class="od-icon-btn od-icon-btn--history" pTooltip="Version History" tooltipPosition="top" (click)="showVersions(doc)">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                       <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
@@ -557,12 +568,12 @@
                 <td>{{ doc.createdByName || doc.createdBy }}</td>
                 <td><span class="od-version-badge">v{{ doc.currentVersion }}</span></td>
                 <td class="od-actions-cell">
-                  <button class="od-icon-btn od-icon-btn--preview" pTooltip="Preview" tooltipPosition="top" (click)="previewDocument(doc)">
+                  <button class="od-icon-btn od-icon-btn--edit" pTooltip="Edit Document" tooltipPosition="top" (click)="editDocument(doc, true)">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+                      <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
                     </svg>
                   </button>
-                  <button class="od-icon-btn od-icon-btn--history" pTooltip="Version History" tooltipPosition="top" (click)="showVersions(doc)">
+                  <button class="od-icon-btn od-icon-btn--history" pTooltip="Version History" tooltipPosition="top" (click)="showVersions(doc, true)">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                       <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
                     </svg>
@@ -608,7 +619,7 @@
       [title]="annotationDocName()"
       [file]="annotationFile()"
       [mode]="annotationMode()"
-      [readOnly]="!canAnnotate()"
+      [readOnly]="annotationReadOnly()"
       (saveBlob)="onSaveAsNewVersion($event)"
     />
 
@@ -891,12 +902,22 @@
                 <td class="vd-date">{{ ver.createdDate | date:'MM/dd/yy hh:mm a' }}</td>
                 <td class="vd-author">{{ ver.createdByName || ver.createdBy }}</td>
                 <td class="vd-actions-cell">
-                  <button class="vd-action-btn" pTooltip="Preview this version" tooltipPosition="top" (click)="previewVersion(ver)">
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
-                    </svg>
-                    Preview
-                  </button>
+                  @if (idx === 0 && (versionPanelIsSupportDoc || canAnnotate())) {
+                    <button class="vd-action-btn vd-action-btn--edit" pTooltip="Edit current version" tooltipPosition="top" (click)="editVersion(ver, versionPanelIsSupportDoc)">
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                      </svg>
+                      Edit
+                    </button>
+                  } @else {
+                    <button class="vd-action-btn" pTooltip="Preview this version" tooltipPosition="top" (click)="previewVersion(ver)">
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+                      </svg>
+                      Preview
+                    </button>
+                    <span class="vd-readonly-badge">Read Only</span>
+                  }
                 </td>
               </tr>
             }

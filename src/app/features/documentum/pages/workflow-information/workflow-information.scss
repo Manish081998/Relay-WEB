@@ -1233,7 +1233,9 @@ $avatar-palette: (
 
   // Specific icon colors on hover
   &--preview:hover { color: #3b82f6; background: rgba(#3b82f6, 0.08); }
+  &--edit:hover { color: #f59e0b; background: rgba(#f59e0b, 0.08); }
   &--history:hover { color: #8b5cf6; background: rgba(#8b5cf6, 0.08); }
+  &--disabled { opacity: 0.4; cursor: not-allowed; &:hover { background: transparent; color: ds.$text-muted; } }
 }
 
 // ═════════════════════════════════════════════════════════════════════════════
@@ -1503,7 +1505,15 @@ $avatar-palette: (
     transform: translateY(-1px);
     box-shadow: 0 2px 6px rgba(ds.$brand, 0.12);
   }
+
+  &--edit {
+    background: rgba(#f59e0b, 0.06);
+    color: #d97706;
+    &:hover { background: rgba(#f59e0b, 0.14); border-color: rgba(#f59e0b, 0.2); box-shadow: 0 2px 6px rgba(#f59e0b, 0.12); }
+  }
 }
+
+.vd-readonly-badge { @extend %vd-readonly-badge; }
 
 .vd-footer {
   display: flex;

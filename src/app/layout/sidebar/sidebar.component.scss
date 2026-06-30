@@ -134,7 +134,7 @@ $nav-hover-bg:       rgba(255, 255, 255, 0.04);
   border-left: 4px solid transparent;
   border-radius: 0 0.25rem 0.25rem 0;
   margin-bottom: 2px;
-  transition: all 0.2s;
+  transition: background 0.2s, color 0.2s, border-left-color 0.2s;
   cursor: pointer;
 
   &:hover {
@@ -274,7 +274,7 @@ $nav-hover-bg:       rgba(255, 255, 255, 0.04);
   border-left: 4px solid transparent;
   border-radius: 0 0.25rem 0.25rem 0;
   margin-bottom: 2px;
-  transition: all 0.2s;
+  transition: background 0.2s, color 0.2s, border-left-color 0.2s;
 
   &::before {
     display: none;

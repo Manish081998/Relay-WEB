@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, DestroyRef, inject, NgZone, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, DestroyRef, inject, signal } from '@angular/core';
 import { NavigationEnd, Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { filter, map, startWith } from 'rxjs';
@@ -21,7 +21,6 @@ export class SidebarComponent {
   readonly user      = this.auth.currentUser;
   readonly collapsed = this.ui.sidebarCollapsed;
   private readonly router = inject(Router);
-  private readonly zone = inject(NgZone);
   private readonly destroyRef = inject(DestroyRef);
 
   // ── Resize state ───────────────────────────────────────────────────────────
@@ -120,11 +119,11 @@ export class SidebarComponent {
         SidebarComponent.MAX_WIDTH,
         Math.max(SidebarComponent.MIN_WIDTH, e.clientX),
       );
-      this.zone.run(() => this.sidebarWidth.set(newWidth));
+      this.sidebarWidth.set(newWidth);
     };
 
     const onMouseUp = () => {
-      this.zone.run(() => this.isResizing.set(false));
+      this.isResizing.set(false);
       this.cleanupResize();
     };
 
