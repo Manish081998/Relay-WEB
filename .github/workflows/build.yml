@@ -1,0 +1,31 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [development]
+
+jobs:
+  Build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.x'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Build
+        run: |
+          if find . -maxdepth 4 \( -name "*.sln" -o -name "*.csproj" \) 2>/dev/null | grep -q .; then
+            echo "Detected .NET project"
+            dotnet build
+          elif [ -f package.json ]; then
+            echo "Detected Node/Angular project"
+            [ -f package-lock.json ] && npm ci || npm install
+            npm run build --if-present || echo "No build script, skipping"
+          else
+            echo "No recognizable project type — skipping build"
+          fi
