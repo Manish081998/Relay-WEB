@@ -48,7 +48,7 @@
               "includePaths": [
                 "src/styles"
               ]
-            },
+            }
           },
           "configurations": {
             "production": {
