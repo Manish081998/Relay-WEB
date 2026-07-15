@@ -46,7 +46,7 @@ jobs:
         id: resolve
         run: |
           OUT=dist
-          for candidate in dist/relay-web dist build out; do
+          for candidate in dist build out; do
             if [ -d "$candidate" ]; then OUT="$candidate"; break; fi
           done
           echo "out=$OUT" >> "$GITHUB_OUTPUT"
