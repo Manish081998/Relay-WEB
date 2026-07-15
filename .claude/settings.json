@@ -1,4 +1,11 @@
 {
+  "permissions": {
+    "allow": [
+      "Bash(git check-ignore *)",
+      "Bash(git fetch *)",
+      "Bash(git rev-list *)"
+    ]
+  },
   "hooks": {
     "PostToolUse": [
       {
